@@ -1,3 +1,5 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 # Logs
 logs
 *.log
@@ -8,6 +10,11 @@ lerna-debug.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 
 # Runtime data
 pids
@@ -21,6 +28,9 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 *.lcov
+
+# testing
+/coverage
 
 # nyc test coverage
 .nyc_output
@@ -71,12 +81,26 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+.env.local
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
 # Next.js build output
 .next
+/.next/
+/out/
 
 # Nuxt.js build / generate output
 .nuxt
@@ -103,13 +127,32 @@ dist
 # TernJS port file
 .tern-port
 
-
-.DS_Store
-dist
-dist-ssr
-*.local
-*.log
-*.txt
+# production
+/build
 
 # Local Netlify folder
 .netlify
+
+# Avoid accidental upload of the Sketch and Figma design files
+#####################################################
+## Please do not remove - thanks! 🙂 ##
+#####################################################
+*.sketch
+*.fig
+
+# Avoid accidental XD upload if the design file is converted
+###############################################
+## Please do not remove - thanks! 🙂 ##
+###############################################
+*.xd
+
+# Avoid your project being littered with annoying .DS_Store files!
+.DS_Store
+.prettierignore
+
+# misc
+dist
+dist-ssr
+*.pem
+*.local
+*.local.*
