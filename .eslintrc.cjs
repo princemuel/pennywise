@@ -5,7 +5,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 2022,
+    ecmaVersion: 'latest',
     sourceType: 'module',
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
@@ -27,7 +27,7 @@ module.exports = {
   env: {
     amd: true,
     browser: true,
-    es2021: true,
+    es2022: true,
     node: true,
   },
   plugins: [
@@ -43,8 +43,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:import/errors',
-    'plugin:import/warnings',
+    'plugin:import/recommended',
     'plugin:import/typescript',
     'plugin:jsx-a11y/recommended',
     'plugin:prettier/recommended',
@@ -52,25 +51,25 @@ module.exports = {
   rules: {
     import: 0,
     'no-console': 'off',
-    'import/extensions': 'off',
-    'import/no-unresolved': 'off',
-    'import/prefer-default-export': 'off',
-    'import/no-default-export': 'off',
-    'import/no-extraneous-dependencies': 'warn',
-    'import/order': [
-      'warn',
-      {
-        'newlines-between': 'never',
-        groups: [
-          'builtin', // Built-in types are first
-          ['external', 'internal'],
-          ['sibling', 'parent'], // Then sibling and parent types. They can be mingled together
-          'index', // Then the index file
-          'object',
-          // Then the rest: internal and external type
-        ],
-      },
-    ],
+    // 'import/extensions': 'off',
+    // 'import/no-unresolved': 'off',
+    // 'import/prefer-default-export': 'off',
+    // 'import/no-default-export': 'off',
+    // 'import/no-extraneous-dependencies': 'warn',
+    // 'import/order': [
+    //   'warn',
+    //   {
+    //     'newlines-between': 'never',
+    //     groups: [
+    //       'builtin', // Built-in types are first
+    //       ['external', 'internal'],
+    //       ['sibling', 'parent'], // Then sibling and parent types. They can be mingled together
+    //       'index', // Then the index file
+    //       'object',
+    //       // Then the rest: internal and external type
+    //     ],
+    //   },
+    // ],
     'jsx-a11y/accessible-emoji': 'off',
     'jsx-a11y/anchor-is-valid': [
       'error',

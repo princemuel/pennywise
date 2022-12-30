@@ -1,7 +1,15 @@
+import { Route, Routes } from 'react-router-dom';
+import { Home, Layout, Missing } from './components';
+
 function App() {
   return (
-   <h1>REACT APP</h1>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+
+        <Route path="*" element={<Missing />} />
+      </Route>
+    </Routes>
   );
 }
-
 export default App;

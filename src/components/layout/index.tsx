@@ -1,9 +1,18 @@
-type Props = {
-  children: React.ReactNode;
-};
+import { Fragment } from 'react';
+import { Outlet } from 'react-router-dom';
+import { Footer } from './footer';
+import { Header } from './header';
+
+type Props = {};
 
 const Layout = (props: Props) => {
-  return <div>{props.children}</div>;
+  return (
+    <Fragment>
+      <Header />
+      <Outlet />
+      <Footer />
+    </Fragment>
+  );
 };
 
 export { Layout };

@@ -1,2 +1,3 @@
-// export * from './file'; // uncomment this line
-export {};
+export * from './home';
+export * from './project';
+export * from './projects';

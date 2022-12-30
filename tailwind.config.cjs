@@ -6,6 +6,9 @@ module.exports = {
   darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    fontFamily: {
+      sans: ['Nunito Sans', ...defaultTheme.fontFamily.sans],
+    },
     extend: {},
   },
   plugins: [

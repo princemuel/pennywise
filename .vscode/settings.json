@@ -7,5 +7,6 @@
     "source.fixAll": true,
     "source.fixAll.stylelint": true,
     "source.fixAll.eslint": true
-  }
+  },
+  "tailwindCSS.rootFontSize": 16
 }
