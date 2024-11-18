@@ -28,7 +28,7 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "editor.lineHeight": 0,
   "editor.fontSize": 13.5,
-   "[jsonc]": {
+  "[jsonc]": {
     "editor.defaultFormatter": "biomejs.biome"
   }
 }
