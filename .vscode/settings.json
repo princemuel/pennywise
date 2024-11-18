@@ -20,15 +20,15 @@
   "json.validate.enable": true,
   "npm-intellisense.packageSubfoldersIntellisense": true,
   "tailwindCSS.emmetCompletions": true,
-  "tailwindCSS.experimental.classRegex": [["tv\\((([^()]*|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
+  "tailwindCSS.experimental.classRegex": [
+    ["tv\\((([^()]*|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
   "tailwindCSS.rootFontSize": 16,
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsdk": "node_modules/typescript/lib",
-  "mdx.server.enable": false,
   "editor.lineHeight": 0,
-  // "editor.fontSize": 13.5,
-  "editor.fontFamily": "'JetBrains Mono', 'Monaco', monospace",
-  "[jsonc]": {
+  "editor.fontSize": 13.5,
+   "[jsonc]": {
     "editor.defaultFormatter": "biomejs.biome"
   }
 }

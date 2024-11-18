@@ -6,8 +6,7 @@ import twConfig from "./tailwind.json";
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: ["selector", '[data-theme="dark"]'],
-  content: ["./src/pages/**/*.astro", "./src/layouts/**/*.astro", "./src/components/**/*.astro"],
+  content: ["./app/**/*.{js,ts,jsx,tsx}"],
   future: "all",
   experimental: { optimizeUniversalDefaults: true, matchVariant: true },
   theme: {
@@ -21,9 +20,10 @@ export default {
       borderRadius: { pill: "100vmax" },
       colors: twConfig.theme.colors,
       fontFamily: {
-        sans: [twConfig.theme.fontFamily.sans, ...twDefaultTheme.fontFamily.sans],
-        serif: [twConfig.theme.fontFamily.serif, ...twDefaultTheme.fontFamily.serif],
-        mono: [twConfig.theme.fontFamily.mono, ...twDefaultTheme.fontFamily.mono],
+        sans: [
+          twConfig.theme.fontFamily.sans,
+          ...twDefaultTheme.fontFamily.sans,
+        ],
       },
       cursor: twConfig.theme.cursor,
       screens: {
