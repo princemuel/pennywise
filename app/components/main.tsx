@@ -2,9 +2,9 @@ import type { ComponentProps } from "react";
 
 type Props = ComponentProps<"main">;
 
-export const MainContent = ({ children, ...rest }: Props) => {
+export const Main = ({ children, ...rest }: Props) => {
   return (
-    <main id="main" aria-labelledby="heading" {...rest}>
+    <main id="main-content" aria-labelledby="heading" {...rest}>
       {children}
     </main>
   );
