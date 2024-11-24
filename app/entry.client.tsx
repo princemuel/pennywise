@@ -4,23 +4,23 @@
  * For more information, see https://remix.run/file-conventions/entry.client
  */
 
-import { RemixBrowser } from "@remix-run/react";
 import { StrictMode, startTransition } from "react";
 import { hydrateRoot } from "react-dom/client";
+import { HydratedRouter } from "react-router/dom";
 
 startTransition(() => {
   clearBrowserExtensionInjectionsBeforeHydration();
   const root = hydrateRoot(
     document,
     <StrictMode>
-      <RemixBrowser />
+      <HydratedRouter />
     </StrictMode>,
     {
       onRecoverableError: () => {
         console.error("Hydration failed! Attempting recovery...");
         root.render(
           <StrictMode>
-            <RemixBrowser />
+            <HydratedRouter />
           </StrictMode>,
         );
         console.info("Recovery successful!");
@@ -39,28 +39,39 @@ function clearBrowserExtensionInjectionsBeforeHydration() {
   );
 
   for (const node of nodes) node.parentNode?.removeChild(node);
-  const $targets = {
-    html: {
-      // biome-ignore lint/style/noNonNullAssertion: this is always defined
-      $elm: document.querySelector("html")!,
-      allowedAttributes: ["lang", "dir", "class"],
-    },
-    head: {
-      // biome-ignore lint/style/noNonNullAssertion: this is always defined
-      $elm: document.querySelector("head")!,
-      allowedAttributes: [""],
-    },
-    body: {
-      // biome-ignore lint/style/noNonNullAssertion: this is always defined
-      $elm: document.querySelector("body")!,
-      allowedAttributes: ["class"],
-    },
-  };
+  const $targets = new Map([
+    [
+      "html",
+      {
+        $elm: document.documentElement,
+        allowedAttributes: new Set(["lang", "dir", "class"]),
+      },
+    ],
+    [
+      "head",
+      {
+        $elm: document.head,
+        allowedAttributes: new Set([""]),
+      },
+    ],
+    [
+      "body",
+      {
+        $elm: document.body,
+        allowedAttributes: new Set(["class"]),
+      },
+    ],
+  ]);
 
-  for (const target of Object.values($targets)) {
-    for (const attr of target.$elm.getAttributeNames()) {
-      if (!target.allowedAttributes.includes(attr))
-        target.$elm.removeAttribute(attr);
+  for (const { $elm, allowedAttributes } of $targets.values()) {
+    if (!$elm) continue;
+    for (const attr of $elm.getAttributeNames()) {
+      if (!allowedAttributes.has(attr)) {
+        console.info(
+          `Removing disallowed attribute: '${attr}' from <${$elm.tagName.toLowerCase()}>`,
+        );
+        $elm.removeAttribute(attr);
+      }
     }
   }
 }

@@ -1,32 +1,30 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mjs"],
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "strict": true,
-    "module": "ESNext",
     "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "module": "ESNext",
     "skipLibCheck": true,
-
     "moduleResolution": "Bundler",
+    "isolatedModules": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "allowJs": true,
+    "noEmit": true,
     "jsx": "react-jsx",
 
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "exactOptionalPropertyTypes": true,
-    "useDefineForClassFields": true,
+    "noUncheckedSideEffectImports": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "types": ["node", "vite/client"],
+    "rootDirs": [".", "./.react-router/types"],
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["app/*"]
-    },
-
-    "noEmit": true
-  }
+      "@/*": ["./app/*"]
+    }
+  },
+  "include": ["**/*", "**/.server/**/*", "**/.client/**/*", ".react-router/types/**/*"]
 }
