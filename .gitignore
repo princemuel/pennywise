@@ -197,6 +197,9 @@ tmp-*
 
 *.pem
 *.ignored.*
+*.ignored
+*.local.*
+*.local
 
 styled-system
 prisma.rs
