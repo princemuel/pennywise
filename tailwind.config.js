@@ -1,14 +1,13 @@
 import twForms from "@tailwindcss/forms";
-import twRadixUi from "tailwindcss-radix";
 import twDefaultTheme from "tailwindcss/defaultTheme";
 import twPlugin from "tailwindcss/plugin";
 import twConfig from "./tailwind.json";
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./app/**/*.{js,ts,jsx,tsx}"],
+  content: ["./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}"],
   future: "all",
-  experimental: { optimizeUniversalDefaults: true, matchVariant: true },
+  experimental: "all",
   theme: {
     screens: {
       "3xs": "24em", // @media (min-width: 384px) { ... }
@@ -17,13 +16,10 @@ export default {
     },
     fluidCols: { fit: "fit", fill: "fill" },
     extend: {
-      borderRadius: { pill: "100vmax" },
       colors: twConfig.theme.colors,
+      borderRadius: { pill: "100vmax" },
       fontFamily: {
-        sans: [
-          twConfig.theme.fontFamily.sans,
-          ...twDefaultTheme.fontFamily.sans,
-        ],
+        sans: [twConfig.theme.fontFamily.sans, ...twDefaultTheme.fontFamily.sans],
       },
       cursor: twConfig.theme.cursor,
       screens: {
@@ -35,15 +31,26 @@ export default {
         "2xl": "96em", // @media (min-width: 1536px) { ... }
         "3xl": "112.5em", // @media (min-width: 1800px) { ... }
       },
-      animation: twConfig.theme.animation,
-      keyframes: twConfig.theme.keyframes,
     },
   },
   plugins: [
     twForms({ strategy: "base" }),
-    twRadixUi({ variantPrefix: "ui" }),
-    twPlugin(({ addVariant }) => {
+    twPlugin(({ theme, addUtilities, addVariant, matchUtilities }) => {
       addVariant("hocus", ["&:hover", "&:focus"]);
+
+      addUtilities({
+        ".auto-fit": { "--tw-repeat": "auto-fit" },
+        ".auto-fill": { "--tw-repeat": "auto-fill" },
+      });
+
+      matchUtilities(
+        {
+          "grid-cols-fluid": (value) => ({
+            gridTemplateColumns: `repeat(var(--tw-repeat), minmax(min(100%, ${value}), 1fr))`,
+          }),
+        },
+        { values: theme("width") },
+      );
     }),
   ],
 };
