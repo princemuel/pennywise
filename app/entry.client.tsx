@@ -33,8 +33,8 @@ function clearBrowserExtensionInjectionsBeforeHydration() {
   const nodes = document.querySelectorAll(
     [
       "html > *:not(body, head)",
-      'script[src*="extension://"]',
-      'link[href*="extension://"]',
+      'script[src*="-extension://"]',
+      'link[href*="-extension://"]',
     ].join(", "),
   );
 

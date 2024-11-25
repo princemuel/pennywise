@@ -1,10 +1,8 @@
-import type { ComponentProps } from "react";
+type Props = React.ComponentProps<"main">;
 
-type Props = ComponentProps<"main">;
-
-export const Main = ({ children, ...rest }: Props) => {
+export const Main = ({ children, ...attrs }: Props) => {
   return (
-    <main id="main-content" aria-labelledby="heading" {...rest}>
+    <main id="main-content" aria-labelledby="heading" {...attrs}>
       {children}
     </main>
   );
