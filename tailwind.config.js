@@ -14,7 +14,10 @@ export default {
       "2xs": "30em", // @media (min-width: 480px) { ... }
       ...twDefaultTheme.screens,
     },
-    data: { checked: 'ui~="checked"' },
+    data: {
+      checked: 'ui~="checked"',
+      compact: 'ui~="compact"',
+    },
     fluidCols: { fit: "fit", fill: "fill" },
     extend: {
       colors: twConfig.theme.colors,

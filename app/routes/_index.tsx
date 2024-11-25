@@ -10,7 +10,7 @@ export default function Page() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Main>
+    <Main className="overflow-y-auto">
       <h1 id="headline" className="text-brand-500 text-xl">
         Overview
       </h1>

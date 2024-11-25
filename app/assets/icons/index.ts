@@ -1,4 +1,4 @@
-export { default as IconArrowFlatLinesLeft } from "./arrow-fat-lines-left.svg";
+export { default as IconArrowFlatLinesLeft } from "./arrow-fat-lines-left.svg?react";
 export { default as IconArrowUpDown } from "./arrow-up-down.svg?react";
 export { default as IconBarbell } from "./barbell.svg?react";
 export { default as IconBookOpen } from "./book-open.svg?react";

@@ -1,5 +1,8 @@
 import { Main } from "@/components/main";
 import { SkipNavLink } from "@/components/skip-link";
+import { RootLayout } from "@/layouts";
+
+import { commitSession, getSession } from "@/lib/sessions.server";
 
 import { useEffect } from "react";
 import {
@@ -19,8 +22,8 @@ import type { Route } from "./+types/root";
 
 //@ts-expect-error
 import "@fontsource-variable/public-sans";
-
-import styles from "@/assets/styles/global.css?url";
+// import "./assets/styles/debug.css"; // uncomment this line to debug your styles
+import "./assets/styles/global.css";
 
 export const links: Route.LinksFunction = () =>
   [
@@ -30,13 +33,29 @@ export const links: Route.LinksFunction = () =>
       href: "/favicon-32x32.png",
       sizes: "32x32",
     },
-    { rel: "stylesheet", href: styles },
   ].filter(Boolean);
 
 export async function loader({ request }: Route.LoaderArgs) {
   const { toast, headers } = await getToast(request);
+  const session = await getSession(request.headers.get("Cookie"));
+  const sidebar_state = session.get("__sidebar-session") || "maximized";
   const t = { type: "", message: "", description: "", duration: 5000 };
-  return data({ config: {}, toast: toast ?? t }, { headers });
+  return data(
+    { config: { sidebar_state }, toast: toast ?? t },
+    { headers: { ...headers, "Set-Cookie": await commitSession(session) } },
+  );
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const formData = await request.formData();
+  const prev_sidebar_state = formData.get("sidebar_state");
+  const new_sidebar_state =
+    prev_sidebar_state === "maximized" ? "compact" : "maximized";
+  session.set("__sidebar-session", new_sidebar_state);
+  return new Response(null, {
+    headers: { "Set-Cookie": await commitSession(session) },
+  });
 }
 
 export default function Root() {
@@ -69,7 +88,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
       </head>
       <body className="relative min-h-svh bg-white font-normal font-sans">
         <SkipNavLink />
-        {children}
+        <RootLayout>{children}</RootLayout>
         <ToastProvider richColors closeButton position="top-center" />
         <ScrollRestoration />
         <Scripts />
