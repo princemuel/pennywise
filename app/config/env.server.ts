@@ -10,12 +10,12 @@ import { z } from "zod";
  * It only includes those not prefixed with `PUBLIC_`.
  * Empty strings are treated as `undefined`.
  */
-export const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } = createEnv({
+export const { DATABASE_URL, DATABASE_TOKEN } = createEnv({
   isServer: !isBrowser,
   emptyStringAsUndefined: true,
   runtimeEnv: process.env,
   server: {
-    TURSO_DATABASE_URL: z.string().min(1).url(),
-    TURSO_AUTH_TOKEN: z.string().min(1),
+    DATABASE_URL: z.string().min(1).url(),
+    DATABASE_TOKEN: z.string().min(1),
   },
 });
