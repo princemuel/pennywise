@@ -7,7 +7,7 @@ pre-push:
   commands:
     format:
       glob: "*.{js,ts,mjs,jsx,tsx,json}"
-      run: npx @biomejs/biome check --write --unsafe --no-errors-on-unmatched --use-editorconfig=true --files-ignore-unknown=true --colors=off {push_files}
+      run: pnpm biome check --write --unsafe --no-errors-on-unmatched --use-editorconfig=true --files-ignore-unknown=true --colors=off {push_files}
 
 commit-msg:
   commands:
@@ -22,7 +22,7 @@ pre-commit:
   commands:
     lint:
       glob: "*.{js,ts,mjs,jsx,tsx,json}"
-      run: npx @biomejs/biome check --fix --unsafe --assists-enabled=true --no-errors-on-unmatched --use-editorconfig=true --files-ignore-unknown=true --colors=off {staged_files}
+      run: pnpm biome check --fix --unsafe --assists-enabled=true --no-errors-on-unmatched --use-editorconfig=true --files-ignore-unknown=true --colors=off {staged_files}
 
 post-merge:
   commands:
