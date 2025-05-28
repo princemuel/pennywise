@@ -8,7 +8,7 @@ const execAsync = promisify(exec);
 const args = process.argv.slice(2);
 const separatorIndex = args.indexOf("--");
 
-if (separatorIndex === -1 || separatorIndex === args.length - 1) {
+if (-1 === separatorIndex || separatorIndex === args.length - 1) {
   console.error(
     "Usage: node <nodeScriptPath> [--interval=<milliseconds>] -- <bashScriptPath> [bashArgs...]",
   );
@@ -26,7 +26,7 @@ const bashScriptPath = bashArgs[0];
 const bashScriptArgs = bashArgs.slice(1).join(" ");
 
 /** @type AbortController | undefined */
-let controller = undefined;
+let controller;
 
 const runBashScript = async () => {
   try {

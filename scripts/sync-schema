@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Default paths
-DEFAULT_SOURCE_DIR="$HOME/Workspace/Repos/princemuel.com/.astro/collections/"
+DEFAULT_SOURCE_DIR="$HOME/Workspace/Repos/princemuel.dev/.astro/collections/"
 DEFAULT_DEST_DIR="$HOME/Workspace/Repos/metadata/schemas/"
 
 # Use environment variables or defaults
