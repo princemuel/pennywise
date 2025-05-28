@@ -105,5 +105,8 @@
   "material-icon-theme.folders.associations": {
     "journal": "packages",
     "crates": "packages"
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
   }
 }

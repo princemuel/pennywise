@@ -3,9 +3,7 @@ import { isbot } from "isbot";
 import type { MiddlewareHandler } from "astro";
 
 export const botcheck: MiddlewareHandler = async ({ request, locals }, next) => {
-  if (request.url.includes("com.chrome.devtools")) {
-    return new Response(null, { status: 204 });
-  }
+  if (request.url.includes("com.chrome.devtools")) return new Response(null, { status: 204 });
 
   if (!request.url.includes("/api/")) return next();
 

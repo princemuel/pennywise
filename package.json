@@ -11,9 +11,8 @@
     "node": "^22 || >=24"
   },
   "scripts": {
-    "build": "astro build",
-    "dev": "astro dev",
-    "predev": "./build.sh",
+    "build": "./scripts/genwasm.sh && astro build",
+    "dev": "./scripts/genwasm.sh && astro dev",
     "start": "astro dev",
     "build:test": "astro check && astro build",
     "preview": "astro preview",
@@ -23,7 +22,7 @@
   "packageManager": "yarn@4.9.1+sha512.f95ce356460e05be48d66401c1ae64ef84d163dd689964962c6888a9810865e39097a5e9de748876c2e0bf89b232d583c33982773e9903ae7a76257270986538",
   "dependencies": {
     "@js-temporal/polyfill": "^0.5.1",
-    "@libr/markd": "file:crates/markd/pkg",
+    "@kits/postmark": "file:kits/postmark",
     "@libsql/client": "^0.15.7",
     "@netlify/functions": "^3.1.10",
     "@upstash/ratelimit": "^2.0.5",

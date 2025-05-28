@@ -2764,10 +2764,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@libr/markd@file:crates/markd/pkg::locator=medotdev%40workspace%3A.":
+"@kits/postmark@file:kits/postmark::locator=medotdev%40workspace%3A.":
   version: 0.1.0
-  resolution: "@libr/markd@file:crates/markd/pkg#crates/markd/pkg::hash=78cd69&locator=medotdev%40workspace%3A."
-  checksum: 10c0/2eac94a896ca7a9405a4b25dfc2cbb32184daa0f48ee36b32b278e68266089ddffb4019ea2259ba06be8458206cff7b9629e96ec3e3aafa18ac430f7bdc72f8e
+  resolution: "@kits/postmark@file:kits/postmark#kits/postmark::hash=013b05&locator=medotdev%40workspace%3A."
+  checksum: 10c0/7455a62eb313b54fe579eaa775246feb13893b93452fe077141506749a58ee046bb0b595beac5eec2ee3e06088d4c7706bc23ee13a426c07354e30c4a3fc0835
   languageName: node
   linkType: hard
 
@@ -15033,7 +15033,7 @@ __metadata:
     "@iconify-json/ri": "npm:^1.2.5"
     "@iconify-json/tabler": "npm:^1.2.18"
     "@js-temporal/polyfill": "npm:^0.5.1"
-    "@libr/markd": "file:crates/markd/pkg"
+    "@kits/postmark": "file:kits/postmark"
     "@libsql/client": "npm:^0.15.7"
     "@netlify/functions": "npm:^3.1.10"
     "@sentry/astro": "npm:^9.22.0"
