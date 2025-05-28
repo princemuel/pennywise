@@ -3,8 +3,6 @@ import { WEBHOOK_SECRET } from "astro:env/server";
 import { z } from "astro:schema";
 import { BadRequestError } from "http-errors-enhanced";
 
-import { handleApi } from "@/helpers/handle-api";
-
 export const prerender = false;
 
 const schema = z.object({ id: z.string() });

@@ -1,11 +1,1 @@
-{
-  "rules": {
-    "at-rule-no-unknown": [
-      true,
-      {
-        "ignoreAtRules": ["apply", "tailwind", "variants", "responsive", "screen"]
-      }
-    ]
-  }
-}
-
+{ "extends": ["stylelint-config-standard"] }

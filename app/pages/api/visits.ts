@@ -1,7 +1,6 @@
+// eslint-disable group-exports
 // eslint-disable prefer-await-to-then
 import { DARK_VISITORS_TOKEN } from "astro:env/server";
-
-import { handleApi } from "@/helpers/handle-api";
 
 export const prerender = false;
 

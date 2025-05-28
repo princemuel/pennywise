@@ -1,4 +1,4 @@
-import { handleApi } from "../../helpers/handle-api";
+import { handleApi } from "../../helpers/route-handler";
 
 export const GET = handleApi(async () => {
   const result = {

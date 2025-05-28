@@ -1,6 +1,4 @@
 ---
-import { Icon } from "astro-icon/components";
-
 // import { createDateFormatter } from "@/helpers/date-format";
 
 import Frame from "@/components/layout/frame.astro";
@@ -22,7 +20,7 @@ const formatter = new Intl.DateTimeFormat("en-US", {
   <Frame class="flex items-center justify-center py-1">
     <p class="flex flex-wrap items-center justify-center gap-1 text-xs text-neutral-800">
       <span>Built with </span>
-      <Icon name="astro-icon" />
+      <!-- <Icon name="astro-icon" /> -->
       <Link href="https://docs.astro.build/en/getting-started/">
         {Astro.generator}
       </Link>

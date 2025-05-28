@@ -37,4 +37,4 @@ _Happy Surfing_ :wave:
 
 [wcag-link]: https://www.w3.org/WAI/standards-guidelines/wcag
 [my-email]: mailto:vansomecsam@gmail.com
-[gh-issues]: https://github.com/princemuel/princemuel.com/issues/new
+[gh-issues]: https://github.com/princemuel/medotdev/issues/new

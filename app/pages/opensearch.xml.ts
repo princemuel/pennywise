@@ -1,5 +1,3 @@
-import { handleApi } from "@/helpers/handle-api";
-
 export const GET = handleApi(async (ctx) => {
   const text = `
   <OpenSearchDescription

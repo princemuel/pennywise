@@ -20,7 +20,7 @@ export const isObject = (value: unknown): value is NonNullable<unknown> => {
 };
 
 export const isEmptyObject = (value: { [key: string]: unknown } = {}) => {
-  return isObject(value) && !Object.entries(value).length;
+  return isObject(value) && 0 === Object.entries(value).length;
 };
 
 export const remove_key = <T>(k: string, data: T): T => {

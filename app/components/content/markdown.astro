@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types";
 
 type Props = HTMLAttributes<"article">;
 
-const attrs = Astro.props;
+const { ...attrs } = Astro.props;
 ---
 
 <article

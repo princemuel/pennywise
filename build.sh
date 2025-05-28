@@ -1,6 +1,6 @@
 #!/bin/bash
 
-crates=("markd" "poly" "imgur")
+crates=("markd")
 
 # Build all crates in the workspace
 cargo build --workspace
@@ -13,4 +13,4 @@ done
 
 echo "Build completed!"
 
-corepack pnpm install
+corepack yarn install

@@ -18,7 +18,7 @@ If this PR closes an open issue in this repo, replace the XXXXX below with the i
 e.g. Closes #2013.
 
 If this PR closes an open issue in another TOP repo, replace the #XXXXX with the URL of the issue,
-e.g. Closes https://github.com/princemuel/princemuel.com/issues/XXXXX
+e.g. Closes https://github.com/princemuel/medotdev/issues/XXXXX
 
 If this PR does not close, but is related to another issue or PR,
 you can link it as above without the 'Closes' keyword, e.g. 'Related to #2013'.
@@ -48,6 +48,6 @@ After you create the PR, they will become checkboxes that you can click on. -->
       with the [Markdown preview tool][markdown-preview-tool] to ensure it is formatted correctly
 - [ ] If any lesson files are included in this PR, they follow the [Layout Style Guide][layout-style-guide]
 
-[contributing-guide]: https://github.com/princemuel/princemuel.com/blob/main/CONTRIBUTING.md
+[contributing-guide]: https://github.com/princemuel/medotdev/blob/main/CONTRIBUTING.md
 [markdown-preview-tool]: https://www.princemuel.netlify.app/blog/preview
-[layout-style-guide]: https://github.com/princemuel/princemuel.com/blob/main/LAYOUT_STYLE_GUIDE.md
+[layout-style-guide]: https://github.com/princemuel/medotdev/blob/main/LAYOUT_STYLE_GUIDE.md

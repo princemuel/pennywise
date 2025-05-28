@@ -1,5 +1,6 @@
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
+// eslint-disable-next-line default
 import sentry from "@sentry/astro";
 import spotlightjs from "@spotlightjs/astro";
 import pwa from "@vite-pwa/astro";

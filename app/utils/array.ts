@@ -1,5 +1,5 @@
 export const hasValues = <T>(value: T[] | undefined | null): value is NonNullable<T[]> => {
-  return Array.isArray(value) && 0 < value.length;
+  return Array.isArray(value) && value.length > 0;
 };
 
 export const range = function* range(start: number, end?: number, step = 1) {

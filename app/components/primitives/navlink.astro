@@ -8,14 +8,14 @@ type Props = HTMLAttributes<"a">;
 invariant(Astro.props.href, "Expected `href` to be set but got `%s`", typeof Astro.props.href);
 
 const toPathname = Astro.props.href.toString();
-const pathname = Astro.url.pathname;
+const urlPathname = Astro.url.pathname;
 
 const href =
   toPathname && "/" !== toPathname && toPathname.endsWith("/")
     ? toPathname.slice(0, -1)
     : toPathname;
 
-const isActive = Boolean(href) && (href === pathname || pathname.startsWith(`${href}/`));
+const isActive = Boolean(href) && (href === urlPathname || urlPathname.startsWith(`${href}/`));
 ---
 
 <a {...Astro.props} aria-current={isActive ? "page" : "false"}>

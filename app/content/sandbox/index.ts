@@ -17,12 +17,7 @@ export const authors = defineCollection({
       image: img(image).optional(),
       location: z.string().min(MIN_LENGTH).optional(),
       links: z
-        .array(
-          z.object({
-            label: reference("labels"),
-            url: z.string().min(MIN_LENGTH).url(),
-          }),
-        )
+        .array(z.object({ label: reference("labels"), url: z.string().min(MIN_LENGTH).url() }))
         .default([]),
     }),
 });

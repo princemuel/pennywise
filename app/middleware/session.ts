@@ -28,7 +28,7 @@ export const sessions: MiddlewareHandler = async (ctx, next) => {
   }
 
   // If an action was called from an HTML form action,
-  // call the action handleApi and redirect to the destination page
+  // call the action route and redirect to the destination page
   if ("form" === action?.calledFrom) {
     const actionResult = await action.handler();
     // Persist the action result using session storage

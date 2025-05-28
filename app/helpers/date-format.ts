@@ -1,7 +1,7 @@
 import { Temporal } from "@js-temporal/polyfill";
 
 import { getSiteSettings } from "@/constants/settings";
-import { isServer } from "@/helpers/detect-platform";
+import { isServer } from "@/utils/guards";
 
 type DatetimeParams = Partial<Intl.DateTimeFormatOptions> & {
   locales?: string;

@@ -76,11 +76,11 @@ export const defaultKeywords = [
   "UI/UX",
 ];
 
-export type NewsletterFormInput = {
+export interface NewsletterFormInput {
   email: string;
   first_name?: string;
   last_name?: string;
   from_url?: string;
-};
+}
 
 export type PostClickedFrom = "recent" | "suggested" | "previous" | "next";

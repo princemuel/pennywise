@@ -5,10 +5,11 @@ import manifest from "./manifest.json";
 
 import type { MdxOptions } from "@astrojs/mdx";
 import type { SitemapOptions } from "@astrojs/sitemap";
+// eslint-disable-next-line default
+import type sentry from "@sentry/astro";
 import type { PwaOptions } from "@vite-pwa/astro";
 import type { AstroExpressiveCodeOptions } from "astro-expressive-code";
-import type { SentryOptions } from "node_modules/@sentry/astro/build/types/integration/types";
-import type { IntegrationOptions as IconifyOptions } from "node_modules/astro-icon/typings/integration";
+import type iconify from "astro-icon";
 
 export const sitemap_opts = {
   changefreq: "weekly",
@@ -22,12 +23,14 @@ export const mdx_opts = {
   extendMarkdownConfig: true,
 } satisfies Partial<MdxOptions>;
 
+type IconifyOptions = Parameters<typeof iconify>[0];
 export const iconify_opts = {
   include: icons,
   iconDir: "app/assets/icons",
   svgoOptions: { multipass: true },
 } satisfies IconifyOptions;
 
+type SentryOptions = Parameters<typeof sentry>[0];
 export const sentry_opts = {
   sourceMapsUploadOptions: {
     project: "princemuel-io",
