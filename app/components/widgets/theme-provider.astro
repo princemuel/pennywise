@@ -10,7 +10,7 @@ import { Icon } from "astro-icon/components";
 {/* This is intentionally inlined to avoid FOUC. */}
 <script is:inline>
   if (!globalThis.theme) {
-    window.theme = (function () {
+    globalThis.theme = (function () {
       const storedTheme =
         "undefined" !== typeof localStorage && localStorage.getItem("x-theme");
       const mql = globalThis.matchMedia("(prefers-color-scheme: light)");
@@ -25,7 +25,7 @@ import { Icon } from "astro-icon/components";
 
           const picker = document.querySelector("theme-picker");
           /** @type {HTMLTemplateElement | null} */
-          const tmpl = document.getElementById("x-icons");
+          const tmpl = document.querySelector("#x-icons");
           const themeIcon = tmpl?.content?.getElementById(`x-${resolvedValue}`);
           picker?.querySelector("svg")?.remove();
 

@@ -1,16 +1,13 @@
 ---
 import { getCollection } from "astro:content";
 
-import { Icon } from "astro-icon/components";
-
-import { createDateFormatter } from "@/helpers/date-format";
-
+import type { Icon } from "astro-icon/components";
 import type { HTMLAttributes } from "astro/types";
-
-import Frame from "@/components/layout/frame.astro";
-import Link from "@/components/primitive/link.astro";
-import Time from "@/components/primitive/time.astro";
-import Copyright from "@/components/shared/copyright.astro";
+import type { date } from "astro:schema";
+import Link from "../primitive/link.astro";
+import Time from "../primitive/time.astro";
+import Copyright from "../shared/copyright.astro";
+import Frame from "./frame.astro";
 
 type Props = HTMLAttributes<"footer">;
 
@@ -46,17 +43,8 @@ const socials = await getCollection(
 //   ],
 // };
 
-const formatter = createDateFormatter({
-  weekday: "short",
-  year: "numeric",
-  month: "short",
-  day: "2-digit",
-});
-
 // eslint-disable-next-line no-undef
 const buildDate = new Date(__BUILD_DATE__);
-
-const date = new Date();
 ---
 
 <footer {...attrs} class:list={[cls]}>
@@ -94,7 +82,7 @@ const date = new Date();
       </Link>
       <span>on</span>
       <Time datetime={buildDate.toISOString()}>
-        {formatter.format(buildDate.toISOString())}
+        {formattedBuildDate}
       </Time>
     </p>
   </Frame>

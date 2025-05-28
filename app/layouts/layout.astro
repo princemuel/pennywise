@@ -13,7 +13,7 @@ import { avatar, placeholder } from "@/assets/images";
 import "@/global.css";
 
 import Frame from "@/components/layout/frame.astro";
-import Link from "@/components/primitive/link.astro";
+import Link from "@/components/primitives/link.astro";
 import Routes from "@/components/widget/routes.astro";
 
 // eslint-disable-next-line no-undef
@@ -101,7 +101,7 @@ const htmlTitle = ((title, delimiter, absolute) => {
       <link
         rel="alternate"
         type="application/rss+xml"
-        title="princemuel.com Master RSS Feed"
+        title="princemuel.dev Master RSS Feed"
         href={new URL("rss.xml", Astro.site)}
       />
     </slot>

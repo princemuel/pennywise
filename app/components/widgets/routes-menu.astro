@@ -1,0 +1,101 @@
+---
+import { Icon } from "astro-icon/components";
+import type { HTMLAttributes } from "astro/types";
+import { getCollection } from "astro:content";
+import Link from "../primitive/link.astro";
+
+type Props = HTMLAttributes<"nav">;
+const { class: cls } = Astro.props;
+
+const excluded = new Set(["articles"]);
+const routes = await getCollection("routes", (data) => !excluded.has(data.id));
+---
+
+<nav
+  class:list={[
+    "fixed start-0 top-0 z-20 flex h-20 w-full items-center border-b border-neutral-600 bg-neutral-900",
+    cls,
+  ]}
+>
+  <div class="w-full p-4 xl:container xl:mx-auto">
+    <div class="flex flex-wrap items-center justify-between">
+      <!-- Logo -->
+      <Link href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+        <span class="self-center text-2xl font-semibold text-neutral-100">Logo</span>
+      </Link>
+
+      <!-- Mobile Menu Button -->
+      <div class="flex gap-3 md:order-2 md:hidden">
+        <label
+          class="relative z-30 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg p-2 text-sm text-neutral-400 hover:bg-neutral-700 focus:ring-2 focus:ring-neutral-600 focus:outline-none"
+        >
+          <input class="peer hidden" type="checkbox" id="mobile-menu" />
+          <svg
+            class="h-5 w-5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 17 14"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M1 1h15M1 7h15M1 13h15"></path>
+          </svg>
+
+          <!-- Mobile Menu Dropdown -->
+          <div
+            class="pointer-events-none fixed top-20 left-0 z-10 w-full overflow-hidden peer-checked:pointer-events-auto"
+          >
+            <div
+              class="relative -translate-y-full divide-y divide-neutral-600 bg-neutral-800 font-normal shadow transition-transform delay-100 duration-500 ease-in-out peer-checked:translate-y-0"
+            >
+              <ul class="py-2 text-sm text-neutral-300">
+                {
+                  routes.map((route) => (
+                    <li>
+                      <Link
+                        href={route.data.href}
+                        class="flex items-center gap-2 px-4 py-2 hover:bg-neutral-700 hover:text-neutral-100"
+                      >
+                        <Icon name={route.data.icon} class="text-lg" />
+                        <span>{route.data.text}</span>
+                      </Link>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </div>
+        </label>
+
+        <!-- Desktop Menu -->
+        <div
+          class="hidden w-full items-center justify-between md:order-1 md:flex md:w-auto"
+          id="navbar-sticky"
+        >
+          <ul
+            class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-8 rtl:space-x-reverse"
+          >
+            {
+              routes.map((route) => (
+                <li>
+                  <Link
+                    href={route.data.href}
+                    class="group relative flex items-center gap-2 px-3 py-2 text-sm font-medium whitespace-nowrap text-neutral-400 transition hover:text-neutral-100 md:px-0 md:py-0"
+                  >
+                    <Icon name={route.data.icon} class="text-lg sm:hidden" />
+                    <span>{route.data.text}</span>
+                    <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-neutral-500/0 via-neutral-500/70 to-neutral-500/0 opacity-0 transition group-hover:opacity-100" />
+                  </Link>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -2,8 +2,6 @@ import { WAKATIME_TOKEN } from "astro:env/server";
 import { z } from "astro:schema";
 import { BadRequestError, NotFoundError } from "http-errors-enhanced";
 
-import { handleApi } from "@/helpers/handle-api";
-
 export const prerender = false;
 
 const schema = z.object({

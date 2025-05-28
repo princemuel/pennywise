@@ -1,10 +1,10 @@
 blank_issues_enabled: false
 contact_links:
   - name: 🖥️ Website Bugs or Feature Requests
-    url: https://github.com/princemuel/princemuel.com
+    url: https://github.com/princemuel/medotdev
     about: "This repository is for the content and the website"
   - name: 💡 Ideas, Content Requests and Questions
-    url: https://github.com/princemuel/princemuel.com/discussions
+    url: https://github.com/princemuel/medotdev/discussions
     about: "Have an idea? Want to see content on a particular topic? Open a discussion here"
   - name: 💬 Join the Discord Community
     url: https://discord.gg/fbFCkYabZB

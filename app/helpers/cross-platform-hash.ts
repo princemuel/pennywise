@@ -1,8 +1,8 @@
 // eslint-disable prefer-spread
 // eslint-disable init-declarations
 
-import { isBrowser } from "@/helpers/detect-platform";
 import { getErrorMessage } from "@/helpers/error";
+import { isBrowser } from "@/utils/guards";
 
 /**
  * Cross-platform hash function that works in both browser and Node.js environments
@@ -10,11 +10,11 @@ import { getErrorMessage } from "@/helpers/error";
  * @returns The hex-encoded hash value
  */
 export const hash = async (data: string): Promise<string> => {
-  if (isBrowser && window.crypto && window.crypto.subtle) {
+  if (isBrowser && globalThis.crypto && globalThis.crypto.subtle) {
     try {
       const encoder = new TextEncoder();
       const buffer = encoder.encode(data);
-      const hashBuffer = await window.crypto.subtle.digest("SHA-256", buffer);
+      const hashBuffer = await globalThis.crypto.subtle.digest("SHA-256", buffer);
       const hashArray = Array.from(new Uint8Array(hashBuffer));
       return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
     } catch (error) {

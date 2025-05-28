@@ -1,7 +1,5 @@
 import { DARK_VISITORS_TOKEN } from "astro:env/server";
 
-import { handleApi } from "@/helpers/handle-api";
-
 export const GET = handleApi(async (ctx) => {
   const response = await fetch("https://api.darkvisitors.com/robots-txts", {
     method: "POST",
