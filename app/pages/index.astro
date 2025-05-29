@@ -1,6 +1,5 @@
 ---
 // import Content from "@/content/partials/home.md";
-import { add } from "@kits/postmark";
 
 import Markdown from "@/components/content/markdown.astro";
 import Layout from "@/layouts/layout.astro";
@@ -15,6 +14,5 @@ const metadata = {
 <Layout {...metadata}>
   <Markdown>
     <!-- <Content /> -->
-    {add(2, 2)}
   </Markdown>
 </Layout>

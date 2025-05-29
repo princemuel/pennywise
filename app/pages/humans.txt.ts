@@ -1,3 +1,5 @@
+import { handleApi } from "@/helpers/route-handler";
+
 export const GET = handleApi(async (ctx) => {
   const updatedAt = new Intl.DateTimeFormat("en-CA").format(new Date()).replaceAll("-", "/");
 

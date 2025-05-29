@@ -1,3 +1,4 @@
+import { handleApi } from "@/helpers/route-handler";
 import { WAKATIME_TOKEN } from "astro:env/server";
 import { z } from "astro:schema";
 import { BadRequestError, NotFoundError } from "http-errors-enhanced";

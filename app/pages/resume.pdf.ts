@@ -1,6 +1,8 @@
 import { GOOGLE_DRIVE_FILE_ID, GOOGLE_DRIVE_TOKEN } from "astro:env/server";
 import { NotFoundError } from "http-errors-enhanced";
 
+import { handleApi } from "@/helpers/route-handler";
+
 export const GET = handleApi(async () => {
   const fileId = GOOGLE_DRIVE_FILE_ID;
   const searchParams = new URLSearchParams([

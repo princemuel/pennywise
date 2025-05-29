@@ -2,11 +2,12 @@ import { OCTOKIT_USERNAME } from "astro:env/server";
 import { createError } from "http-errors-enhanced";
 import { RequestError } from "octokit";
 
+import { handleApi } from "@/helpers/route-handler";
 import { octokit } from "@/lib/api";
 
 export const prerender = false;
 
-export const GET = handle(async () => {
+export const GET = handleApi(async () => {
   try {
     const response = await octokit.rest.repos.get({
       owner: OCTOKIT_USERNAME,

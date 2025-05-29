@@ -11,7 +11,7 @@ import { iconify_opts, mdx_opts, pwa_options, sentry_opts, sitemap_opts } from "
 
 import type { AstroUserConfig } from "astro";
 
-type AstroConfig = NonNullable<NonNullable<AstroUserConfig["integrations"]>>;
+type Config = NonNullable<NonNullable<AstroUserConfig["integrations"]>>;
 
 export default [
   sentry(sentry_opts),
@@ -21,4 +21,4 @@ export default [
   mdx(mdx_opts),
   sitemap(sitemap_opts),
   pwa(pwa_options),
-] satisfies AstroConfig;
+] satisfies Config;

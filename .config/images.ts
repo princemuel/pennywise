@@ -1,6 +1,6 @@
 import type { AstroUserConfig } from "astro";
 
-type AstroConfig = NonNullable<NonNullable<AstroUserConfig["image"]>>;
+type Config = NonNullable<NonNullable<AstroUserConfig["image"]>>;
 
 export default {
   experimentalLayout: "constrained",
@@ -14,4 +14,4 @@ export default {
       pathname: "princemuel/metadata/main/assets/*", // Use regex for all files in "assets"
     },
   ],
-} satisfies AstroConfig;
+} satisfies Config;

@@ -1,5 +1,3 @@
-// eslint-disable no-duplicate-imports
-// eslint-disable curly
 import { execSync } from "node:child_process";
 
 import { rehypeHeadingIds } from "@astrojs/markdown-remark";
@@ -11,8 +9,8 @@ import { visit } from "unist-util-visit";
 
 import type { AstroUserConfig } from "astro";
 
-type AstroConfig = NonNullable<NonNullable<AstroUserConfig["markdown"]>>;
-type RemarkPlugin = NonNullable<AstroConfig["remarkPlugins"]>[number];
+type Config = NonNullable<NonNullable<AstroUserConfig["markdown"]>>;
+type RemarkPlugin = NonNullable<Config["remarkPlugins"]>[number];
 
 const remarkReadingTime: RemarkPlugin = () => {
   return (tree, file) => {
@@ -34,14 +32,10 @@ const remarkDeruntify: RemarkPlugin = () => (tree) => {
 
 const remarkModifiedTime: RemarkPlugin = () => (_, file) => {
   const timeModified = ((path = "") => {
-    try {
-      if (!path) throw path;
-      const output = execSync(`git log -1 --pretty="format:%cI" "${path}"`);
-      return output.toString().trim() || new Date().toISOString();
-    } catch {
-      return new Date().toISOString();
-    }
-  })(file.history[0]);
+    if (!path) return new Date().toISOString();
+    const output = execSync(`git log -1 --pretty="format:%cI" "${path}"`);
+    return output.toString().trim() || new Date().toISOString();
+  })(file.history?.[0]);
 
   if (file.data.astro?.frontmatter) {
     file.data.astro.frontmatter.updatedAt = new Date(timeModified).toISOString();
@@ -59,4 +53,4 @@ export default {
     [rehypeHeadingIds, { experimentalHeadingIdCompat: true }],
     [rehypeExternalLinks, { rel: ["noopener", "noreferrer", "external"], target: "_blank" }],
   ],
-} satisfies AstroConfig;
+} satisfies Config;

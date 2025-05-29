@@ -20,19 +20,22 @@ export const isObject = (value: unknown): value is NonNullable<unknown> => {
 };
 
 export const isEmptyObject = (value: { [key: string]: unknown } = {}) => {
+  // eslint-disable-next-line explicit-length-check
   return isObject(value) && 0 === Object.entries(value).length;
 };
 
-export const remove_key = <T>(k: string, data: T): T => {
+export const removeKey = <T>(k: string, data: T): T => {
   if (Array.isArray(data)) {
-    return data.map((item) => remove_key(k, item)) as unknown as T;
+    return data.map((item) => removeKey(k, item)) as unknown as T;
   }
+
   if (isObject(data)) {
     const entries = Object.entries(data)
       .filter(([key]) => key !== k)
-      .map(([key, value]) => [key, remove_key(k, value)]);
+      .map(([key, value]) => [key, removeKey(k, value)]);
     return Object.fromEntries(entries) as T;
   }
+
   return data;
 };
 
