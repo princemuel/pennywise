@@ -35,7 +35,7 @@
   //   "typescriptreact": "html"
   // },
   "oxc.enable": true,
-  "eslint.enable": true,
+  "eslint.enable": false,
   "eslint.useFlatConfig": true,
   "eslint.validate": ["astro", "javascript", "markdown", "typescript", "typescriptreact"],
   "json.validate.enable": true,

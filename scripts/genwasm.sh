@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Configuration
 pkg_scope="kits"      # NPM scope (e.g., @kits/postmark)
