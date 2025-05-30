@@ -1,6 +1,25 @@
 {
-  "lucide": ["*"],
-  "ri": ["*"],
-  "ion": ["*"],
-  "tabler": ["*"]
+  "lucide": [
+    "briefcase-business",
+    "command",
+    "home",
+    "library",
+    "mail-plus",
+    "monitor-cog",
+    "notebook-pen",
+    "palette",
+    "pen-line",
+    "rss",
+    "square-user"
+  ],
+  "ri": ["quill-pen-fill"],
+  "ion": [
+    "earth",
+    "logo-github",
+    "logo-twitter",
+    "logo-linkedin",
+    "logo-instagram",
+    "logo-youtube"
+  ],
+  "tabler": ["alert-circle"]
 }

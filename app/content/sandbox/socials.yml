@@ -26,7 +26,7 @@
 - id: website
   href: https://princemuel.dev/about
   text: Connect with me on LinkedIn
-  icon: ion:logo-linkedin
+  icon: ion:earth
 
 - id: github
   href: https://github.com/princemuel
