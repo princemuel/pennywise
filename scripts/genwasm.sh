@@ -78,7 +78,7 @@ mv "$tmp_json" "$package_json"
 rm "$local_deps_json"
 echo "Merged and sorted dependencies in $package_json"
 
-# Run yarn install
-echo "Running yarn install..."
+# Run pnpm install
+echo "Running pnpm install..."
 
-corepack yarn install
+corepack pnpm install
