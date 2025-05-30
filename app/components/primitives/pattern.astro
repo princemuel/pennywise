@@ -5,12 +5,12 @@ import { pattern } from "@/assets/images";
 
 type Props = Omit<HTMLAttributes<"div">, "class:list">;
 
-const { class: cls, ...attrs } = Astro.props;
+const { class: cls, ...rest } = Astro.props;
 const image = `url(${pattern.src})`;
 ---
 
 <div
-  {...attrs}
+  {...rest}
   class:list={["bg-solute top-0 bg-repeat", "bg-[image:var(--image)] bg-[length:1.5rem]", cls]}
 >
 </div>

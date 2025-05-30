@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types";
 
 type Props = HTMLAttributes<"article">;
 
-const { ...attrs } = Astro.props;
+const { ...rest } = Astro.props;
 ---
 
 <article
@@ -13,7 +13,7 @@ const { ...attrs } = Astro.props;
     "prose prose-slate 3xl:prose-lg dark:prose-invert",
     "**:[.expressive-code_+_.expressive-code]:mt-12",
   ]}
-  {...attrs}
+  {...rest}
 >
   <slot />
 </article>
