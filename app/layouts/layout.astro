@@ -1,5 +1,5 @@
 ---
-import { Font, Image } from "astro:assets";
+import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 
 import { pwaAssetsHead } from "virtual:pwa-assets/head";
@@ -8,13 +8,11 @@ import { pwaInfo } from "virtual:pwa-info";
 import { delimiter } from "@/constants/metadata";
 import { getSiteSettings } from "@/constants/settings";
 
-import { avatar, placeholder } from "@/assets/images";
-
 import "@/global.css";
 
 import Frame from "@/components/layout/frame.astro";
-import Link from "@/components/primitives/link.astro";
-import Routes from "@/components/widgets/routes.astro";
+
+import Header from "@/components/layout/header.astro";
 
 // eslint-disable-next-line no-undef
 interface Props extends Meta {}
@@ -127,53 +125,9 @@ const htmlTitle = ((title, delimiter, absolute) => {
   </head>
   <body class="font-sans">
     <Fragment>
-      <header class="sticky top-0 border-b border-slate-200 py-6">
-        <Frame>
-          <div class="flex items-center justify-between">
-            <Link
-              href="/"
-              class="flex size-8 items-center justify-center overflow-hidden rounded-full border-2 border-slate-200"
-            >
-              <Image
-                width={32}
-                height={32}
-                alt="Prince Muel"
-                src={placeholder}
-                loading="eager"
-              />
-              <span class="sr-only">Home</span>
-            </Link>
+      <Header />
 
-            <Link
-              href="/"
-              class="flex size-8 items-center justify-center overflow-hidden rounded-full border-2 border-slate-200"
-            >
-              <Image width={32} height={32} alt="Prince Muel" src={avatar} loading="eager" />
-              <span class="sr-only">Home</span>
-            </Link>
-
-            <Link
-              href="/"
-              class="flex size-8 items-center justify-center overflow-hidden rounded-full border-2 border-slate-200"
-            >
-              <Image
-                width={32}
-                height={32}
-                alt="Prince Muel"
-                src={placeholder}
-                loading="eager"
-              />
-              <span class="sr-only">Home</span>
-            </Link>
-          </div>
-        </Frame>
-      </header>
-      <div class="bg-slate-50 py-1 shadow-2xs">
-        <Frame>
-          <Routes />
-        </Frame>
-      </div>
-      <Frame>
+      <Frame class="py-10">
         <slot />
       </Frame>
     </Fragment>
