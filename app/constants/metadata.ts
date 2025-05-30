@@ -42,6 +42,7 @@ export const defaultKeywords = [
   "Jest",
   "Vitest",
   "Rust",
+  "Testing",
   "React Testing Libary",
   "Node.js",
   "MongoDB",
