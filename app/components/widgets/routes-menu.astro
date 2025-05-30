@@ -13,7 +13,7 @@ const routes = await getCollection("routes", (data) => !excluded.has(data.id));
 
 <nav
   class:list={[
-    "border-slate- 600 bg-slate- 900 fixed start-0 top-0 z-20 flex h-20 w-full items-center border-b",
+    "fixed start-0 top-0 z-20 flex h-20 w-full items-center border-b border-slate-600 bg-slate-900",
     cls,
   ]}
 >
@@ -21,13 +21,13 @@ const routes = await getCollection("routes", (data) => !excluded.has(data.id));
     <div class="flex flex-wrap items-center justify-between">
       <!-- Logo -->
       <Link href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <span class="text-slate- 100 self-center text-2xl font-semibold">Logo</span>
+        <span class="self-center text-2xl font-semibold text-slate-100">Logo</span>
       </Link>
 
       <!-- Mobile Menu Button -->
       <div class="flex gap-3 md:order-2 md:hidden">
         <label
-          class="text-slate- 400 hover:bg-slate- 700 focus:ring-slate- 600 relative z-30 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg p-2 text-sm focus:ring-2 focus:outline-none"
+          class="relative z-30 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg p-2 text-sm text-slate-400 hover:bg-slate-700 focus:ring-2 focus:ring-slate-600 focus:outline-none"
         >
           <input class="peer hidden" type="checkbox" id="mobile-menu" />
           <svg
@@ -50,15 +50,15 @@ const routes = await getCollection("routes", (data) => !excluded.has(data.id));
             class="pointer-events-none fixed top-20 left-0 z-10 w-full overflow-hidden peer-checked:pointer-events-auto"
           >
             <div
-              class="divide-slate- 600 bg-slate- 800 relative -translate-y-full divide-y font-normal shadow transition-transform delay-100 duration-500 ease-in-out peer-checked:translate-y-0"
+              class="relative -translate-y-full divide-y divide-slate-600 bg-slate-800 font-normal shadow transition-transform delay-100 duration-500 ease-in-out peer-checked:translate-y-0"
             >
-              <ul class="text-slate- 300 py-2 text-sm">
+              <ul class="py-2 text-sm text-slate-300">
                 {
                   routes.map((route) => (
                     <li>
                       <Link
                         href={route.data.href}
-                        class="hover:bg-slate- 700 hover:text-slate- 100 flex items-center gap-2 px-4 py-2"
+                        class="flex items-center gap-2 px-4 py-2 hover:bg-slate-700 hover:text-slate-100"
                       >
                         <Icon name={route.data.icon} class="text-lg" />
                         <span>{route.data.text}</span>
@@ -84,11 +84,11 @@ const routes = await getCollection("routes", (data) => !excluded.has(data.id));
                 <li>
                   <Link
                     href={route.data.href}
-                    class="group text-slate- 400 hover:text-slate- 100 relative flex items-center gap-2 px-3 py-2 text-sm font-medium whitespace-nowrap transition md:px-0 md:py-0"
+                    class="group relative flex items-center gap-2 px-3 py-2 text-sm font-medium whitespace-nowrap text-slate-400 transition hover:text-slate-100 md:px-0 md:py-0"
                   >
                     <Icon name={route.data.icon} class="text-lg sm:hidden" />
                     <span>{route.data.text}</span>
-                    <span class="from-slate- 500/0 via-slate- 500/70 to-slate- 500/0 absolute inset-x-1 -bottom-px h-px bg-gradient-to-r opacity-0 transition group-hover:opacity-100" />
+                    <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-slate-500/0 via-slate-500/70 to-slate-500/0 opacity-0 transition group-hover:opacity-100" />
                   </Link>
                 </li>
               ))

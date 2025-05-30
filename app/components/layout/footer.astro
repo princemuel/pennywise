@@ -55,7 +55,7 @@ const buildDate = new Date(__BUILD_DATE__);
           socials.map((link) => (
             <Link
               href={link.data.href}
-              class:list={["text-slate- 800 flex items-center text-2xl transition"]}
+              class:list={["flex items-center text-2xl text-slate-800 transition"]}
             >
               <Icon name={link.data.icon} />
               <span class="sr-only">{link.data.text}</span>
@@ -74,7 +74,7 @@ const buildDate = new Date(__BUILD_DATE__);
   </Frame>
 
   <Frame class="flex items-center justify-center py-1">
-    <p class="text-slate- 800 flex flex-wrap items-center justify-center gap-1 text-xs">
+    <p class="flex flex-wrap items-center justify-center gap-1 text-xs text-slate-800">
       <span>Built with</span>
       <Icon name="astro-icon" />
       <Link href="https://docs.astro.build/en/concepts/why-astro/">
