@@ -1,0 +1,34 @@
+---
+import type { HeadElement } from "@/lib/metadata";
+
+interface Props {
+  elements: HeadElement[];
+}
+
+const { elements } = Astro.props;
+---
+
+<Fragment>
+  {
+    elements.map((el) => {
+      if (el.tag === "title") return <title>{el.content}</title>;
+      if (el.tag === "noscript") return <noscript {...el.attributes} set:html={el.content} />;
+      if (el.tag === "style") return <style {...el.attributes} set:html={el.content} />;
+
+      if (el.tag === "script") {
+        return el.content ? (
+          <script is:inline {...el.attributes} set:html={el.content} />
+        ) : (
+          <script is:inline {...el.attributes} />
+        );
+      }
+
+      if (el.tag === "link") return <link {...el.attributes} />;
+      if (el.tag === "meta") return <meta {...el.attributes} />;
+
+      // Fallback for other tags
+      const Tag = el.tag as any;
+      return <Tag {...el.attributes} set:html={el.content} />;
+    })
+  }
+</Fragment>
