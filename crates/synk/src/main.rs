@@ -1,4 +1,6 @@
 use ::std::process;
+use ::std::sync::Arc;
+use ::std::sync::atomic::{AtomicBool, Ordering};
 
 use ::anyhow::Result;
 use ::tracing::{Level, error, info};
@@ -20,26 +22,50 @@ async fn main() {
         process::exit(1);
     }
 
-    // Run the appropriate mode
-    if let Err(e) = run(args).await {
+    // Set up graceful shutdown flag
+    let shutdown_flag = Arc::new(AtomicBool::new(false));
+    let shutdown_flag_clone = Arc::clone(&shutdown_flag);
+
+    // Set up Ctrl+C handler
+    tokio::spawn(async move {
+        match tokio::signal::ctrl_c().await {
+            Ok(()) => {
+                info!("Received Ctrl+C, initiating shutdown...");
+                shutdown_flag_clone.store(true, Ordering::Relaxed);
+            },
+            Err(err) => {
+                error!("Failed to listen for Ctrl+C: {}", err);
+            },
+        }
+    });
+
+    // Run the application
+    if let Err(e) = run(args, shutdown_flag).await {
         error!("Application error: {}", e);
         process::exit(1);
     }
+
+    info!("Application shutdown complete");
 }
 
-async fn run(args: Args) -> Result<()> {
+async fn run(args: Args, shutdown_flag: Arc<AtomicBool>) -> Result<()> {
     let mut syncer = ScriptSyncer::new();
 
     if args.interactive {
-        // Interactive mode
+        // Interactive mode with shutdown handling
         info!("Starting interactive mode");
-        InteractiveMode::run(&mut syncer).await?;
+        tokio::select! {
+            result = InteractiveMode::run(&mut syncer) => result?,
+            _ = wait_for_shutdown(shutdown_flag) => {
+                info!("Shutdown requested, exiting interactive mode");
+                syncer.shutdown();
+            }
+        }
     } else if let Some(ref script_path) = args.script {
         // Single script mode
         let script_name =
             args.get_script_name().unwrap_or_else(|| "unnamed_script".to_string());
 
-        // Auto-detect interpreter if not provided
         let interpreter =
             args.interpreter.or_else(|| detect_interpreter(script_path));
 
@@ -48,12 +74,9 @@ async fn run(args: Args) -> Result<()> {
                 "No interpreter specified and couldn't auto-detect for '{}'",
                 script_path.display()
             );
-            info!(
-                "The script will be executed directly (make sure it's executable)"
-            );
+            info!("The script will be executed directly");
         }
 
-        // Create and add script config
         let config = ScriptConfig::new(
             script_path.clone(),
             interpreter.clone(),
@@ -71,17 +94,22 @@ async fn run(args: Args) -> Result<()> {
         );
 
         if args.once {
-            // Run once and exit
             info!("Running script once...");
             syncer.run_cycle().await;
             info!("Script execution completed");
         } else {
-            // Start continuous syncing
             info!("Starting continuous sync mode (Press Ctrl+C to stop)");
-            syncer.start().await;
+            tokio::select! {
+                _ = syncer.start() => {
+                    info!("Syncer stopped");
+                }
+                _ = wait_for_shutdown(shutdown_flag) => {
+                    info!("Shutdown requested");
+                    syncer.shutdown();
+                }
+            }
         }
     } else {
-        // No script provided and not interactive mode
         eprintln!(
             "Error: Must provide either a script file or use --interactive mode"
         );
@@ -90,9 +118,15 @@ async fn run(args: Args) -> Result<()> {
         eprintln!("  synk script.py --interval 60");
         eprintln!("  synk backup.sh --interval 3600 --interpreter bash");
         eprintln!("  synk --interactive");
-        eprintln!("  synk script.py --once  # Run once and exit");
+        eprintln!("  synk script.py --once");
         process::exit(1);
     }
 
     Ok(())
+}
+
+async fn wait_for_shutdown(shutdown_flag: Arc<AtomicBool>) {
+    while !shutdown_flag.load(Ordering::Relaxed) {
+        tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+    }
 }
