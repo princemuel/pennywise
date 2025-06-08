@@ -1,7 +1,8 @@
 import { glob } from "astro/loaders";
-import { defineCollection, reference, z } from "astro:content";
+import { defineCollection, reference } from "astro:content";
+import { z } from "astro:schema";
 
-import { baseSchema, img, MIN_LENGTH } from "@/content/schema";
+import { baseSchema, img } from "@/content/schema";
 
 const ps = [
   "game",
@@ -42,7 +43,7 @@ export default defineCollection({
         .array(
           z.object({
             label: reference("labels"),
-            url: z.string().min(MIN_LENGTH).url(),
+            url: z.string().min(2).url(),
           }),
         )
         .default([]),

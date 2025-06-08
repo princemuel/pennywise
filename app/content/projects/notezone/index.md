@@ -14,7 +14,7 @@ author: princemuel
 contributors:
   - princemuel
   - giddyware
-publishedAt: 2025-03-08T02:14:52.348Z
+publishedAt: "2025-03-08T02:14:52.348Z"
 language: en
 permalink: https://example.com/journal/hello-world
 links:
@@ -26,4 +26,4 @@ links:
     url: https://docs.example.com/hello-world
 ---
 
-##
+## Hello boy

@@ -1,25 +1,24 @@
 import type { ImageMetadata } from "astro";
-import { z, type ImageFunction } from "astro:content";
-
-export const MIN_LENGTH = 2;
+import type { ImageFunction } from "astro:content";
+import { z } from "astro:schema";
 
 export const baseSchema = z.object({
-  title: z.string().min(MIN_LENGTH),
-  summary: z.string().min(MIN_LENGTH).optional(),
-  description: z.string().min(MIN_LENGTH),
+  title: z.string().min(2),
+  summary: z.string().min(2).optional(),
+  description: z.string().min(2),
   featured: z.boolean().default(false),
   tags: z.array(z.string()).default([]),
-  category: z.string().min(MIN_LENGTH),
+  category: z.string().min(2),
   draft: z.boolean().default(true),
-  publishedAt: z.date(),
-  updatedAt: z.date().optional(),
+  publishedAt: z.string().datetime(),
+  updatedAt: z.string().datetime().optional(),
   duration: z.string().default("1 min read"),
   words: z.number().finite().int().nonnegative().lte(65_535).default(200),
   language: z.enum(["en", "es", "fr"]).default("en"),
   permalink: z.string().url().optional(),
 });
 
-export const img = (fn: ImageFunction) =>
+export const img = (image: ImageFunction) =>
   z
     .string()
     .url()
@@ -33,4 +32,4 @@ export const img = (fn: ImageFunction) =>
           format: "jpg",
         }) satisfies ImageMetadata,
     )
-    .or(fn());
+    .or(image());
