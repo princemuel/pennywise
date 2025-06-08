@@ -1,6 +1,8 @@
-import { execSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
+import { statSync } from "node:fs";
 
 import { rehypeHeadingIds } from "@astrojs/markdown-remark";
+import { Temporal } from "@js-temporal/polyfill";
 import { toString as parseToString } from "mdast-util-to-string";
 import getReadingTime from "reading-time";
 import rehypeExternalLinks from "rehype-external-links";
@@ -31,14 +33,34 @@ const remarkDeruntify: RemarkPlugin = () => (tree) => {
 };
 
 const remarkModifiedTime: RemarkPlugin = () => (_, file) => {
-  const timeModified = ((path = "") => {
-    if (!path) return new Date().toISOString();
-    const output = execSync(`git log -1 --pretty="format:%cI" "${path}"`);
-    return output.toString().trim() || new Date().toISOString();
-  })(file.history?.[0]);
+  const getFileModifiedTime = (filePath: string): Temporal.Instant => {
+    if (!filePath || "string" !== typeof filePath) return Temporal.Now.instant();
 
-  if (file.data.astro?.frontmatter) {
-    file.data.astro.frontmatter.updatedAt = new Date(timeModified).toISOString();
+    try {
+      const result = spawnSync("git", ["log", "-1", "--pretty=format:%cI", filePath], {
+        encoding: "utf8",
+        cwd: process.cwd(),
+      });
+
+      if (0 !== result.status || !result.stdout?.trim())
+        throw new Error("Git command failed or returned empty");
+
+      return Temporal.Instant.from(result.stdout.trim());
+    } catch {
+      // Fallback to file system modified time if available
+      try {
+        const stats = statSync(filePath);
+        return Temporal.Instant.from(stats.mtime.toISOString());
+      } catch {
+        return Temporal.Now.instant();
+      }
+    }
+  };
+
+  const timeModified = getFileModifiedTime(file.history?.[0] ?? "");
+
+  if (file.data?.astro?.frontmatter && !file.data.astro.frontmatter.updatedAt) {
+    file.data.astro.frontmatter.updatedAt = timeModified.toString();
   }
 };
 
