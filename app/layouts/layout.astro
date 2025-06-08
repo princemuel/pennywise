@@ -5,7 +5,6 @@ import { ClientRouter } from "astro:transitions";
 import { pwaAssetsHead } from "virtual:pwa-assets/head";
 import { pwaInfo } from "virtual:pwa-info";
 
-import { getSiteSettings } from "@/constants/settings";
 import { generateMetadata, type MetadataConfig } from "@/lib/metadata";
 
 import "@/global.css";
@@ -16,25 +15,20 @@ import Header from "@/components/layout/header.astro";
 
 // eslint-disable-next-line no-undef
 interface Props {
-  meta?: MetadataConfig;
+  metadata?: MetadataConfig;
 }
 
-const { language } = getSiteSettings();
+const { metadata = {} } = Astro.props;
 
-const { meta = {} } = Astro.props;
-
-const elements = generateMetadata(meta);
+const elements = generateMetadata(metadata);
 ---
 
 <!doctype html>
 <html
-  lang={language}
-  dir="auto"
-  data-mode=""
-  data-theme=""
+  lang="en"
   class:list={[
-    "scheme-light data-[theme=auto]:scheme-light-dark dark:scheme-dark",
-    "antialiased motion-safe:scroll-smooth",
+    "scheme-light data-[scheme=auto]:scheme-light-dark dark:scheme-dark",
+    "motion-safe:scroll-smooth",
   ]}
 >
   <head>
@@ -46,9 +40,11 @@ const elements = generateMetadata(meta);
     <Fragment set:html={pwaInfo?.webManifest.linkTag} />
     <Fragment>{pwaAssetsHead.links.map((link) => <link {...link} />)}</Fragment>
 
+    <slot name="metadata" />
+    <slot name="opengraph" />
     <ClientRouter />
   </head>
-  <body class="font-sans">
+  <body class="font-sans antialiased">
     <Fragment>
       <Header />
 
