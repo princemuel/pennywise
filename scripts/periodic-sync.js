@@ -25,8 +25,8 @@ const interval = intervalArg ? Number.parseInt(intervalArg.split("=")[1], 10) : 
 const bashScriptPath = bashArgs[0];
 const bashScriptArgs = bashArgs.slice(1).join(" ");
 
-/** @type AbortController | undefined */
-let controller;
+/** @type AbortController | null */
+let controller = null;
 
 const runBashScript = async () => {
   try {
