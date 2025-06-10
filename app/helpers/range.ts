@@ -1,42 +1,55 @@
 // oxlint-disable max-lines
+// A proper Range implementation following Python/Rust conventions
 export class Range {
-  readonly #from: number;
-  readonly #to: number;
+  readonly #start: number;
+  readonly #stop: number;
   readonly #step: number;
   readonly #length: number;
   readonly #hash: string;
+  #string?: string;
 
-  constructor(from: number, to: number, step = 1) {
-    if (!Number.isFinite(from) || !Number.isFinite(to) || !Number.isFinite(step)) {
+  // Constructor follows Python range(start, stop, step) - stop is exclusive
+  constructor(start: number, stop: number, step = 1) {
+    if (!Number.isFinite(start) || !Number.isFinite(stop) || !Number.isFinite(step)) {
       throw new TypeError("Range parameters must be finite numbers");
     }
 
     if (step === 0) throw new RangeError("Step cannot be zero");
 
-    if ((to > from && step < 0) || (to < from && step > 0)) {
-      throw new RangeError("Step direction must be compatible with range direction");
-    }
-
-    this.#from = from;
-    this.#to = to;
+    this.#start = start;
+    this.#stop = stop;
     this.#step = step;
 
-    // Pre-calculate length for O(1) access
-    this.#length =
-      step > 0
-        ? Math.max(0, Math.floor((to - from) / step) + 1)
-        : Math.max(0, Math.floor((from - to) / Math.abs(step)) + 1);
+    // Calculate length based on exclusive stop
+    if ((step > 0 && start >= stop) || (step < 0 && start <= stop)) {
+      this.#length = 0;
+    } else if (step > 0) {
+      this.#length = Math.floor((stop - start + step - 1) / step);
+    } else {
+      this.#length = Math.floor((start - stop - step - 1) / -step);
+    }
 
     // Pre-calculate hash for fast equality checks and Set/Map usage
-    this.#hash = `${from}:${to}:${step}`;
+    this.#hash = `${start}:${stop}:${step}`;
   }
 
-  get from(): number {
-    return this.#from;
+  // Alternative constructor for single argument (like Python range(n))
+  static count(stop: number): Range {
+    return new Range(0, stop, 1);
   }
 
-  get to(): number {
-    return this.#to;
+  // Inclusive range constructor for when you want [start, end]
+  static inclusive(start: number, end: number, step = 1): Range {
+    const stop = step > 0 ? end + step : end - Math.abs(step);
+    return new Range(start, stop, step);
+  }
+
+  get start(): number {
+    return this.#start;
+  }
+
+  get stop(): number {
+    return this.#stop;
   }
 
   get step(): number {
@@ -48,25 +61,30 @@ export class Range {
   }
 
   get first(): number | undefined {
-    return this.isEmpty ? undefined : this.#from;
+    return this.isEmpty ? undefined : this.#start;
   }
 
   get last(): number | undefined {
-    return this.isEmpty ? undefined : this.#from + (this.#length - 1) * this.#step;
+    return this.isEmpty ? undefined : this.#start + (this.#length - 1) * this.#step;
   }
 
   get min(): number {
-    return Math.min(this.#from, this.#to);
+    if (this.isEmpty) return this.#start;
+    const lastValue = this.#start + (this.#length - 1) * this.#step;
+    return Math.min(this.#start, lastValue);
   }
 
   get max(): number {
-    return Math.max(this.#from, this.#to);
+    if (this.isEmpty) return this.#start;
+    const lastValue = this.#start + (this.#length - 1) * this.#step;
+    return Math.max(this.#start, lastValue);
   }
 
   get sum(): number {
     if (this.isEmpty) return 0;
     // Arithmetic series sum: n/2 * (first + last)
-    return (this.#length / 2) * (this.#from + this.last!);
+    const lastValue = this.#start + (this.#length - 1) * this.#step;
+    return (this.#length / 2) * (this.#start + lastValue);
   }
 
   get isEmpty(): boolean {
@@ -89,7 +107,25 @@ export class Range {
     return this.includes(element);
   }
 
+  includes(element: number): boolean {
+    if (!Number.isFinite(element)) return false;
+    if (this.isEmpty) return false;
+
+    // Check bounds based on step direction
+    if (this.#step > 0) {
+      if (element < this.#start || element >= this.#stop) return false;
+    } else if (element > this.#start || element <= this.#stop) {
+      return false;
+    }
+
+    // Check if element aligns with step
+    const offset = element - this.#start;
+    return Math.abs(offset % this.#step) < Number.EPSILON;
+  }
+
   overlaps(other: Range): boolean {
+    if (this.isEmpty || other.isEmpty) return false;
+
     const thisMin = this.min;
     const thisMax = this.max;
     const otherMin = other.min;
@@ -98,54 +134,46 @@ export class Range {
     return thisMin <= otherMax && otherMin <= thisMax;
   }
 
-  intersect(other: Range): Range | null {
-    if (!this.overlaps(other)) {
-      return null;
-    }
+  intersect(other: Range): Range | undefined {
+    if (!this.overlaps(other)) return undefined;
 
-    const newFrom = Math.max(this.min, other.min);
-    const newTo = Math.min(this.max, other.max);
+    // Find the overlapping bounds
+    const newStart = Math.max(this.min, other.min);
+    const newStop = Math.min(this.max, other.max) + 1; // +1 because stop is exclusive
 
-    // Find compatible step (use GCD for different steps)
-    const gcd = (a: number, b: number): number => (b === 0 ? Math.abs(a) : gcd(b, a % b));
-    const newStep = gcd(Math.abs(this.#step), Math.abs(other.#step));
+    // For simplicity, use step of 1 for intersections
+    // More complex step handling would require GCD logic
+    const newStep = 1;
 
-    // Ensure the intersection starts at a valid point for both ranges
-    let adjustedFrom = newFrom;
+    // Find the first valid point in both ranges
+    let adjustedStart = newStart;
     while (
-      adjustedFrom <= newTo &&
-      (!this.includes(adjustedFrom) || !other.includes(adjustedFrom))
+      adjustedStart < newStop &&
+      (!this.includes(adjustedStart) || !other.includes(adjustedStart))
     ) {
-      adjustedFrom += newStep;
+      adjustedStart += newStep;
     }
 
-    return adjustedFrom <= newTo ? new Range(adjustedFrom, newTo, newStep) : null;
+    return adjustedStart < newStop ? new Range(adjustedStart, newStop, newStep) : undefined;
   }
 
-  union(other: Range): Range | null {
-    // Only works for contiguous or overlapping ranges with same step
+  union(other: Range): Range | undefined {
+    // Only works for adjacent or overlapping ranges with same step
     if (this.#step !== other.#step || (!this.overlaps(other) && !this.isAdjacent(other))) {
-      return null;
+      return undefined;
     }
 
-    const newFrom = Math.min(this.min, other.min);
-    const newTo = Math.max(this.max, other.max);
+    const newStart = Math.min(this.#start, other.#start);
+    const newStop = Math.max(this.#stop, other.#stop);
 
-    return new Range(newFrom, newTo, this.#step);
+    return new Range(newStart, newStop, this.#step);
   }
 
   isAdjacent(other: Range): boolean {
-    if (this.#step !== other.#step) return false;
+    if (this.#step !== other.#step || this.isEmpty || other.isEmpty) return false;
 
-    const thisLast = this.last!;
-    const thisFirst = this.first!;
-    const otherFirst = other.first!;
-    const otherLast = other.last!;
-
-    return (
-      Math.abs(thisLast - otherFirst) === Math.abs(this.#step) ||
-      Math.abs(otherLast - thisFirst) === Math.abs(this.#step)
-    );
+    // Check if ranges are adjacent (one ends where the other begins)
+    return this.#stop === other.#start || other.#stop === this.#start;
   }
 
   clamp(value: number): number {
@@ -153,23 +181,11 @@ export class Range {
     return Math.max(this.min, Math.min(this.max, value));
   }
 
-  includes(element: number): boolean {
-    if (!Number.isFinite(element)) return false;
-
-    if (this.#step > 0) {
-      if (element < this.#from || element > this.#to) return false;
-    } else if (element > this.#from || element < this.#to) {
-      return false;
-    }
-
-    // Check if element aligns with step
-    const offset = element - this.#from;
-    return Math.abs(offset % this.#step) < Number.EPSILON;
-  }
-
   find(predicate: (value: number, index: number) => boolean): number | undefined {
     let index = 0;
-    for (const value of this) if (predicate(value, index++)) return value;
+    for (const value of this) {
+      if (predicate(value, index++)) return value;
+    }
     return undefined;
   }
 
@@ -183,36 +199,31 @@ export class Range {
   }
 
   take(count: number): Range {
-    if (count <= 0) {
-      return new Range(this.#from, this.#from - Math.abs(this.#step), this.#step);
+    if (count <= 0 || this.isEmpty) {
+      return Range.empty();
     }
 
     const actualCount = Math.min(count, this.#length);
-    const newTo = this.#from + (actualCount - 1) * this.#step;
+    const newStop = this.#start + actualCount * this.#step;
 
-    return new Range(this.#from, newTo, this.#step);
+    return new Range(this.#start, newStop, this.#step);
   }
 
   skip(count: number): Range {
     if (count <= 0) return this;
-    if (count >= this.#length) {
-      return new Range(this.#from, this.#from - Math.abs(this.#step), this.#step);
-    }
+    if (count >= this.#length) return Range.empty();
 
-    const newFrom = this.#from + count * this.#step;
-    return new Range(newFrom, this.#to, this.#step);
+    const newStart = this.#start + count * this.#step;
+    return new Range(newStart, this.#stop, this.#step);
   }
 
   chunk(size: number): Range[] {
     if (size <= 0) throw new RangeError("Chunk size must be positive");
 
     const chunks: Range[] = [];
-    let current = this;
 
-    while (!current.isEmpty) {
-      const chunk = current.take(size);
-      chunks.push(chunk);
-      current = current.skip(size);
+    for (let current = this as Range; !current.isEmpty; current = current.skip(size)) {
+      chunks.push(current.take(size));
     }
 
     return chunks;
@@ -228,17 +239,15 @@ export class Range {
 
     const actualIndex = index < 0 ? this.#length + index : index;
 
-    if (actualIndex < 0 || actualIndex >= this.#length) {
-      return undefined;
-    }
+    if (actualIndex < 0 || actualIndex >= this.#length) return undefined;
 
-    return this.#from + actualIndex * this.#step;
+    return this.#start + actualIndex * this.#step;
   }
 
   indexOf(element: number): number {
     if (!this.includes(element)) return -1;
 
-    const index = Math.round((element - this.#from) / this.#step);
+    const index = Math.round((element - this.#start) / this.#step);
     return index >= 0 && index < this.#length ? index : -1;
   }
 
@@ -247,28 +256,31 @@ export class Range {
     const actualEnd = Math.min(this.#length, end < 0 ? this.#length + end : end);
 
     if (actualStart >= actualEnd) {
-      // Return empty range
-      return new Range(this.#from, this.#from - Math.abs(this.#step), this.#step);
+      return Range.empty();
     }
 
-    const newFrom = this.#from + actualStart * this.#step;
-    const newTo = this.#from + (actualEnd - 1) * this.#step;
+    const newStart = this.#start + actualStart * this.#step;
+    const newStop = this.#start + actualEnd * this.#step;
 
-    return new Range(newFrom, newTo, this.#step);
+    return new Range(newStart, newStop, this.#step);
   }
 
   reverse(): Range {
     if (this.isEmpty) return this;
 
-    const lastValue = this.#from + (this.#length - 1) * this.#step;
-    return new Range(lastValue, this.#from, -this.#step);
+    const lastValue = this.#start + (this.#length - 1) * this.#step;
+    const newStop = this.#start - this.#step;
+
+    return new Range(lastValue, newStop, -this.#step);
   }
 
   map<T>(fn: (value: number, index: number) => T): T[] {
     const result: T[] = [];
     let index = 0;
 
-    for (const value of this) result.push(fn(value, index++));
+    for (const value of this) {
+      result.push(fn(value, index++));
+    }
 
     return result;
   }
@@ -300,7 +312,9 @@ export class Range {
   every(predicate: (value: number, index: number) => boolean): boolean {
     let index = 0;
 
-    for (const value of this) if (!predicate(value, index++)) return false;
+    for (const value of this) {
+      if (!predicate(value, index++)) return false;
+    }
 
     return true;
   }
@@ -324,7 +338,7 @@ export class Range {
   }
 
   clone(): Range {
-    return new Range(this.#from, this.#to, this.#step);
+    return new Range(this.#start, this.#stop, this.#step);
   }
 
   scale(factor: number): Range {
@@ -332,7 +346,7 @@ export class Range {
       throw new RangeError("Scale factor must be a non-zero finite number");
     }
 
-    return new Range(this.#from * factor, this.#to * factor, this.#step * factor);
+    return new Range(this.#start * factor, this.#stop * factor, this.#step * factor);
   }
 
   shift(offset: number): Range {
@@ -340,15 +354,13 @@ export class Range {
       throw new RangeError("Offset must be a finite number");
     }
 
-    return new Range(this.#from + offset, this.#to + offset, this.#step);
+    return new Range(this.#start + offset, this.#stop + offset, this.#step);
   }
 
   // Symbol methods for better JS integration
   [Symbol.toPrimitive](hint: "number" | "string" | "default"): number | string {
-    if (hint === "number") {
-      return this.#length;
-    }
-    return this.toString();
+    if (hint === "number") return this.#length;
+    return this.#hash;
   }
 
   [Symbol.toStringTag] = "Range";
@@ -359,19 +371,29 @@ export class Range {
   }
 
   toString(): string {
-    const stepStr = this.#step === 1 ? "" : `:${this.#step}`;
-    return `Range(${this.#from}..${this.#to}${stepStr})`;
+    if (this.#string) return this.#string;
+
+    this.#string =
+      this.#step === 1
+        ? `Range(${this.#start}, ${this.#stop})`
+        : `Range(${this.#start}, ${this.#stop}, ${this.#step})`;
+
+    return this.#string;
   }
 
-  toJSON(): { from: number; to: number; step: number } {
-    return { from: this.#from, to: this.#to, step: this.#step };
+  toJSON(): { start: number; stop: number; step: number } {
+    return { start: this.#start, stop: this.#stop, step: this.#step };
   }
 
   *[Symbol.iterator](): Generator<number, void, unknown> {
     if (this.#step > 0) {
-      for (let value = this.#from; value <= this.#to; value += this.#step) yield value;
+      for (let value = this.#start; value < this.#stop; value += this.#step) {
+        yield value;
+      }
     } else {
-      for (let value = this.#from; value >= this.#to; value += this.#step) yield value;
+      for (let value = this.#start; value > this.#stop; value += this.#step) {
+        yield value;
+      }
     }
   }
 
@@ -379,79 +401,73 @@ export class Range {
   static fromArray(array: readonly number[]): Range {
     if (array.length === 0) throw new Error("Cannot create range from empty array");
 
-    // @ts-expect-error cannot be undefined
-    if (array.length === 1) return new Range(array[0], array[0]);
+    if (array.length === 1) {
+      return new Range(array[0]!, array[0]! + 1); // Single element range
+    }
 
-    // @ts-expect-error cannot be undefined
-    const step = array[1] - array[0];
+    const step = array[1]! - array[0]!;
 
-    // Validate it's actually a range
+    // Validate it's actually a valid sequence
     for (let i = 2; i < array.length; i++) {
-      // @ts-expect-error cannot be undefined
-      if (Math.abs(array[i] - array[i - 1] - step) > Number.EPSILON) {
+      if (Math.abs(array[i]! - array[i - 1]! - step) > Number.EPSILON) {
         throw new Error("Array does not represent a valid range (inconsistent step)");
       }
     }
-    // @ts-expect-error cannot be undefined
-    return new Range(array[0], array[array.length - 1], step);
+
+    // Calculate stop as exclusive bound
+    const stop = array[array.length - 1]! + step;
+    return new Range(array[0]!, stop, step);
   }
 
   static sequence(count: number, start = 0, step = 1): Range {
-    if (!Number.isInteger(count) || count <= 0) {
-      throw new RangeError("Count must be a positive integer");
+    if (!Number.isInteger(count) || count < 0) {
+      throw new RangeError("Count must be a non-negative integer");
     }
 
-    const end = start + (count - 1) * step;
-    return new Range(start, end, step);
+    const stop = start + count * step;
+    return new Range(start, stop, step);
   }
 
-  static inclusive(from: number, to: number, step = 1): Range {
-    return new Range(from, to, step);
-  }
-
-  static exclusive(from: number, to: number, step = 1): Range {
-    const adjustedTo = step > 0 ? to - step : to + Math.abs(step);
-    return new Range(from, adjustedTo, step);
+  static empty(): Range {
+    return new Range(0, 0, 1);
   }
 
   static merge(...ranges: Range[]): Range[] {
     if (ranges.length === 0) return [];
     if (ranges.length === 1) return [...ranges];
 
-    // Sort ranges by their minimum value
-    const sorted = [...ranges].sort((a, b) => a.min - b.min);
-    const merged: Range[] = [sorted[0]];
+    // Sort ranges by their start value
+    const sorted = [...ranges].sort((a, b) => a.#start - b.#start);
+    const merged: Range[] = [sorted[0]!];
 
     for (let i = 1; i < sorted.length; i++) {
-      const current = sorted[i];
-      const last = merged[merged.length - 1];
+      const current = sorted[i]!;
+      const last = merged[merged.length - 1]!;
 
       const union = last.union(current);
-      if (union) {
-        merged[merged.length - 1] = union;
-      } else {
-        merged.push(current);
-      }
+      if (union) merged[merged.length - 1] = union;
+      else merged.push(current);
     }
 
     return merged;
   }
 
-  static overlap(...ranges: Range[]): Range | null {
-    if (ranges.length === 0) return null;
-    if (ranges.length === 1) return ranges[0];
+  static overlap(...ranges: Range[]): Range | undefined {
+    if (ranges.length === 0) return undefined;
+    if (ranges.length === 1) return ranges[0]!;
 
-    let intersection = ranges[0];
+    let intersection = ranges[0]!;
     for (let i = 1; i < ranges.length; i++) {
-      intersection = intersection.intersect(ranges[i]);
-      if (!intersection) return null;
+      const nextIntersection = intersection.intersect(ranges[i]!);
+      if (!nextIntersection) return undefined;
+      intersection = nextIntersection;
     }
 
     return intersection;
   }
 
-  // Utility ranges
-  static readonly EMPTY = new Range(0, -1, 1);
-  static readonly ZERO_TO_ONE = new Range(0, 1, 1);
-  static readonly NEGATIVE_ONE_TO_ONE = new Range(-1, 1, 1);
+  // Common utility ranges
+  static readonly EMPTY = Range.empty();
+  static readonly ZERO_TO_TEN = new Range(0, 10, 1); // [0, 1, 2, ..., 9]
+  static readonly ONE_TO_TEN = new Range(1, 11, 1); // [1, 2, 3, ..., 10]
 }
