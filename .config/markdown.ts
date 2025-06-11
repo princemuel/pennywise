@@ -5,6 +5,7 @@ import { rehypeHeadingIds } from "@astrojs/markdown-remark";
 import { Temporal } from "@js-temporal/polyfill";
 import { toString as parseToString } from "mdast-util-to-string";
 import getReadingTime from "reading-time";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeExternalLinks from "rehype-external-links";
 import remarkEmoji from "remark-emoji";
 import { visit } from "unist-util-visit";
@@ -65,6 +66,8 @@ const remarkModifiedTime: RemarkPlugin = () => (_, file) => {
 };
 
 export default {
+  gfm: true,
+  smartypants: true,
   remarkPlugins: [
     remarkDeruntify,
     remarkReadingTime,
@@ -74,5 +77,6 @@ export default {
   rehypePlugins: [
     [rehypeHeadingIds, { experimentalHeadingIdCompat: true }],
     [rehypeExternalLinks, { rel: ["noopener", "noreferrer", "external"], target: "_blank" }],
+    [rehypeAutolinkHeadings, { behavior: "after" }],
   ],
 } satisfies Config;

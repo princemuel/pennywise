@@ -1,15 +1,16 @@
 ---
-import { DateTimeFormatter } from "@/helpers/date-formatter";
+import { Temporal } from "@js-temporal/polyfill";
+
 import type { HTMLAttributes } from "astro/types";
 
 type Props = HTMLAttributes<"time">;
 
 const { datetime, ...rest } = Astro.props;
 
-const fmt = new DateTimeFormatter();
-const date = new Date(datetime ?? Date.now());
+const instant = Temporal.Instant.from(datetime ?? Temporal.Now.instant());
+const zonedDateTime = instant.toZonedDateTimeISO(Temporal.Now.timeZoneId());
 ---
 
-<time datetime={fmt.toISOString(date)} {...rest}>
-  {fmt.format(date)} &copy;
+<time datetime={instant.toString()} {...rest}>
+  {zonedDateTime.year} &copy;
 </time>

@@ -1,79 +1,75 @@
 // eslint-disable no-object-as-default-parameter
 // eslint-disable func-style
 // eslint-disable max-lines-per-function
-import { z } from "astro:schema";
 import { pwaAssetsHead } from "virtual:pwa-assets/head";
+import { z } from "zod/v4";
 
-import { defaultKeywords, formatHtmlTitle, getSiteSettings } from "@/constants/settings";
+import { defaultKeywords, htmlTitle, site_settings } from "@/constants/settings";
 // import type { HeadElement } from "astro/types";
 
-const MetadataSchema = z
-  .object({
-    title: z.string().max(60).optional(),
-    metaTitle: z.string().optional(), // <meta name="title">
-    description: z.string().max(160).optional(),
-    keywords: z.array(z.string()).max(10).optional(),
-    author: z.string().optional(),
-    image: z.string().url().optional(),
-    url: z.string().url().optional(),
-    type: z.enum(["website", "article", "book", "profile"]).optional(),
-    publishedAt: z.string().datetime().optional(),
-    updatedAt: z.string().datetime().optional(),
-    section: z.string().optional(),
-    tags: z.array(z.string()).max(5).optional(),
-    noIndex: z.boolean().optional(),
-    canonical: z.string().url().optional(),
-    priority: z.number().min(0).max(10).optional(),
-    jsonLd: z
-      .object({
-        type: z
-          .enum(["WebSite", "Article", "Person", "Organization", "BlogPosting"])
-          .optional(),
-        additionalProperties: z.record(z.any()).optional(),
-      })
-      .optional(),
+const MetadataSchema = z.strictObject({
+  title: z.string().max(60).optional(),
+  metaTitle: z.string().optional(),
+  description: z.string().max(160).optional(),
+  keywords: z.array(z.string()).max(10).optional(),
+  author: z.string().optional(),
+  image: z.url().optional(),
+  url: z.url().optional(),
+  medium: z.enum(["website", "article", "book", "profile"]).optional(),
+  publishedAt: z.iso.datetime({ offset: true }).optional(),
+  updatedAt: z.iso.datetime({ offset: true }).optional(),
+  section: z.string().optional(),
+  tags: z.array(z.string()).max(5).optional(),
+  noIndex: z.boolean().optional(),
+  canonical: z.url().optional(),
+  priority: z.number().min(0).max(10).optional(),
+  jsonLd: z
+    .object({
+      type: z.enum(["WebSite", "Article", "Person", "Organization", "BlogPosting"]).optional(),
+      additionalProperties: z.record(z.any(), z.any()).optional(),
+    })
+    .optional(),
 
-    // New fields for layout parity
-    viewport: z.string().optional(),
-    referrer: z.string().optional(),
-    colorScheme: z.string().optional(),
-    applicationName: z.string().optional(),
-    generator: z.string().optional(),
-    creator: z.string().optional(),
-    publisher: z.string().optional(),
-    fediverseCreator: z.string().optional(),
-    themeColor: z
-      .union([
-        z.string(),
-        z.array(
-          z.object({
-            color: z.string(),
-            media: z.string().optional(),
-          }),
-        ),
-      ])
-      .optional(),
-    mobileWebAppCapable: z.string().optional(),
-    mobileWebAppStatusBarStyle: z.string().optional(),
-    msapplicationTileColor: z.string().optional(),
-    sitemap: z.string().url().optional(),
-    rss: z
-      .object({
-        title: z.string(),
-        href: z.string().url(),
-      })
-      .optional(),
-    twitterUrl: z.string().url().optional(),
-  })
-  .strict();
+  // New fields for layout parity
+  viewport: z.string().optional(),
+  referrer: z.string().optional(),
+  colorScheme: z.string().optional(),
+  applicationName: z.string().optional(),
+  generator: z.string().optional(),
+  creator: z.string().optional(),
+  publisher: z.string().optional(),
+  fediverseCreator: z.string().optional(),
+  themeColor: z
+    .union([
+      z.string(),
+      z.array(
+        z.object({
+          color: z.string(),
+          media: z.string().optional(),
+        }),
+      ),
+    ])
+    .optional(),
+  mobileWebAppCapable: z.string().optional(),
+  mobileWebAppStatusBarStyle: z.string().optional(),
+  msapplicationTileColor: z.string().optional(),
+  sitemap: z.url().optional(),
+  rss: z
+    .object({
+      title: z.string(),
+      href: z.url(),
+    })
+    .optional(),
+  twitterUrl: z.url().optional(),
+});
 
 export type MetadataConfig = z.infer<typeof MetadataSchema>;
 
-const { name, description, site_author } = getSiteSettings();
+const { name, description, site_author } = site_settings;
 
 const DEFAULT_METADATA: Partial<MetadataConfig> = {
-  title: formatHtmlTitle("", "%title% | %brand%", { brand: name }),
-  metaTitle: formatHtmlTitle("", "%title% | %brand%", { brand: name }),
+  title: htmlTitle("", "%title% | %brand%", { brand: name }),
+  metaTitle: htmlTitle("", "%title% | %brand%", { brand: name }),
   description: description,
   keywords: defaultKeywords,
   priority: 5,
@@ -432,10 +428,10 @@ export const generateMetadata = (config: MetadataConfig = {}) => {
     });
   }
 
-  if (meta.type) {
+  if (meta.medium) {
     elements.push({
       tag: "meta",
-      attributes: { property: "og:type", content: meta.type },
+      attributes: { property: "og:type", content: meta.medium },
       priority: HEAD_PRIORITIES.ogType,
       key: "og:type",
     });

@@ -1,12 +1,12 @@
 ---
 import { Font } from "astro:assets";
-import { ClientRouter } from "astro:transitions";
 
 import { pwaAssetsHead } from "virtual:pwa-assets/head";
 import { pwaInfo } from "virtual:pwa-info";
 
 import { generateMetadata, type MetadataConfig } from "@/lib/metadata";
 
+import "@/assets/styles/transitions.css";
 import "@/global.css";
 
 import Frame from "@/components/layout/frame.astro";
@@ -42,7 +42,6 @@ const elements = generateMetadata(metadata);
 
     <slot name="metadata" />
     <slot name="opengraph" />
-    <ClientRouter />
   </head>
   <body class="font-sans antialiased">
     <Fragment>

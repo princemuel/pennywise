@@ -11,16 +11,11 @@ export default defineConfig({
     appleSplashScreens: createAppleSplashScreens(
       {
         padding: 0.3,
+        linkMediaOptions: { xhtml: true },
         resizeOptions: { background: "white" },
         darkResizeOptions: { background: "black" },
-        linkMediaOptions: {
-          log: true,
-          addMediaScreen: true,
-          basePath: "/",
-          xhtml: true,
-        },
       },
-      ['iPad Air 9.7"'],
+      ["iPhone 14 Pro Max", 'iPad Pro 12.9"'],
     ),
   },
   images: "public/favicon.svg",

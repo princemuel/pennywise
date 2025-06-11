@@ -4,6 +4,7 @@ type Config = NonNullable<NonNullable<AstroUserConfig["image"]>>;
 
 export default {
   experimentalLayout: "constrained",
+  experimentalDefaultStyles: false,
   remotePatterns: [
     { protocol: "https", hostname: "**.unsplash.com" },
     { protocol: "https", hostname: "**.github.com" },

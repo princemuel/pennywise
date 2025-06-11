@@ -120,7 +120,7 @@ export class Range {
 
     // Check if element aligns with step
     const offset = element - this.#start;
-    return Math.abs(offset % this.#step) < Number.EPSILON;
+    return Number.isInteger(offset / this.#step);
   }
 
   overlaps(other: Range): boolean {
@@ -137,31 +137,34 @@ export class Range {
   intersect(other: Range): Range | undefined {
     if (!this.overlaps(other)) return undefined;
 
-    // Find the overlapping bounds
-    const newStart = Math.max(this.min, other.min);
-    const newStop = Math.min(this.max, other.max) + 1; // +1 because stop is exclusive
-
-    // For simplicity, use step of 1 for intersections
-    // More complex step handling would require GCD logic
-    const newStep = 1;
-
-    // Find the first valid point in both ranges
-    let adjustedStart = newStart;
-    while (
-      adjustedStart < newStop &&
-      (!this.includes(adjustedStart) || !other.includes(adjustedStart))
-    ) {
-      adjustedStart += newStep;
+    // For different steps, we need to find common values
+    if (this.#step !== other.#step) {
+      // This is complex - for now, return undefined for different steps
+      // Full implementation would require Extended Euclidean Algorithm
+      return undefined;
     }
 
-    return adjustedStart < newStop ? new Range(adjustedStart, newStop, newStep) : undefined;
+    // Same step case
+    const newStart = Math.max(this.#start, other.#start);
+    const newStop = Math.min(this.#stop, other.#stop);
+
+    // Align start to step boundaries
+    const thisOffset = (newStart - this.#start) % this.#step;
+    const otherOffset = (newStart - other.#start) % other.#step;
+
+    if (thisOffset !== otherOffset) {
+      // Need to find the next aligned position
+      const alignedStart = newStart + (this.#step - Math.max(thisOffset, otherOffset));
+      return alignedStart < newStop ? new Range(alignedStart, newStop, this.#step) : undefined;
+    }
+
+    return newStart < newStop ? new Range(newStart, newStop, this.#step) : undefined;
   }
 
   union(other: Range): Range | undefined {
-    // Only works for adjacent or overlapping ranges with same step
-    if (this.#step !== other.#step || (!this.overlaps(other) && !this.isAdjacent(other))) {
-      return undefined;
-    }
+    // Only works for same step and compatible ranges
+    if (this.#step !== other.#step) return undefined;
+    if (!this.overlaps(other) && !this.isAdjacent(other)) return undefined;
 
     const newStart = Math.min(this.#start, other.#start);
     const newStop = Math.max(this.#stop, other.#stop);
@@ -219,7 +222,6 @@ export class Range {
 
   chunk(size: number): Range[] {
     if (size <= 0) throw new RangeError("Chunk size must be positive");
-
     const chunks: Range[] = [];
 
     for (let current = this as Range; !current.isEmpty; current = current.skip(size)) {
@@ -275,11 +277,12 @@ export class Range {
   }
 
   map<T>(fn: (value: number, index: number) => T): T[] {
-    const result: T[] = [];
+    const result = Array.from<T>({ length: this.#length });
     let index = 0;
 
     for (const value of this) {
-      result.push(fn(value, index++));
+      result[index] = fn(value, index);
+      index++;
     }
 
     return result;
@@ -330,10 +333,18 @@ export class Range {
   }
 
   toArray(): number[] {
-    return [...this];
+    const result = Array.from<number>({ length: this.#length });
+    let index = 0;
+
+    for (const value of this) {
+      result[index++] = value;
+    }
+
+    return result;
   }
 
   equals(other: Range): boolean {
+    // this.#start === other.#start && this.#stop === other.#stop && this.#step === other.#step
     return this.#hash === other.#hash;
   }
 
@@ -360,12 +371,13 @@ export class Range {
   // Symbol methods for better JS integration
   [Symbol.toPrimitive](hint: "number" | "string" | "default"): number | string {
     if (hint === "number") return this.#length;
+    if (hint === "default") return this.#length; // More intuitive for comparisons
     return this.#hash;
   }
 
   [Symbol.toStringTag] = "Range";
 
-  // Fast hash for Set/Map usage
+  // Use hash for Set/Map identity
   valueOf(): string {
     return this.#hash;
   }
@@ -381,11 +393,19 @@ export class Range {
     return this.#string;
   }
 
-  toJSON(): { start: number; stop: number; step: number } {
-    return { start: this.#start, stop: this.#stop, step: this.#step };
+  toJSON(): { start: number; stop: number; step: number; length: number } {
+    return {
+      start: this.#start,
+      stop: this.#stop,
+      step: this.#step,
+      length: this.#length,
+    };
   }
 
-  *[Symbol.iterator](): Generator<number, void, unknown> {
+  *[Symbol.iterator](): Generator<number, void, void> {
+    // Prevent infinite loops
+    if (this.#step === 0 || this.isEmpty) return;
+
     if (this.#step > 0) {
       for (let value = this.#start; value < this.#stop; value += this.#step) {
         yield value;
