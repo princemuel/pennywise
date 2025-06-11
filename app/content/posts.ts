@@ -5,7 +5,7 @@ import { baseSchema } from "@/content/schema";
 
 export default defineCollection({
   loader: glob({
-    base: "app/content/posts",
+    base: "content/posts",
     pattern: "**/[^_]*.{md,mdx}",
   }),
   schema: baseSchema.extend({}),

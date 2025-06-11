@@ -26,7 +26,7 @@ const ps = [
 
 export default defineCollection({
   loader: glob({
-    base: "app/content/projects",
+    base: "content/projects",
     pattern: "**/[^_]*.{md,mdx}",
   }),
   schema: ({ image }) =>

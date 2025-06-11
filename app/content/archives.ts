@@ -26,7 +26,7 @@ const genres = [
 
 export default defineCollection({
   loader: glob({
-    base: "app/content/archives",
+    base: "content/archives",
     pattern: "**/[^_]*.{md,mdx}",
   }),
   schema: ({ image }) =>
