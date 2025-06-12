@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["import", "typescript", "unicorn", "promise", "node", "oxc", "jsx-a11y"],
   "env": {
     "esnext": true,
@@ -7,9 +7,12 @@
     "node": true,
     "shared-node-browser": true
   },
+  "globals": {
+    "Astro": "readonly"
+  },
   "categories": {
     "correctness": "deny",
-    "nursery": "deny",
+    "nursery": "warn",
     "pedantic": "warn",
     "perf": "warn",
     "restriction": "allow",
@@ -29,6 +32,7 @@
     "import/max-dependencies": "allow",
     "import/exports-last": "allow",
     "import/group-exports": "allow",
+    "import/no-unassigned-import": "allow",
     "eslint/max-nested-callbacks": ["warn", 10],
     "eslint/max-depth": "allow",
     // "eslint/no-duplicate-imports": "allow",

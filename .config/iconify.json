@@ -21,5 +21,6 @@
     "logo-instagram",
     "logo-youtube"
   ],
-  "tabler": ["alert-circle"]
+  "tabler": ["alert-circle"],
+  "simple-icons": ["astro"]
 }
