@@ -7,7 +7,7 @@ pre-push:
   commands:
     js-lint:
       glob: "**/*"
-      run: corepack pnpm oxlint --fix --fix-suggestions -A all {push_files}
+      run: npx oxlint --fix --fix-suggestions -A all {push_files}
 
     rust-lint:
       glob: "*.rs"
@@ -20,23 +20,25 @@ commit-msg:
   scripts:
     "commitlint.sh":
       runner: bash
+      stage_fixed: false
 
 pre-commit:
   parallel: true
   commands:
     js-lint:
-      glob: "**/*"
-      run: corepack pnpm oxlint --fix --fix-suggestions -A all {staged_files}
+      glob: "*.{js,ts,mjs,astro}"
+      run: npx oxlint --fix --fix-suggestions -A all {staged_files}
       stage_fixed: true
 
     js-fmt:
-      glob: "**/*"
-      run: corepack pnpm prettier {staged_files} -w -u --no-error-on-unmatched-pattern --config ./.prettierrc --cache
+      glob: "*.{js,ts,jsx,tsx,astro,json,css,md,mdx}"
+      run: npx prettier {staged_files} -w -u --no-error-on-unmatched-pattern --config ./.prettierrc --cache
       stage_fixed: true
 
     rust-lint:
+      root: "."
       glob: "*.rs"
-      run: cargo clippy -- --deny warnings # Ensures no warnings or lint errors in Rust code
+      run: cargo clippy -- -D warnings # Ensures no warnings or lint errors in Rust code
 
     rust-autofix:
       glob: "*.rs"
@@ -51,3 +53,5 @@ post-merge:
   commands:
     install-packages:
       run: corepack pnpm install
+
+colors: true
