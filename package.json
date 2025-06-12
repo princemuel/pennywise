@@ -15,14 +15,16 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build:test": "astro check && astro build",
+    "build:wasm": "./build-wasm.sh",
     "preview": "astro preview",
     "astro": "astro",
-    "ntl:dev": "netlify dev"
+    "ntl:dev": "netlify dev",
+    "commit": "commit"
   },
   "packageManager": "pnpm@10.12.1",
   "dependencies": {
     "@js-temporal/polyfill": "^0.5.1",
-    "@kits/markdown": "file:kits/markdown",
+    "@kits/marker": "file:kits/marker",
     "@libsql/client": "^0.15.9",
     "@netlify/functions": "^4.1.4",
     "@upstash/ratelimit": "^2.0.5",
@@ -44,6 +46,7 @@
     "@astrojs/sitemap": "^3.4.1",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/prompt-cli": "^19.8.1",
     "@eslint/js": "^9.28.0",
     "@expressive-code/plugin-collapsible-sections": "^0.41.2",
     "@expressive-code/plugin-line-numbers": "^0.41.2",
@@ -91,7 +94,11 @@
     "typescript-eslint": "^8.34.0",
     "unist-util-visit": "^5.0.0",
     "vite": "^6.3.5",
-    "vite-plugin-wasm": "^3.4.1",
     "zod": "^3.25.58"
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
   }
 }
