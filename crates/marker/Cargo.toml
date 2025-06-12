@@ -5,7 +5,7 @@
     edition               = "2024"
     keywords              = ["markdown", "wasm"]
     license.workspace     = true
-    name                  = "markdown"
+    name                  = "marker"
     readme.workspace      = true
     repository.workspace  = true
     version               = "0.1.0"
