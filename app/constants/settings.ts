@@ -1,6 +1,6 @@
 // eslint-disable no-object-as-default-parameter
 // eslint-disable func-style
-export const getSiteSettings = () => ({
+export const site_settings = {
   id: "settings",
   /** The site title*/
   name: "Prince Muel",
@@ -26,10 +26,12 @@ export const getSiteSettings = () => ({
   site_icon_url: "",
   /** The publish date of the site*/
   published_date: new Date("2024-02-01T16:43:29.577Z"),
-});
+} as const;
 
-type PageTitleContent = string | [pageTitle: string, isStandAlone?: boolean];
-type TitleTemplate = string;
+export const N_A = `HTTP method %M% not allowed`;
+
+type TitleContent = string | [title: string, isStandAlone?: boolean];
+type TitleTemplate = Lowercase<string>;
 interface TemplateContext {
   [key: string]: string;
 }
@@ -46,21 +48,21 @@ interface TemplateContext {
  * @param context - Additional context for placeholders in the template.
  * @returns The formatted HTML title string.
  */
-export function formatHtmlTitle(
-  content?: PageTitleContent,
+export function htmlTitle(
+  content?: TitleContent,
   template: TitleTemplate = "%title% | %brand%",
   context: TemplateContext = { brand: "Prince Muel" },
 ): string {
-  const fallbackTitle = `${context.brand} | Developer, Educator & Musician`;
+  const fallback = `${context.brand} | Developer, Educator & Musician`;
 
-  if (!content) return fallbackTitle;
+  if (!content) return fallback;
 
   if (Array.isArray(content)) {
-    const [pageTitle, isStandAlone] = content;
-    if (isStandAlone) return pageTitle || fallbackTitle;
+    const [title, isStandAlone] = content;
+    if (isStandAlone) return title || fallback;
 
     return template.replaceAll(/%(\w+)%/gu, (match, key) => {
-      if ("title" === key) return pageTitle;
+      if ("title" === key) return title;
       return context[key] || match;
     });
   }

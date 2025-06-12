@@ -1,4 +1,10 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+
+@source "./pages";
+@source "./content";
+@source "./layouts";
+@source "./components";
+@source not "/components/meta";
 
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
@@ -25,7 +31,7 @@
     pointer;
 }
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark (&:where([data-scheme=dark], [data-scheme=dark] *));
 
 :is(a, button, label, option, details, select, input[type="checkbox"]) {
   @apply cursor-pointer;

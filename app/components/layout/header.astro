@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 
-import { avatar, placeholder } from "@/assets/images";
+import { avatar, placeholder } from "@/assets/media/images";
 
 import Frame from "@/components/layout/frame.astro";
 import Link from "@/components/primitives/link.astro";
@@ -9,12 +9,12 @@ import Routes from "@/components/widgets/routes.astro";
 // import ThemePicker from "@/components/widget/theme-picker.astro";
 ---
 
-<header class="sticky top-0 z-50 divide-slate-200 bg-white max-sm:divide-y">
+<header class="sticky top-0 z-50 divide-gray-200 bg-white max-sm:divide-y">
   <Frame>
     <div class="flex items-center justify-between py-5 sm:py-6">
       <Link
         href="/"
-        class="flex size-8 items-center justify-center overflow-hidden rounded-full border-2 border-slate-200"
+        class="flex size-8 items-center justify-center overflow-hidden rounded-full border-2 border-gray-200"
       >
         <Image width={32} height={32} alt="Prince Muel" src={avatar} loading="eager" />
         <span class="sr-only">Home</span>
@@ -26,7 +26,7 @@ import Routes from "@/components/widgets/routes.astro";
 
       <Link
         href="/"
-        class="flex size-8 items-center justify-center overflow-hidden rounded-full border-2 border-slate-200"
+        class="flex size-8 items-center justify-center overflow-hidden rounded-full border-2 border-gray-200"
       >
         <Image width={32} height={32} alt="Prince Muel" src={placeholder} loading="eager" />
         <span class="sr-only">Home</span>
@@ -34,7 +34,7 @@ import Routes from "@/components/widgets/routes.astro";
     </div>
   </Frame>
 
-  <Frame class="bg-slate-50 py-1 shadow-2xs sm:hidden">
+  <Frame class="bg-gray-50 py-1 shadow-2xs sm:hidden">
     <Routes />
   </Frame>
 </header>

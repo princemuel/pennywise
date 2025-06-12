@@ -13,15 +13,14 @@
   "editor.wordWrapColumn": 96,
   "editor.inlineSuggest.enabled": true,
   "editor.fontFamily": "'Cascadia Code', 'CaskaydiaMono Nerd Font','JetBrainsMono Nerd Font', 'Droid Sans Mono', 'monospace', monospace",
+  "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
-    // "source.fixAll": "explicit",
+    "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
-    "source.addMissingImports": "explicit",
-    "source.fixAll.oxc": "explicit",
-    "source.fixAll.markdownlint": "explicit",
-    "source.fixAll.rust-analyzer": "explicit"
+    "source.addMissingImports": "explicit"
   },
+  "files.autoSave": "off",
   "files.associations": {
     "*.css": "tailwindcss"
   },
@@ -56,15 +55,6 @@
   "[astro]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "evenBetterToml.formatter.alignComments": true,
-  "evenBetterToml.formatter.alignEntries": true,
-  "evenBetterToml.formatter.arrayAutoCollapse": true,
-  "evenBetterToml.formatter.arrayAutoExpand": true,
-  "evenBetterToml.formatter.arrayTrailingComma": true,
-  "evenBetterToml.formatter.columnWidth": 96,
-  "evenBetterToml.formatter.reorderArrays": true,
-  "evenBetterToml.formatter.reorderKeys": true,
-  "evenBetterToml.formatter.trailingNewline": true,
   "tailwindCSS.emmetCompletions": true,
   "tailwindCSS.classAttributes": ["class", "class:list", "tw"],
   "tailwindCSS.experimental.configFile": "app/global.css",
@@ -93,8 +83,7 @@
   "rust-analyzer.inlayHints.typeHints.enable": false,
   "rust-analyzer.inlayHints.chainingHints.enable": false,
   // Formatting with rustfmt
-  "editor.formatOnSave": true,
-  "files.autoSave": "off",
+  "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust-analyzer",
     "editor.formatOnSave": true
@@ -103,8 +92,11 @@
   "rust-analyzer.assist.emitMustUse": true,
   "rust-analyzer.semanticHighlighting.punctuation.enable": true,
   "material-icon-theme.folders.associations": {
-    "journal": "packages",
-    "crates": "packages"
+    "journal": "dump",
+    "crates": "tools",
+    "films": "video",
+    "shows": "television",
+    "games": "shader"
   },
   "[shellscript]": {
     "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"

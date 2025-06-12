@@ -24,12 +24,14 @@
     "no-ternary": "allow",
     "no-anonymous-default-export": "allow",
     "require-await": "allow",
+    "yoda": "allow",
     "import/no-namespace": "allow",
     "import/max-dependencies": "allow",
     "import/exports-last": "allow",
     "import/group-exports": "allow",
     "eslint/max-nested-callbacks": ["warn", 10],
     "eslint/max-depth": "allow",
+    // "eslint/no-duplicate-imports": "allow",
     "eslint/max-lines-per-function": [
       "warn",
       {

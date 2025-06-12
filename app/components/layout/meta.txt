@@ -1,5 +1,5 @@
 ---
-import { defaultKeywords, delimiter, getSiteSettings } from "@/config/settings";
+import { defaultKeywords, delimiter, site_settings } from "@/config/settings";
 import { formatCanonicalURL } from "@/helpers/format-canonical";
 import { pluralize } from "@/utils/strings";
 
@@ -48,7 +48,7 @@ const generated = (async () => {
   const image_src = image || avatar;
   return getImage({ src: image_src, format: "png", width: 1200, height: 630 });
 })();
-const settings = getSiteSettings();
+const settings = site_settings;
 
 const name = settings.name;
 const author = "princemuel";

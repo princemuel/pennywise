@@ -7,8 +7,8 @@ import dotenv, { envVars } from "./.config/dotenv";
 import flags from "./.config/experiments";
 import images from "./.config/images";
 import integrations from "./.config/integrations";
-import markdown from "./.config/markdown";
-import plugins from "./.config/plugins";
+import plugins_md from "./.config/markdown";
+import plugins_vite from "./.config/plugins";
 
 // https://astro.build/config
 export default defineConfig({
@@ -19,8 +19,8 @@ export default defineConfig({
   server: { host: true },
   integrations: integrations,
   session: { driver: "netlifyBlobs" },
-  markdown: markdown,
-  vite: plugins,
+  markdown: plugins_md,
+  vite: plugins_vite,
   image: images,
   adapter: netlify({ cacheOnDemandPages: true }),
 });

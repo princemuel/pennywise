@@ -7,6 +7,7 @@ type Config = NonNullable<NonNullable<AstroUserConfig["experimental"]>>;
 export default {
   clientPrerender: true,
   responsiveImages: true,
+  csp: true,
   contentIntellisense: true,
   headingIdCompat: true,
   preserveScriptOrder: true,

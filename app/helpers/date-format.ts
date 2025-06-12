@@ -1,6 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 
-import { getSiteSettings } from "@/constants/settings";
+import { site_settings } from "@/constants/settings";
 import { isServer } from "@/utils/guards";
 
 type DatetimeParams = Partial<Intl.DateTimeFormatOptions> & {
@@ -9,7 +9,7 @@ type DatetimeParams = Partial<Intl.DateTimeFormatOptions> & {
 
 export const createDateFormatter = (params: DatetimeParams = {}) => {
   const { locales = "en-US", ...options } = params;
-  const defaultLocale = getSiteSettings().language;
+  const defaultLocale = site_settings.language;
 
   const locale: Temporal.LocalesArgument =
     locales ||

@@ -3,12 +3,12 @@
 
 import Markdown from "@/components/content/markdown.astro";
 import Layout from "@/layouts/layout.astro";
+import type { MetadataConfig } from "@/lib/metadata";
 
 const metadata = {
   title: ["Prince Muel", true],
   description: "Prince Muel, Software Engineer",
-  // eslint-disable-next-line no-undef
-} satisfies Meta;
+} satisfies MetadataConfig;
 ---
 
 <Layout {...metadata}>

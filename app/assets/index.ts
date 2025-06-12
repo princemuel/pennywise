@@ -1,1 +1,1 @@
-export * from "@/assets/images";
+export * from "@/assets/media/images";

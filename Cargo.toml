@@ -1,35 +1,53 @@
 [workspace]
     members  = ["crates/*"]
     resolver = "3"
-
     [workspace.package]
-        authors     = ["Prince Muel <68931805+princemuel@users.noreply.github.com>"]
-        description = "A short description of my package"
-        license     = "GPL-3.0-or-later"
-        publish     = false
-        repository  = "https://github.com/princemuel/medotdev"
-        version     = "0.1.0"
-
+        authors      = ["Prince Muel <68931805+princemuel@users.noreply.github.com>"]
+        categories   = ["wasm"]
+        description  = "A short description of my package"
+        edition      = "2024"
+        keywords     = ["wasm"]
+        license      = "GPL-3.0-or-later"
+        license-file = "LICENSE-CODE"
+        publish      = false
+        readme       = "README.md"
+        repository   = "https://github.com/princemuel/medotdev.git"
+        version      = "0.1.0"
     [workspace.dependencies]
-        cfg-if                   = "0.1"
+        anyhow                   = "1"
+        cfg-if                   = "1"
         console_error_panic_hook = "0.1"
+        serde                    = { version = "1", features = ["derive"] }
+        serde_json               = "1"
         wasm-bindgen             = "0.2"
         web-sys                  = "0.3"
-
     [workspace.lints.rust]
-        dead_code         = "allow"
-        unsafe_code       = "forbid"
-        unstable_features = "forbid"
-
+        dead_code   = "allow"
+        unsafe_code = "forbid"
+    # unstable_features = "forbid"
     [workspace.lints.clippy]
-        all                = { level = "deny", priority = -1 }
-        disallowed_methods = "allow"
-        empty_loop         = "forbid"
-        infinite_loop      = "deny"
-        mem_forget         = "deny"
-        todo               = "forbid"
-
+        all      = { level = "deny", priority = -1 }
+        cargo    = { level = "warn", priority = -1 }
+        nursery  = { level = "warn", priority = -1 }
+        pedantic = { level = "warn", priority = -1 }
+        # Specific overrides
+        disallowed_methods            = "allow"
+        missing_docs_in_private_items = "allow"
+        missing_errors_doc            = "allow"
+        missing_panics_doc            = "allow"
+        module_name_repetitions       = "allow"
+        # Forbid dangerous patterns
+        empty_loop    = "forbid"
+        infinite_loop = "forbid"
+        mem_forget    = "forbid"
+        todo          = "warn"
 [profile.release]
-    lto       = true
-    opt-level = 'z'
-    panic     = "abort"
+    codegen-units = 1
+    lto           = true
+    opt-level     = "z"
+    panic         = "abort"
+    strip         = true
+[profile.release-with-debug]
+    debug    = true
+    inherits = "release"
+    strip    = false

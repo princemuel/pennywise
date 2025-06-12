@@ -1,0 +1,23 @@
+---
+import { Content } from "@/content/partials/offline.md";
+
+import type { MetadataConfig } from "@/lib/metadata";
+
+import Markdown from "@/components/content/markdown.astro";
+import Layout from "@/layouts/layout.astro";
+
+const metadata = {
+  title: "Offline Page",
+  description:
+    "The offline page of this site. Users land here when they try to navigate to a page but have network issues or are offline",
+} satisfies MetadataConfig;
+---
+
+<Fragment>
+  <Layout metadata={metadata}>
+    <Markdown>
+      <h1 id="headline">{metadata.title}</h1>
+      <Content />
+    </Markdown>
+  </Layout>
+</Fragment>

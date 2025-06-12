@@ -1,3 +1,5 @@
-import { type CnOptions, cn } from "tailwind-variants";
+import type { CnOptions } from "tailwind-variants";
+// eslint-disable-next-line
+import { cn as cx } from "tailwind-variants";
 
-export const tw = (...args: CnOptions) => cn(...args)({ twMerge: true });
+export const cn = (...args: CnOptions) => cx(...args)({ twMerge: true });
