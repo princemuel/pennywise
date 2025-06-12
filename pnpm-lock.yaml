@@ -11,6 +11,9 @@ importers:
       '@js-temporal/polyfill':
         specifier: ^0.5.1
         version: 0.5.1
+      '@kits/markdown':
+        specifier: file:kits/markdown
+        version: file:kits/markdown
       '@libsql/client':
         specifier: ^0.15.9
         version: 0.15.9
@@ -1620,6 +1623,9 @@ packages:
   '@js-temporal/polyfill@0.5.1':
     resolution: {integrity: sha512-hloP58zRVCRSpgDxmqCWJNlizAlUgJFqG2ypq79DCvyv9tHjRYMDOcPFjzfl/A1/YxDvRCZz8wvZvmapQnKwFQ==}
     engines: {node: '>=12'}
+
+  '@kits/markdown@file:kits/markdown':
+    resolution: {directory: kits/markdown, type: directory}
 
   '@libsql/client@0.15.9':
     resolution: {integrity: sha512-VT3do0a0vwYVaNcp/y05ikkKS3OrFR5UeEf5SUuYZVgKVl1Nc1k9ajoYSsOid8AD/vlhLDB5yFQaV4HmT/OB9w==}
@@ -10597,6 +10603,8 @@ snapshots:
   '@js-temporal/polyfill@0.5.1':
     dependencies:
       jsbi: 4.3.2
+
+  '@kits/markdown@file:kits/markdown': {}
 
   '@libsql/client@0.15.9':
     dependencies:

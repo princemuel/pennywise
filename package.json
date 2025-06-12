@@ -22,6 +22,7 @@
   "packageManager": "pnpm@10.12.1",
   "dependencies": {
     "@js-temporal/polyfill": "^0.5.1",
+    "@kits/markdown": "file:kits/markdown",
     "@libsql/client": "^0.15.9",
     "@netlify/functions": "^4.1.4",
     "@upstash/ratelimit": "^2.0.5",

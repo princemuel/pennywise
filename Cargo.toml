@@ -2,16 +2,17 @@
     members  = ["crates/*"]
     resolver = "3"
     [workspace.package]
-        authors     = ["Prince Muel <68931805+princemuel@users.noreply.github.com>"]
-        categories  = ["wasm"]
-        description = "A short description of my package"
-        edition     = "2024"
-        keywords    = ["wasm"]
-        license     = "GPL-3.0-or-later"
-        publish     = false
-        readme      = "README.md"
-        repository  = "https://github.com/princemuel/medotdev.git"
-        version     = "0.1.0"
+        authors      = ["Prince Muel <68931805+princemuel@users.noreply.github.com>"]
+        categories   = ["wasm"]
+        description  = "A short description of my package"
+        edition      = "2024"
+        keywords     = ["wasm"]
+        license      = "GPL-3.0-or-later"
+        license-file = "LICENSE-CODE"
+        publish      = false
+        readme       = "README.md"
+        repository   = "https://github.com/princemuel/medotdev.git"
+        version      = "0.1.0"
     [workspace.dependencies]
         anyhow                   = "1"
         cfg-if                   = "1"
