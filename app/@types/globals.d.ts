@@ -4,5 +4,5 @@ declare namespace globalThis {
     entries<T extends NonNullable<unknown>>(object: T): readonly Entry<T>[];
   }
   var __singletons__: Map<string, unknown> | undefined;
-  var theme: { pick(theme?: string): void };
+  var ThemeProvider: { selectThemeIcon(theme?: string): void };
 }

@@ -4,14 +4,16 @@ import { Font } from "astro:assets";
 import { pwaAssetsHead } from "virtual:pwa-assets/head";
 import { pwaInfo } from "virtual:pwa-info";
 
-import { generateMetadata, type MetadataConfig } from "@/lib/metadata";
+import type { MetadataConfig } from "@/lib/metadata";
 
 import "@/assets/styles/transitions.css";
 import "@/global.css";
 
 import Frame from "@/components/layout/frame.astro";
-import HeadElements from "@/components/layout/head-elements.astro";
 import Header from "@/components/layout/header.astro";
+import ThemeProvider from "@/components/widgets/theme-provider.astro";
+import { site_settings } from "@/constants/settings";
+import { println$ } from "@/helpers/println";
 
 // eslint-disable-next-line no-undef
 interface Props {
@@ -20,36 +22,90 @@ interface Props {
 
 const { metadata = {} } = Astro.props;
 
-const elements = generateMetadata(metadata);
+// const elements = generateMetadata(metadata);
+
+println$(metadata);
+
+const { name, site_author } = site_settings;
 ---
 
 <!doctype html>
 <html
   lang="en"
   class:list={[
-    "scheme-light data-[scheme=auto]:scheme-light-dark dark:scheme-dark",
+    "scheme-light data-[scheme=system]:scheme-light-dark dark:scheme-dark",
     "motion-safe:scroll-smooth",
   ]}
 >
   <head>
-    <HeadElements elements={elements} />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {/*  Title and canonical */}
+    {/*<title></title>*/}
+    {/*<meta name="title" content=""/>*/}
+    {/*<link rel="canonical" href={linkCanonical} />*/}
+
+    {/*  SEO meta */}
+    {/*<meta name="description" content={description} />*/}
+
+    {/*   Global meta */}
+    <meta name="referrer" content="origin-when-cross-origin" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="application-name" content=`${name}'s Domain` />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="creator" content={site_author} />
+    <meta name="publisher" content={site_author} />
+    <meta name="fediverse:creator" content="@princemuel@mastodon.online" />
+
+    {/*  Theme and PWA */}
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafafa" />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content={pwaAssetsHead.themeColor?.content}
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="msapplication-TileColor" content="#fafafa" />
+
+    {/*  Favicons / Manifest  */}
+    <Fragment>{pwaAssetsHead.links.map((link) => <link {...link} />)}</Fragment>
+    <Fragment set:html={pwaInfo?.webManifest.linkTag} />
+
+    {/* Permalink / Sitemap / Feed / Changelog */}
+    <link
+      rel="sitemap"
+      type="application/xml"
+      href={new URL("/sitemap-index.xml", Astro.site)}
+    />
+    <slot name="feeds">
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title=`${site_author} master rss feed`
+        href={new URL("/rss.xml", Astro.site)}
+      />
+    </slot>
+
+    {/*  <HeadElements elements={elements} /> */}
 
     <Font cssVariable="--font-family-sans" preload />
     <slot name="fonts" />
 
-    <Fragment set:html={pwaInfo?.webManifest.linkTag} />
-    <Fragment>{pwaAssetsHead.links.map((link) => <link {...link} />)}</Fragment>
-
+    <link rel="expect" href="#the_unexpected" blocking="render" />
     <slot name="metadata" />
     <slot name="opengraph" />
+    <ThemeProvider />
   </head>
-  <body class="font-sans antialiased">
+  <body class="bg-white font-sans antialiased dark:bg-black">
     <Fragment>
       <Header />
 
-      <Frame class="py-10">
-        <slot />
-      </Frame>
+      <main aria-labelledby="headline">
+        <Frame class="py-10">
+          <slot />
+        </Frame>
+      </main>
     </Fragment>
   </body>
 </html>
