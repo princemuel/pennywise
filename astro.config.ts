@@ -18,6 +18,7 @@ export default defineConfig({
   experimental: flags,
   server: { host: true },
   integrations: integrations,
+  prefetch: { prefetchAll: true, defaultStrategy: "hover" },
   session: { driver: "netlifyBlobs" },
   markdown: plugins_md,
   vite: plugins_vite,
