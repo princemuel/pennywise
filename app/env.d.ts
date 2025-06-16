@@ -9,7 +9,7 @@ declare namespace App {
   interface Locals extends NetlifyLocals {
     auth: { startTime: number };
     ratelimit: { limit: number; remaining: number; reset: number; throttle: boolean };
-    botinfo: { isBot: boolean };
+    botinfo: { blocked: boolean; isMissingUA: boolean; isBot: boolean };
   }
   interface SessionData {
     id: string;

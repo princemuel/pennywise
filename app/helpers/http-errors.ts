@@ -18,17 +18,6 @@ const HTTP_ERROR_MAP = new Map([
   ["UnknownError", 501],
 ]);
 
-// Helper functions
-export const throwAsError = (exception: unknown) => {
-  throw isString(exception) ? new Error(exception) : exception;
-};
-
-export const getErrorMessage = (exception: unknown): string => {
-  if (exception instanceof Error) return exception.message;
-  if (isString(exception)) return exception;
-  return "An unknown error occurred";
-};
-
 const toHttpStatus = (error: unknown): number => {
   return error instanceof Error ? (HTTP_ERROR_MAP.get(error.name) ?? 500) : 500;
 };

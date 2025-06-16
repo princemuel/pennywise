@@ -9,16 +9,13 @@ export const botcheck: MiddlewareHandler = async ({ request, locals }, next) => 
 
   const userAgent = request.headers.get("User-Agent") || "";
 
-  const isMissingUA = !userAgent;
+  //@ts-expect-error just ignore this
+  locals.botinfo ??= {};
+  locals.botinfo.isBot = isbot(userAgent);
+  locals.botinfo.isMissingUA = !userAgent;
+  locals.botinfo.blocked = locals.botinfo.isBot || locals.botinfo.isMissingUA;
 
-  const isABot = isbot(userAgent);
+  if (!locals.botinfo.blocked) return next();
 
-  // Add bot detection info to locals for use in routes
-  locals.botinfo.isBot ??= isABot || isMissingUA;
-
-  if (request.url.includes("/api/") && locals.botinfo.isBot) {
-    return new Response("This endpoint is not available for bots", { status: 403 });
-  }
-
-  return next();
+  return new Response("This endpoint is not available for bots", { status: 403 });
 };

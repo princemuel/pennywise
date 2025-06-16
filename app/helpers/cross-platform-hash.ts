@@ -1,7 +1,7 @@
 // eslint-disable prefer-spread
 // eslint-disable init-declarations
 
-import { getErrorMessage } from "@/helpers/error";
+import { getErrorMessage } from "@/helpers/http-errors";
 import { isBrowser } from "@/utils/guards";
 
 /**

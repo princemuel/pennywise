@@ -21,12 +21,7 @@ export const ratelimit: MiddlewareHandler = async ({ request, locals }, next) =>
     const address = await hash(ip);
     const { success, limit, remaining, reset } = await ratelimiter.limit(address);
 
-    locals.ratelimit = {
-      limit,
-      remaining,
-      reset,
-      throttle: !success,
-    };
+    locals.ratelimit = { limit, remaining, reset, throttle: !success };
 
     if (!success) {
       return new Response("Rate limit exceeded. Try again later.", {

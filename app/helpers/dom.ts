@@ -1,6 +1,6 @@
 // eslint-disable func-style
 // eslint-disable max-params
-import { throwAsError } from "@/helpers/error";
+import { throwAsError } from "@/helpers/errors";
 
 /**
  * Find a DOM element or elements and validate their types.
@@ -48,6 +48,6 @@ export function $<E extends Element>(
   return element as E;
 }
 
-export const custom_el = (name: string, ctor: CustomElementConstructor) => {
+export const createElement = (name: string, ctor: CustomElementConstructor) => {
   if (!customElements.get(name)) customElements.define(name, ctor);
 };

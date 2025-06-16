@@ -1,7 +1,7 @@
 // eslint-disable consistent-indexed-object-style
 
 // eslint-disable no-nested-ternary
-import { toHttpErrorResponse } from "@/helpers/error";
+import { toHttpErrorResponse } from "@/helpers/http-errors";
 import { println$ } from "@/helpers/println";
 
 import type { APIContext } from "astro";
