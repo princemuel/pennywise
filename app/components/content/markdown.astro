@@ -6,9 +6,7 @@ type Props = HTMLAttributes<"article">;
 const { ...rest } = Astro.props;
 ---
 
-<article
-  id="article"
-  aria-labelledby="headline"
+<div
   class:list={[
     "prose prose-gray 3xl:prose-lg dark:prose-invert",
     "max-w-none **:[.expressive-code_+_.expressive-code]:mt-12",
@@ -16,4 +14,4 @@ const { ...rest } = Astro.props;
   {...rest}
 >
   <slot />
-</article>
+</div>
