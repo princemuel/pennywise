@@ -27,6 +27,8 @@ const { metadata = {} } = Astro.props;
 println$(metadata);
 
 const { name, site_author } = site_settings;
+
+const application_name = `${name}'s Domain`;
 ---
 
 <!doctype html>
@@ -45,19 +47,31 @@ const { name, site_author } = site_settings;
     {/*<meta name="title" content=""/>*/}
     {/*<link rel="canonical" href={linkCanonical} />*/}
 
-    {/*  SEO meta */}
+    {/*  SEO*/}
     {/*<meta name="description" content={description} />*/}
 
-    {/*   Global meta */}
+    <slot name="jsonld" />
+
+    <Fragment>
+      {/* Open Graph / Facebook */}
+      <!-- <meta property="og:type" content={og.type} /> -->
+      <!-- <meta property="og:locale" content={locale} /> -->
+      <meta property="og:site_name" content={application_name} />
+      <!-- <meta property="og:title" content={htmlTitle} /> -->
+      <!-- <meta property="og:url" content={linkCanonical} /> -->
+      <!-- <meta property="og:description" content={description} /> -->
+    </Fragment>
+
+    {/*  Global  */}
     <meta name="referrer" content="origin-when-cross-origin" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="application-name" content=`${name}'s Domain` />
+    <meta name="application-name" content={application_name} />
     <meta name="generator" content={Astro.generator} />
     <meta name="creator" content={site_author} />
     <meta name="publisher" content={site_author} />
     <meta name="fediverse:creator" content="@princemuel@mastodon.online" />
 
-    {/*  Theme and PWA */}
+    {/*  Theme / PWA */}
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafafa" />
     <meta
       name="theme-color"
@@ -82,16 +96,16 @@ const { name, site_author } = site_settings;
       <link
         rel="alternate"
         type="application/rss+xml"
-        title=`${site_author} master rss feed`
+        title=`${site_author}'s master rss feed`
         href={new URL("/rss.xml", Astro.site)}
       />
     </slot>
 
-    {/*  <HeadElements elements={elements} /> */}
-
+    {/* Fonts */}
     <Font cssVariable="--font-family-sans" preload />
     <slot name="fonts" />
 
+    {/*  */}
     <link rel="expect" href="#the_unexpected" blocking="render" />
     <slot name="metadata" />
     <slot name="opengraph" />

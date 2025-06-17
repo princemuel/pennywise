@@ -16,7 +16,7 @@ export default defineEcConfig({
   useThemedScrollbars: true,
   cascadeLayer: "shiki",
   emitExternalStylesheet: true,
-  themeCssSelector: (theme) => `[data-mode='${theme.name}']`,
+  themeCssSelector: (theme) => `[data-code-theme='${theme.name}']`,
   defaultProps: { showLineNumbers: true },
   styleOverrides: {
     codeFontFamily: fonts.mono.join(","),
