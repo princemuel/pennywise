@@ -1,0 +1,9 @@
+model TrackingEvent {
+  id        String   @id @default(uuid())
+  timestamp DateTime @default(now())
+  userId    String
+  type      String
+  variant   String
+  version   Int
+  user      User     @relation(fields: [userId], references: [id])
+}
