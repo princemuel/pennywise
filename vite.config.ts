@@ -3,10 +3,11 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import devtoolsJson from 'vite-plugin-devtools-json';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
 	envPrefix: 'PUBLIC_',
-	plugins: [tailwindcss(), reactRouter(), tsconfigPaths(), devtoolsJson()],
+	plugins: [devtoolsJson(), tailwindcss(), svgr(), reactRouter(), tsconfigPaths()],
 	server: { host: true },
 	define: { __BUILD_DATE__: JSON.stringify(new Date()) }
 });
