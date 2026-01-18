@@ -6,7 +6,7 @@ import {
 	IconReceiptX
 } from '../../assets/icons';
 
-export const routes = [
+export default [
 	{
 		text: 'overview',
 		href: '/',
