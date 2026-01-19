@@ -6,7 +6,7 @@ import { z } from "zod";
 
 import { IconEye, IconEyeSlash } from "@/assets/media/icons";
 
-import type { Route } from "./+types/_auth.login";
+import type { Route } from "./+types/_auth.signin";
 
 const schema = z.object({ email: z.email(), password: z.string() });
 
@@ -108,8 +108,8 @@ export default function Page() {
 
       <footer className="flex items-center justify-center gap-4">
         <p className="text-sm text-grey-500">Need to create an account?</p>
-        <Link to="/register" className="font-bold text-grey-900 underline">
-          Sign Up
+        <Link to="/signup" className="font-bold text-grey-900 underline">
+          Register
         </Link>
       </footer>
     </Form>
