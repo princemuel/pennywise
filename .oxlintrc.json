@@ -1,0 +1,24 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["unicorn", "typescript", "oxc", "node", "promise", "jsx-a11y"],
+  "categories": {
+    "correctness": "deny",
+    // "pedantic": "warn",
+    "perf": "deny",
+    // "restriction": "warn",
+    "suspicious": "warn"
+    // "style": "warn",
+    // "nursery": "warn"
+  },
+  "rules": {
+    "sort-imports": "allow",
+    "sort-keys": "allow",
+    "curly": ["deny", "multi-line", "consistent"],
+    "no-ternary": "allow",
+    "no-magic-numbers": "allow",
+    "typescript/strict-boolean-expressions": "deny"
+  },
+  "env": { "builtin": true, "shared-node-browser": true },
+  "extends": [],
+  "globals": {}
+}
