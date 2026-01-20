@@ -1,37 +1,45 @@
-export function* range(start: number, end?: number, step = 1) {
-  // Create new variables to avoid reassigning parameters.
-  let actualStart = start;
-  let actualEnd = end;
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * Generates a numeric sequence (like Python's `range()`).
+ *
+ * @param {number} start - The first value in the sequence (inclusive).
+ * @param {number} stop - The stop value (exclusive). The sequence stops before reaching this number.
+ * @param {number} step - The increment (or decrement, if negative) between consecutive values.
+ * @yields {number} Each value in the sequence.
+ *
+ * @example
+ * // Simple ascstoping range
+ * [...range(0, 5, 1)];
+ * // → [0, 1, 2, 3, 4]
+ *
+ * @example
+ * // Custom step size
+ * [...range(1, 10, 2)];
+ * // → [1, 3, 5, 7, 9]
+ *
+ * @example
+ * // Lazy evaluation - only computes what you need
+ * for (const n of range(0, 1000000)) {
+ *   if (n > 5) break;  // Only generates 0-6, not all million numbers
+ *   console.log(n);
+ * }
+ *
+ * @example
+ * // Generate letters A–Z using Unicode codes.
+ * [...range("A".charCodeAt(0), "Z".charCodeAt(0) + 1, 1)].map(x => String.fromCharCode(x));
+ * // → ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+ */
+export function* range(start: number, stop?: number, step = 1): Generator<number> {
+  if (step === 0) throw new Error("Step cannot be zero");
 
-  // If only `start` is provided, assume it as `end` with `start` defaulting to 1.
-  if (actualEnd === undefined) {
-    actualEnd = actualStart;
-    actualStart = 1;
-  }
+  let [actualStart, actualStop] = stop === undefined ? [0, start] : [start, stop];
 
-  // Validate input types.
-  if (
-    typeof actualStart !== "number" ||
-    typeof actualEnd !== "number" ||
-    typeof step !== "number"
-  ) {
-    throw new TypeError("All arguments must be numbers.");
-  }
+  // Skip iteration setup if range is impossible
+  if ((step > 0 && actualStart >= actualStop) || (step < 0 && actualStart <= actualStop)) return;
 
-  // Step should not be zero to avoid infinite loops.
-  if (step === 0) throw new Error("Step cannot be zero.");
-
-  // Early return if range parameters are logically impossible.
-  if ((step > 0 && actualStart > actualEnd) || (step < 0 && actualStart < actualEnd)) {
-    return;
-  }
-
-  // Generate numbers in the range.
-  for (
-    let idx = actualStart;
-    step > 0 ? idx <= actualEnd : idx >= actualEnd;
-    idx += step
-  ) {
-    yield idx;
+  if (step > 0) {
+    for (let i = actualStart; i < actualStop; i += step) yield i;
+  } else {
+    for (let i = actualStart; i > actualStop; i += step) yield i;
   }
 }
