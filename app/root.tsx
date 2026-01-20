@@ -9,14 +9,72 @@ import {
 } from "react-router";
 
 import "@fontsource-variable/public-sans";
-import type { Route } from "./+types/root";
+import "temporal-polyfill/global";
 import "./global.css";
+
+import type { Route } from "./+types/root";
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg+xml", href: "favicon.svg" },
 ];
 
 type Props = React.ComponentPropsWithRef<"div">;
+
+export async function loader({ request }: Route.LoaderArgs) {
+  return { url: new URL("/", import.meta.env.PUBLIC_SITE_URL).toString() };
+}
+
+export const meta: Route.MetaFunction = ({ data }) => {
+  return [
+    { title: "Pennywise - Smart Personal Finance Management" },
+    {
+      name: "description",
+      content:
+        "Take control of your finances with Pennywise. Track spending, manage budgets, reach savings goals, and gain insights into your financial health. Free personal finance app with bank-level security.",
+    },
+    {
+      name: "keywords",
+      content:
+        "personal finance, personal finance software, budget tracker, budget planner, expense tracking, track expenses, savings goals, financial planning, money management, budget app, spending tracker, financial wellness",
+    },
+
+    // Open Graph / Facebook
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: data?.url ?? "https://pennywise.app" },
+    { property: "og:title", content: "Pennywise - Smart Personal Finance Management" },
+    {
+      property: "og:description",
+      content:
+        "Take control of your finances with Pennywise. Track spending, manage budgets, reach savings goals, and gain insights into your financial health.",
+    },
+    { property: "og:site_name", content: "Pennywise" },
+
+    // Twitter Card
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:url", content: data?.url ?? "https://pennywise.app" },
+    { name: "twitter:title", content: "Pennywise - Smart Personal Finance Management" },
+    {
+      name: "twitter:description",
+      content:
+        "Take control of your finances. Track spending, manage budgets, reach savings goals, and gain financial insights with Pennywise.",
+    },
+    { name: "twitter:creator", content: "@pennywise" },
+
+    // Additional SEO tags
+    { name: "robots", content: "index, follow" },
+    { name: "author", content: "Pennywise" },
+    { name: "viewport", content: "width=device-width, initial-scale=1" },
+    { name: "theme-color", content: "#10B981" },
+
+    // Mobile app capabilities
+    { name: "mobile-web-app-capable", content: "yes" },
+    { name: "mobile-web-app-status-bar-style", content: "default" },
+    { name: "mobile-web-app-title", content: "Pennywise" },
+
+    // Security and privacy signals
+    { "http-equiv": "Content-Security-Policy", content: "upgrade-insecure-requests" },
+  ];
+};
 
 export function Layout({ children }: Props) {
   return <Root>{children}</Root>;
@@ -62,7 +120,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     <main className="container mx-auto p-4 pt-16">
       <h1>{message}</h1>
       <p>{details}</p>
-      {stack && (
+      {stack != null && (
         <pre className="w-full overflow-x-auto p-4">
           <code>{stack}</code>
         </pre>
