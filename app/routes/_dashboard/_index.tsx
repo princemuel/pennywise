@@ -1,4 +1,4 @@
-import type { Route } from "../+types/root";
+import type { Route } from "./+types/_index";
 
 export const meta: Route.MetaFunction = () => {
   return [

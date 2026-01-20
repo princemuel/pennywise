@@ -1,7 +1,7 @@
 export default function Page() {
   return (
     <>
-      <h1>Pennywise</h1>
+      <h1 id="a11ty-headline">Transactions</h1>
     </>
   );
 }
