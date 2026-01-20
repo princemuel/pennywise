@@ -1,70 +1,72 @@
 import {
-	isRouteErrorResponse,
-	Links,
-	Meta,
-	Outlet,
-	Scripts,
-	ScrollRestoration,
-type LinksFunction
-} from 'react-router';
+  isRouteErrorResponse,
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  type LinksFunction,
+} from "react-router";
 
-import type { Route } from './+types/root';
-import './global.css';
-import '@fontsource-variable/public-sans';
+import "@fontsource-variable/public-sans";
+import type { Route } from "./+types/root";
+import "./global.css";
 
-export const links: LinksFunction = () => {
-	return [{ rel: 'icon', type: 'image/svg+xml', href: 'favicon.svg' }];
-};
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg+xml", href: "favicon.svg" },
+];
 
-export function Layout({ children }: { children: React.ReactNode }) {
-	return <Root>{children}</Root>;
+type Props = React.ComponentPropsWithRef<"div">;
+
+export function Layout({ children }: Props) {
+  return <Root>{children}</Root>;
 }
 
-function Root({ children }: { children: React.ReactNode }) {
-	return (
-		<html lang="en" className="antialiased motion-safe:scroll-smooth">
-			<head>
-				<meta charSet="utf-8" />
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<Meta />
-				<Links />
-			</head>
-			<body className="relative grid min-h-svh flex-col bg-white font-sans text-base">
-				{children}
-				<ScrollRestoration />
-				<Scripts />
-			</body>
-		</html>
-	);
+function Root({ children }: Props) {
+  return (
+    <html lang="en" className="motion-safe:scroll-smooth">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body className="relative min-h-svh bg-beige-100 font-sans text-base font-normal antialiased">
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+  );
 }
 
 export default function App() {
-	return <Outlet />;
+  return <Outlet />;
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-	let message = 'Oops!';
-	let details = 'An unexpected error occurred.';
-	let stack: string | undefined;
+  let message = "Oops!";
+  let details = "An unexpected error occurred.";
+  let stack: string | undefined;
 
-	if (isRouteErrorResponse(error)) {
-		message = error.status === 404 ? '404' : 'Error';
-		details =
-			error.status === 404 ? 'The requested page could not be found.' : error.statusText || details;
-	} else if (import.meta.env.DEV && error && error instanceof Error) {
-		details = error.message;
-		stack = error.stack;
-	}
+  if (isRouteErrorResponse(error)) {
+    message = error.status === 404 ? "404" : "Error";
+    details =
+      error.status === 404 ? "The requested page could not be found." : error.statusText || details;
+  } else if (import.meta.env.DEV && error != null && error instanceof Error) {
+    details = error.message;
+    stack = error.stack;
+  }
 
-	return (
-		<main className="container mx-auto p-4 pt-16">
-			<h1>{message}</h1>
-			<p>{details}</p>
-			{stack && (
-				<pre className="w-full overflow-x-auto p-4">
-					<code>{stack}</code>
-				</pre>
-			)}
-		</main>
-	);
+  return (
+    <main className="container mx-auto p-4 pt-16">
+      <h1>{message}</h1>
+      <p>{details}</p>
+      {stack && (
+        <pre className="w-full overflow-x-auto p-4">
+          <code>{stack}</code>
+        </pre>
+      )}
+    </main>
+  );
 }

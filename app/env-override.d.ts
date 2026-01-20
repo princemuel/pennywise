@@ -1,5 +1,7 @@
 /// <reference types="vite-plugin-svgr/client" />
 
+var __singletons__: Map<string, unknown> | undefined;
+
 // interface ImportMetaEnv {
 //   [key: string]: string;
 // }
@@ -8,4 +10,4 @@
 //   readonly env: ImportMetaEnv;
 // }
 
-// declare const __BUILD_DATE__: string;
+declare const __BUILD_DATE__: string;
