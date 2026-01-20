@@ -10,6 +10,7 @@ export { default as ImageEthanClark } from "./ethan-clark.jpg";
 export { default as ImageFlavorFiesta } from "./flavor-fiesta.jpg";
 export { default as ImageGreenPlateEatery } from "./green-plate-eatery.jpg";
 export { default as ImageHarperEdwards } from "./harper-edwards.jpg";
+export { default as ImageIllustration } from "./illustration-authentication.svg";
 export { default as ImageJamesThompson } from "./james-thompson.jpg";
 export { default as ImageLiamHughes } from "./liam-hughes.jpg";
 export { default as ImageLilaRamirez } from "./lily-ramirez.jpg";

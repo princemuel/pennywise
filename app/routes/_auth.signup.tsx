@@ -40,10 +40,10 @@ export default function Page() {
     <Form
       method="post"
       {...getFormProps(form)}
-      className="flex flex-col gap-8 rounded-xl bg-white p-6 shadow-md"
+      className="mx-auto flex w-full max-w-2xl flex-col gap-8 rounded-xl bg-white px-8 py-12 shadow-md"
     >
       <h1 id="a11ty-headline" className="text-4xl font-bold text-grey-900">
-        Register
+        Sign up
       </h1>
 
       <section className="grid grid-cols-6 gap-5">
@@ -65,7 +65,7 @@ export default function Page() {
             role="alert"
             aria-live="polite"
             aria-atomic="true"
-            className="text-xs font-light text-red-400"
+            className="self-end text-xs text-grey-500"
             id={fields.name.errorId}
           >
             {fields.name.errors?.join("\n")}
@@ -88,7 +88,7 @@ export default function Page() {
             role="alert"
             aria-live="polite"
             aria-atomic="true"
-            className="text-xs font-light text-red-400"
+            className="self-end text-xs text-grey-500"
             id={fields.email.errorId}
           >
             {fields.email.errors?.join("\n")}
@@ -117,7 +117,7 @@ export default function Page() {
             role="alert"
             aria-live="polite"
             aria-atomic="true"
-            className="text-xs font-light text-red-400"
+            className="self-end text-xs text-grey-500"
             id={fields.password.errorId}
           >
             {fields.password.errors?.join("\n")}
@@ -131,8 +131,8 @@ export default function Page() {
 
       <footer className="flex items-center justify-center gap-4">
         <p className="text-sm text-grey-500">Need to create an account?</p>
-        <Link to="/signin" className="font-bold text-grey-900 underline">
-          Login
+        <Link to="/sign-in" className="font-bold text-grey-900 underline">
+          Sign in
         </Link>
       </footer>
     </Form>
