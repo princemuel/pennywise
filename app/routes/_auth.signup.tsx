@@ -130,8 +130,8 @@ export default function Page() {
       </button>
 
       <footer className="flex items-center justify-center gap-4">
-        <p className="text-sm text-grey-500">Need to create an account?</p>
-        <Link to="/sign-in" className="font-bold text-grey-900 underline">
+        <p className="text-sm text-grey-500">Already have an account?</p>
+        <Link to="/signin" className="font-bold text-grey-900 underline">
           Sign in
         </Link>
       </footer>

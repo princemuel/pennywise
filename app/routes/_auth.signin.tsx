@@ -43,7 +43,7 @@ export default function Page() {
       className="mx-auto flex w-full max-w-2xl flex-col gap-8 rounded-xl bg-white px-8 py-12 shadow-md"
     >
       <h1 id="a11ty-headline" className="text-4xl font-bold text-grey-900">
-        Sign in
+        Login
       </h1>
 
       <section className="grid grid-cols-6 gap-5">
@@ -108,7 +108,7 @@ export default function Page() {
 
       <footer className="flex items-center justify-center gap-4">
         <p className="text-sm text-grey-500">Need to create an account?</p>
-        <Link to="/sign-up" className="font-bold text-grey-900 underline">
+        <Link to="/signup" className="font-bold text-grey-900 underline">
           Sign up
         </Link>
       </footer>
