@@ -6,7 +6,7 @@ import { defineConfig, env } from "prisma/config";
 export default defineConfig({
   schema: "prisma/schema.prisma",
   typedSql: { path: "prisma/queries" },
-  datasource: { url: env("LOCAL_DATABASE_URL") },
+  datasource: { url: env("DATABASE_URL") },
   migrations: {
     path: "prisma/migrations",
     seed: `node --import=tsx prisma/seed.ts`,

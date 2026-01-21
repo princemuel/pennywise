@@ -1,11 +1,12 @@
-import { DATABASE_TOKEN, DATABASE_URL } from '$lib/config/env.server';
-import { remember } from '$lib/helpers/singleton';
+// import { PrismaClient } from '@prisma/client';
+// import { PrismaPg } from '@prisma/adapter-pg';
 
-import { createClient } from '@libsql/client';
-import { PrismaLibSQL } from '@prisma/adapter-libsql';
-import { PrismaClient } from '@prisma/client';
+// const libsql = createClient({ url: DATABASE_URL, authToken: DATABASE_TOKEN });
+// const adapter = new PrismaLibSQL(libsql);
 
-const libsql = createClient({ url: DATABASE_URL, authToken: DATABASE_TOKEN });
-const adapter = new PrismaLibSQL(libsql);
+// const adapter = new PrismaPg({ connectionString: DATABASE_URL });
+// const prisma = new PrismaClient({ adapter });
 
-export const db = remember('__db__', () => new PrismaClient({ adapter }));
+// export const db = remember('__db__', () => new PrismaClient({ adapter }));
+
+export {};
