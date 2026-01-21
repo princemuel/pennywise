@@ -10,56 +10,68 @@ export default function Layout() {
   const isSidebarExpanded = rootData?.showNav ?? true;
 
   return (
-    <section
-      className={tw([
-        "@container grid h-svh w-full max-lg:grid-rows-[1fr_auto] lg:grid-cols-[auto_1fr]",
-      ])}
-    >
+    <section className="@container grid h-svh w-full max-lg:grid-rows-[1fr_auto] lg:grid-cols-[auto_1fr]">
       <aside
+        data-expanded={isSidebarExpanded}
         className={tw([
-          "bg-grey-900 px-4 max-lg:order-2 max-lg:rounded-t-2xl max-lg:pt-2 sm:px-10",
-          "lg:flex lg:flex-col lg:overflow-y-auto lg:rounded-r-2xl lg:p-0 lg:py-12",
-          "lg:transition-[width,padding] lg:duration-300 lg:ease-in-out",
-          isSidebarExpanded ? "lg:w-64 lg:pr-6" : "lg:w-20 lg:pr-0",
+          // Base styles
+          "bg-grey-900 lg:overflow-y-auto",
+          // Mobile styles
+          "order-2 rounded-t-2xl px-4 pt-2 sm:px-10",
+          // Desktop styles
+          "lg:order-1 lg:rounded-r-2xl lg:p-0 lg:py-12",
+          // Width animation
+          "lg:transition-[width,padding] lg:duration-500 lg:ease-in-out",
+          isSidebarExpanded ? "lg:w-75 lg:pr-6" : "lg:w-22 lg:pr-0",
         ])}
       >
-        <section className="min-h-full flex-col gap-16 lg:flex">
+        <div className="flex min-h-full flex-col gap-16">
           <Link
             to="/"
-            className="hidden items-center justify-center text-white transition-all duration-300 lg:flex"
+            className={tw([
+              "hidden items-center text-white lg:flex",
+              isSidebarExpanded ? "justify-start" : "justify-center",
+            ])}
           >
-            {isSidebarExpanded ? (
-              <IconLogo className="transition-transform duration-300" />
-            ) : (
-              <IconLogoX className="transition-transform duration-300" />
-            )}
+            {isSidebarExpanded ? <IconLogo /> : <IconLogoX />}
           </Link>
 
-          {/* Navigation */}
           <nav
             aria-label="Main"
-            className="flex items-center justify-between capitalize lg:flex-col lg:items-stretch"
+            className="flex items-center justify-between capitalize lg:flex-col lg:items-stretch lg:gap-1"
           >
             {routes.map((r) => (
               <NavLink
                 to={r.href}
                 key={r.text}
                 className={tw([
-                  "p-2 text-sm font-bold lg:p-4 lg:text-base",
-                  "grid flex-1 items-center justify-items-center gap-2",
-                  "md:grid-rows-2 lg:grid-rows-1 lg:gap-4",
-                  isSidebarExpanded ? "lg:grid-cols-[auto_1fr]" : "lg:grid-cols-1",
-                  "max-lg:rounded-t-xl lg:rounded-r-xl",
-                  "bg-transparent active:bg-beige-100 aria-[current=page]:bg-beige-100",
-                  "text-grey-300 hover:text-grey-100 focus:text-grey-100 aria-[current=page]:text-brand-400",
+                  // Layout
+                  "grid flex-1 items-center gap-2 p-2",
+                  "md:grid-rows-2 lg:grid-rows-1 lg:gap-4 lg:p-4",
+                  isSidebarExpanded ? "lg:grid-cols-[auto_1fr]" : "lg:grid-cols-[auto_0fr]",
+                  // Alignment
+                  "items-center justify-items-center lg:justify-items-start",
+                  // Transitions
+                  "lg:transition-[grid-template-columns] lg:duration-500 lg:ease-in-out",
+                  // Appearance
+                  "rounded-t-xl bg-transparent lg:rounded-t-none lg:rounded-r-xl",
+                  // States
+                  "text-grey-300 hover:text-grey-100 focus:text-grey-100",
+                  "active:bg-beige-100 aria-[current=page]:bg-beige-100 aria-[current=page]:text-brand-400",
+                  // Typography
+                  "text-sm font-bold lg:text-base",
                 ])}
               >
-                <r.Icon className="text-2xl" />
+                <r.Icon className={tw(["text-2xl", !isSidebarExpanded && "justify-self-center"])} />
                 <span
                   className={tw([
-                    "hidden aria-[current=page]:text-grey-900 md:inline-flex",
-                    "transition-[opacity,width] transition-discrete duration-300",
-                    !isSidebarExpanded && "lg:hidden lg:w-0 lg:overflow-hidden lg:opacity-0",
+                    // Visibility
+                    "hidden",
+                    !isSidebarExpanded ? "md:hidden" : "md:block",
+                    // Text color for active state
+                    "aria-[current=page]:text-grey-900",
+                    // Animation - opacity fades while grid collapses
+                    "opacity-100 transition-[display] transition-discrete duration-300",
                   ])}
                 >
                   {r.text}
@@ -68,8 +80,8 @@ export default function Layout() {
             ))}
           </nav>
 
-          {/* Minimize/Expand Button */}
-          <Form method="post" className="mt-auto hidden lg:flex">
+          {/* Collapse/Expand Button */}
+          <Form method="post" className="mt-auto hidden lg:block">
             <input type="hidden" name="showNav" value={`${!isSidebarExpanded}`} />
             <button
               type="submit"
@@ -77,32 +89,37 @@ export default function Layout() {
               aria-expanded={isSidebarExpanded}
               aria-label={isSidebarExpanded ? "Minimize menu" : "Expand menu"}
               className={tw([
-                "p-4 text-base font-bold",
-                "flex flex-1 items-center gap-4",
+                // Layout
+                "grid w-full items-center gap-4 p-4",
+                isSidebarExpanded ? "lg:grid-cols-[auto_1fr]" : "lg:grid-cols-[auto_0fr]",
+                // Transitions
+                "transition-[grid-template-columns] duration-500 ease-in-out",
+                // Typography
+                "text-base font-bold",
+                // States
                 "text-grey-300 hover:text-grey-100 focus:text-grey-100",
-                "lg:grid lg:grid-cols-[auto_1fr] lg:items-center",
               ])}
             >
               <IconArrowFatLinesLeft
                 className={tw([
-                  "text-2xl transition-transform duration-300 lg:justify-self-center",
-                  !isSidebarExpanded && "rotate-180",
+                  "text-2xl transition-transform duration-300",
+                  !isSidebarExpanded && "rotate-180 justify-self-center",
                 ])}
               />
               <span
                 className={tw([
-                  "transition-[opacity,width] duration-300",
-                  !isSidebarExpanded && "lg:w-0 lg:overflow-hidden lg:opacity-0",
+                  "overflow-hidden transition-[opacity,display] duration-300",
+                  !isSidebarExpanded ? "md:hidden" : "md:block",
                 ])}
               >
                 Minimize Menu
               </span>
             </button>
           </Form>
-        </section>
+        </div>
       </aside>
 
-      <main aria-labelledby="a11ty-headline" className="overflow-y-auto max-lg:order-1">
+      <main aria-labelledby="a11ty-headline" className="order-1 overflow-y-auto lg:order-2">
         <Outlet />
       </main>
     </section>

@@ -3,6 +3,7 @@ import {
   Links,
   Meta,
   Outlet,
+  redirect,
   Scripts,
   ScrollRestoration,
   type LinksFunction,
@@ -13,6 +14,7 @@ import "temporal-polyfill/global";
 import "./global.css";
 
 import type { Route } from "./+types/root";
+import { userPrefs } from "./cookies.server";
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg+xml", href: "favicon.svg" },
@@ -21,7 +23,21 @@ export const links: LinksFunction = () => [
 type Props = React.ComponentPropsWithRef<"div">;
 
 export async function loader({ request }: Route.LoaderArgs) {
-  return { url: new URL("/", import.meta.env.PUBLIC_SITE_URL).toString() };
+  // oxlint-disable-next-line typescript/strict-boolean-expressions
+  const cookie = (await userPrefs.parse(request.headers.get("Cookie"))) || {};
+  return {
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+    showNav: (cookie.showNav ?? true) as boolean,
+    url: new URL("/", import.meta.env.PUBLIC_SITE_URL).toString(),
+  };
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  // oxlint-disable-next-line typescript/strict-boolean-expressions
+  const cookie = (await userPrefs.parse(request.headers.get("Cookie"))) || {};
+  const formData = await request.formData();
+  cookie.showNav = formData.get("showNav") === "true";
+  return redirect("/", { headers: { "Set-Cookie": await userPrefs.serialize(cookie) } });
 }
 
 export const meta: Route.MetaFunction = ({ data }) => {
