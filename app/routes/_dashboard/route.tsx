@@ -19,7 +19,6 @@ export default function Layout() {
           "order-2 bg-grey-900 lg:order-1",
           "rounded-t-2xl px-4 pt-2 sm:px-10",
           "lg:order-1 lg:rounded-r-2xl lg:p-0 lg:py-12",
-          "transition-[width,padding,display,grid-template-columns] transition-discrete duration-300",
           expanded
             ? "lg:w-75 lg:grid-cols-[auto_1fr] lg:pr-6"
             : "lg:w-22 lg:grid-cols-[auto] lg:pr-2",
@@ -50,7 +49,6 @@ export default function Layout() {
                   "text-grey-300 hover:text-grey-100 focus:text-grey-100",
                   "aria-[current=page]:bg-beige-100 aria-[current=page]:text-brand-400",
                   "max-lg:aria-[current=page]:border-b-4 lg:aria-[current=page]:border-l-4",
-                  "transition-[width,padding,display,grid-template-columns] transition-discrete duration-300",
                 ])}
               >
                 <route.Icon className="text-2xl" aria-hidden="true" />
@@ -69,26 +67,17 @@ export default function Layout() {
               aria-label={`${uiState} navigation`}
               value={`${!expanded}`}
               className={tw([
-                "grid w-full items-center p-2",
-                "p-4 lg:justify-items-center lg:gap-6 lg:not-in-minimized:px-8",
-                "lg:not-in-minimized:grid-cols-[1rem_1fr] lg:not-in-minimized:justify-items-start",
+                "flex w-full items-center justify-center p-2",
+                "lg:gap-6 lg:p-4 lg:not-in-minimized:px-8",
                 "text-xs font-bold capitalize lg:text-base",
                 "text-grey-300 hover:text-grey-100 focus:text-grey-100",
-                "transition-[width,padding,display,grid-template-columns] transition-discrete duration-300",
               ])}
             >
               <IconArrowFatLinesLeft
-                className="text-2xl transition-transform duration-300 in-minimized:rotate-180"
+                className="text-2xl in-minimized:rotate-180"
                 aria-hidden="true"
               />
-              <span
-                className={tw([
-                  "hidden flex-1 sm:not-in-minimized:inline-block",
-                  "transition-[width,padding,display,grid-template-columns] transition-discrete duration-300",
-                ])}
-              >
-                minimize menu
-              </span>
+              <span className="hidden flex-1 sm:not-in-minimized:inline-block">minimize menu</span>
             </button>
           </Form>
         </div>
