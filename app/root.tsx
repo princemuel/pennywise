@@ -27,7 +27,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const cookie = (await userPrefs.parse(request.headers.get("Cookie"))) || {};
   return {
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    showNav: (cookie.showNav ?? true) as boolean,
+    minimize: (cookie.minimize ?? true) as boolean,
     url: new URL("/", import.meta.env.PUBLIC_SITE_URL).toString(),
   };
 }
@@ -36,7 +36,7 @@ export async function action({ request }: Route.ActionArgs) {
   // oxlint-disable-next-line typescript/strict-boolean-expressions
   const cookie = (await userPrefs.parse(request.headers.get("Cookie"))) || {};
   const formData = await request.formData();
-  cookie.showNav = formData.get("showNav") === "true";
+  cookie.minimize = formData.get("minimize") === "true";
   return redirect("/", { headers: { "Set-Cookie": await userPrefs.serialize(cookie) } });
 }
 

@@ -65,8 +65,7 @@
 @utility content-auto {
   content-visibility: auto;
 }
-@custom-variant dark (&:where(.dark, .dark *));
-@custom-variant data-compact (&:where([data-ui~="compact"], [data-ui~="compact"] *));
+@custom-variant minimized (&:where([data-ui~=collapsed], [data-ui~=collapsed] *));
 
 @media (hover: hover) and (pointer: fine) {
   body {

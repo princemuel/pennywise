@@ -28,7 +28,7 @@
 		"source.fixAll": "explicit",
 		"source.organizeImports.biome": "explicit"
 	},
-	"editor.defaultFormatter": "prettier.prettier-vscode",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"json.validate.enable": true,
 	"tailwindCSS.emmetCompletions": true,
 	"tailwindCSS.experimental.classRegex": [
