@@ -58,7 +58,12 @@ export default function Layout() {
           </nav>
 
           {/* NAVIGATION */}
-          <Form method="post" className="mt-auto hidden lg:block">
+          <Form
+            method="post"
+            action="/_actions/sidebar"
+            navigate={false}
+            className="mt-auto hidden lg:block"
+          >
             <button
               type="submit"
               name="minimize"
@@ -83,7 +88,10 @@ export default function Layout() {
         </div>
       </aside>
 
-      <main aria-labelledby="a11ty-headline" className="order-1 overflow-y-auto lg:order-2">
+      <main
+        aria-labelledby="a11ty-headline"
+        className="@container/main order-1 flex flex-col gap-8 overflow-y-auto px-6 py-8 lg:order-2"
+      >
         <Outlet />
       </main>
     </section>

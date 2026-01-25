@@ -3,7 +3,6 @@ import {
   Links,
   Meta,
   Outlet,
-  redirect,
   Scripts,
   ScrollRestoration,
   type LinksFunction,
@@ -30,14 +29,6 @@ export async function loader({ request }: Route.LoaderArgs) {
     minimize: (cookie.minimize ?? true) as boolean,
     url: new URL("/", import.meta.env.PUBLIC_SITE_URL).toString(),
   };
-}
-
-export async function action({ request }: Route.ActionArgs) {
-  // oxlint-disable-next-line typescript/strict-boolean-expressions
-  const cookie = (await userPrefs.parse(request.headers.get("Cookie"))) || {};
-  const formData = await request.formData();
-  cookie.minimize = formData.get("minimize") === "true";
-  return redirect("/", { headers: { "Set-Cookie": await userPrefs.serialize(cookie) } });
 }
 
 export const meta: Route.MetaFunction = ({ data }) => {
@@ -88,7 +79,7 @@ export const meta: Route.MetaFunction = ({ data }) => {
     { name: "mobile-web-app-title", content: "Pennywise" },
 
     // Security and privacy signals
-    { "http-equiv": "Content-Security-Policy", content: "upgrade-insecure-requests" },
+    { httpEquiv: "Content-Security-Policy", content: "upgrade-insecure-requests" },
   ];
 };
 

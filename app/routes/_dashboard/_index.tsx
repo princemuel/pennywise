@@ -36,7 +36,7 @@ export const meta: Route.MetaFunction = () => {
 export default function Page() {
   return (
     <>
-      <h1>Pennywise</h1>
+      <h1>Overview</h1>
     </>
   );
 }

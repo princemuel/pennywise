@@ -7,6 +7,8 @@ export default [
     route("signup", "./routes/_auth/signup.tsx"),
   ]),
 
+  ...prefix("_actions", [route("sidebar", "./routes/_actions/sidebar.ts")]),
+
   layout("./routes/_dashboard/route.tsx", [
     index("./routes/_dashboard/_index.tsx"),
     ...prefix("bills", [index("./routes/_dashboard/bills.tsx")]),
