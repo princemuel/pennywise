@@ -27,6 +27,7 @@ export default function Layout() {
         <div className="flex min-h-full flex-col gap-16">
           <Link
             to="/"
+            viewTransition
             className="group hidden items-center py-4 text-white not-in-minimized:px-8 in-minimized:justify-center lg:flex"
           >
             <span className="sr-only">Home</span>
@@ -41,6 +42,7 @@ export default function Layout() {
               <NavLink
                 key={route.text}
                 to={route.href}
+                viewTransition
                 className={tw([
                   "flex-1 p-2 text-xs font-bold lg:text-base",
                   "flex flex-col items-center justify-center gap-1",
@@ -90,7 +92,7 @@ export default function Layout() {
 
       <main
         aria-labelledby="a11ty-headline"
-        className="@container/main order-1 flex flex-col gap-8 overflow-y-auto px-6 py-8 lg:order-2"
+        className="@container/main order-1 flex flex-col gap-10 overflow-y-auto px-6 py-8 lg:order-2"
       >
         <Outlet />
       </main>

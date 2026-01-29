@@ -6,7 +6,7 @@ import { z } from "zod";
 
 import { IconEye, IconEyeSlash } from "@/assets/media/icons";
 
-import type { Route } from "./+types/_auth.signin";
+import type { Route } from "./+types/signin";
 
 const schema = z.object({ email: z.email(), password: z.string() });
 

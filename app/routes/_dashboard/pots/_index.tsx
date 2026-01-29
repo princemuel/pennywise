@@ -1,21 +1,15 @@
-import type { Route } from "./+types/pots";
-
-import { createHash } from "node:crypto";
+import { IconEllipsis } from "@/assets/media/icons";
+import { Link } from "react-router";
+import type { Route } from "./+types/_index";
 
 export async function loader() {
-  const data = await import("@/content/database.json");
-
-  const result = data.pots.map((pot) =>
-    Object.assign(pot, {
-      id: createHash("sha1").update(pot.name).digest("hex").slice(0, 6),
-      percent: (pot.total / pot.target) * 100,
-    }),
-  );
-
-  return result;
+  const data = (await import("@/content/data")).default;
+  return { response: data.pots };
 }
+
 export default function Page({ loaderData }: Route.ComponentProps) {
-  const pots = loaderData;
+  const pots = loaderData.response;
+
   return (
     <>
       <header>
@@ -24,8 +18,8 @@ export default function Page({ loaderData }: Route.ComponentProps) {
         </h1>
       </header>
 
-      <section className="grid gap-6 @md/main:grid-cols-[repeat(auto-fit,minmax(clamp(24rem,100%,28rem),1fr))]">
-        {pots.map((pot) => (
+      <section className="grid gap-8 @md/main:grid-cols-[repeat(auto-fit,minmax(clamp(24rem,100%,28rem),1fr))]">
+        {(pots ?? []).map((pot) => (
           <article
             key={pot.id}
             className="flex flex-col gap-8 rounded-xl bg-white p-6"
@@ -39,28 +33,50 @@ export default function Page({ loaderData }: Route.ComponentProps) {
               <div className="relative ml-auto">
                 <button
                   type="button"
-                  popoverTarget={pot.id}
+                  popoverTarget={`pot-actions-${pot.id}`}
                   popoverTargetAction="toggle"
-                  className="anchor"
+                  aria-haspopup="menu"
+                  aria-label="Open pot actions"
+                  aria-controls={pot.id}
+                  className="rounded p-2 text-grey-300 hover:text-grey-500 focus-visible:outline-2"
                   style={{ anchorName: `--anchor-${pot.id}` }}
                 >
-                  ...
+                  <span className="sr-only">Open pot actions menu</span>
+                  <IconEllipsis className="text-xl" />
                 </button>
 
                 <div
-                  id={pot.id}
-                  popover=""
-                  className="absolute inset-auto top-[anchor(top)] right-[anchor(right)] m-0 mt-8 rounded-lg bg-white shadow-sm transition-all transition-discrete duration-500 open:flex starting:open:opacity-0"
+                  id={`pot-actions-${pot.id}`}
+                  popover="auto"
+                  className="absolute inset-auto top-[anchor(top)] right-[anchor(right)] m-0 mt-6 rounded-lg bg-white opacity-0 shadow-sm transition transition-discrete duration-1000 ease-in open:grid open:opacity-100 starting:open:grid starting:open:opacity-0"
                   style={{ positionAnchor: `--anchor-${pot.id}` }}
                 >
-                  <section className="flex flex-col divide-y divide-grey-100 px-6 *:py-4">
-                    <button type="button" className="text-sm text-grey-900">
-                      Edit Pot
-                    </button>
-                    <button type="button" className="text-sm text-brand-200">
-                      Delete Pot
-                    </button>
-                  </section>
+                  <menu className="flex flex-col divide-y divide-grey-100 px-6">
+                    <li className="py-2">
+                      <Link
+                        to={`${pot.id}/edit`}
+                        popoverTarget={`pot-actions-${pot.id}`}
+                        popoverTargetAction="hide"
+                        aria-haspopup="dialog"
+                        aria-controls={`edit-pot-modal-${pot.id}`}
+                        className="text-sm text-grey-900 focus-visible:outline-2"
+                      >
+                        Edit Pot
+                      </Link>
+                    </li>
+                    <li className="py-2">
+                      <Link
+                        to={`${pot.id}/delete`}
+                        popoverTarget={`pot-actions-${pot.id}`}
+                        popoverTargetAction="hide"
+                        aria-haspopup="dialog"
+                        aria-controls={`delete-pot-modal-${pot.id}`}
+                        className="text-sm text-brand-200 focus-visible:outline-2"
+                      >
+                        Delete Pot
+                      </Link>
+                    </li>
+                  </menu>
                 </div>
               </div>
             </header>

@@ -5,8 +5,7 @@ import { data, Form, Link, useActionData } from "react-router";
 import { z } from "zod";
 
 import { IconEye, IconEyeSlash } from "@/assets/media/icons";
-
-import type { Route } from "./+types/_auth.signup";
+import type { Route } from "./+types/signup";
 
 const schema = z.object({ name: z.string(), email: z.email(), password: z.string() });
 
@@ -50,7 +49,7 @@ export default function Page() {
         <input type="hidden" name="honeypot" placeholder="do not fill this" className="sr-only" />
 
         <div className="group col-span-full flex flex-col gap-2">
-          <label className="text-xs font-bold text-grey-500" htmlFor={fields.email.id}>
+          <label className="text-xs font-bold text-grey-500" htmlFor={fields.name.id}>
             Name
           </label>
 
