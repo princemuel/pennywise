@@ -1,7 +1,8 @@
-import type { Metadata, Viewport } from "next";
 import { Public_Sans } from "next/font/google";
 import "temporal-polyfill/global";
 import "./globals.css";
+
+import type { Metadata, Viewport } from "next";
 
 const publicSans = Public_Sans({
   variable: "--font-family-sans",

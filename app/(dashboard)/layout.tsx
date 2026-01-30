@@ -1,11 +1,15 @@
+import { toggleSidebar } from "@/actions/sidebar";
 import { IconArrowFatLinesLeft, IconLogo, IconLogoX } from "@/assets/media/icons";
-import { Form, Link, NavLink, Outlet, useRouteLoaderData } from "react-router";
-
 import { tw } from "@/helpers/tailwind";
 import routes from "@/lib/content/routes";
-import type { loader } from "@/root";
+import Form from "next/form";
+import Link from "next/link";
 
-export default function Layout() {
+export default function Layout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   const rootData = useRouteLoaderData<typeof loader>("root");
   const expanded = rootData?.minimize ?? true;
   const uiState = expanded ? "expanded" : "collapsed";
@@ -26,8 +30,7 @@ export default function Layout() {
       >
         <div className="flex min-h-full flex-col gap-16">
           <Link
-            to="/"
-            viewTransition
+            href="/"
             className="group hidden items-center py-4 text-white not-in-minimized:px-8 in-minimized:justify-center lg:flex"
           >
             <span className="sr-only">Home</span>
@@ -39,10 +42,9 @@ export default function Layout() {
             className="flex items-center justify-between capitalize lg:flex-col lg:items-stretch lg:gap-1"
           >
             {routes.map((route) => (
-              <NavLink
+              <Link
                 key={route.text}
-                to={route.href}
-                viewTransition
+                href={route.href}
                 className={tw([
                   "flex-1 p-2 text-xs font-bold lg:text-base",
                   "flex flex-col items-center justify-center gap-1",
@@ -55,17 +57,12 @@ export default function Layout() {
               >
                 <route.Icon className="text-2xl" aria-hidden="true" />
                 <span className="hidden flex-1 sm:not-in-minimized:inline-block">{route.text}</span>
-              </NavLink>
+              </Link>
             ))}
           </nav>
 
           {/* NAVIGATION */}
-          <Form
-            method="post"
-            action="/_actions/sidebar"
-            navigate={false}
-            className="mt-auto hidden lg:block"
-          >
+          <Form action={toggleSidebar} className="mt-auto hidden lg:block">
             <button
               type="submit"
               name="minimize"
@@ -94,7 +91,7 @@ export default function Layout() {
         aria-labelledby="a11ty-headline"
         className="@container/main order-1 flex flex-col gap-10 overflow-y-auto px-6 py-8 lg:order-2"
       >
-        <Outlet />
+        {children}
       </main>
     </section>
   );

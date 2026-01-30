@@ -1,7 +1,9 @@
+"use client";
+
 import { tw } from "@/helpers/tailwind";
 import { useEffect, useRef } from "react";
 
-interface Props extends React.ComponentPropsWithRef<"dialog"> {}
+type Props = React.ComponentPropsWithRef<"dialog">;
 
 export const Dialog = ({ className, children, ...attrs }: Props) => {
   const ref = useRef<HTMLDialogElement>(null);
