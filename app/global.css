@@ -6,7 +6,7 @@
   --text-2xs--line-height: 0.875rem;
 
   --font-sans:
-    "Public Sans Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    var(--font-family-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   --breakpoint-3xs: 24em; /*  (min-width: 384px) */
