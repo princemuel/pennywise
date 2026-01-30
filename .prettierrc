@@ -12,10 +12,6 @@
     {
       "files": ["*.json"],
       "options": { "trailingComma": "es5" }
-    },
-    {
-      "files": ["**/*.astro"],
-      "options": { "parser": "astro" }
     }
   ]
 }

@@ -1,56 +1,59 @@
 {
-	"javascript.updateImportsOnFileMove.enabled": "always",
-	"js/ts.implicitProjectConfig.target": "ESNext",
-	"typescript.experimental.useTsgo": true,
-	"typescript.updateImportsOnFileMove.enabled": "always",
-	"editor.formatOnSave": true,
-	"editor.formatOnSaveMode": "file",
-	"editor.tabSize": 2,
-	"editor.wordWrap": "bounded",
-	"editor.wordWrapColumn": 108,
-	"editor.inlineSuggest.enabled": true,
-	"dotenv.enableAutocloaking": false,
-	"oxc.enable": true,
-	"oxc.typeAware": true,
-	"oxc.fixKind": "safe_fix_or_suggestion",
-	"material-icon-theme.activeIconPack": "react_redux",
-	"template-string-converter.enabled": true,
-	"template-string-converter.convertWithinTemplateString": true,
-	"template-string-converter.convertOutermostQuotes": true,
-	"template-string-converter.autoRemoveTemplateString": true,
-	"template-string-converter.addBracketsToProps": true,
-	"markdown.validate.enabled": true,
-
-	"editor.bracketPairColorization.independentColorPoolPerBracketType": true,
-	"editor.codeActionsOnSave": {
-		"quickfix.biome": "explicit",
-		"source.addMissingImports": "explicit",
-		"source.fixAll": "explicit",
-		"source.organizeImports.biome": "explicit"
-	},
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"json.validate.enable": true,
-	"tailwindCSS.emmetCompletions": true,
-	"tailwindCSS.experimental.classRegex": [
-		["([\"'`][^\"'`]*.*?[\"'`])", "[\"'`]([^\"'`]*).*?[\"'`]"]
-	],
-	"tailwindCSS.includeLanguages": {
-		"xslt": "html"
-	},
-	"tailwindCSS.rootFontSize": 16,
-	"typescript.preferences.preferTypeOnlyAutoImports": true,
-	"[sql]": {
-		"editor.defaultFormatter": "mtxr.sqltools"
-	},
-	"[shellscript]": {
-		"editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
-	},
-	"yaml.schemas": {
-		"./.schemas/collection.schema.json": "*.collection.yml",
-		"https://json.schemastore.org/github-issue-config.json": "file:///home/nyx/Lab/Projects/Repos/website/.github/ISSUE_TEMPLATE/config.yml"
-	},
-	"[toml]": {
-		"editor.defaultFormatter": "tamasfe.even-better-toml"
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "js/ts.implicitProjectConfig.target": "ESNext",
+  "typescript.experimental.useTsgo": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.tabSize": 2,
+  "editor.wordWrap": "bounded",
+  "editor.wordWrapColumn": 108,
+  "editor.inlineSuggest.enabled": true,
+  "dotenv.enableAutocloaking": false,
+  // "oxc.enable": true,
+  // "oxc.typeAware": true,
+  // "oxc.fixKind": "safe_fix_or_suggestion",
+  "eslint.enable": true,
+  "material-icon-theme.activeIconPack": "react_redux",
+  "template-string-converter.enabled": true,
+  "template-string-converter.convertWithinTemplateString": true,
+  "template-string-converter.convertOutermostQuotes": true,
+  "template-string-converter.autoRemoveTemplateString": true,
+  "template-string-converter.addBracketsToProps": true,
+  "markdown.validate.enabled": true,
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  "editor.codeActionsOnSave": {
+    "quickfix.biome": "explicit",
+    "source.addMissingImports": "explicit",
+    "source.fixAll": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "json.validate.enable": true,
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.experimental.classRegex": [
+    [
+      "([\"'`][^\"'`]*.*?[\"'`])",
+      "[\"'`]([^\"'`]*).*?[\"'`]"
+    ]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "xslt": "html"
+  },
+  "tailwindCSS.rootFontSize": 16,
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+  },
+  "yaml.schemas": {
+    "./.schemas/collection.schema.json": "*.collection.yml",
+    "https://json.schemastore.org/github-issue-config.json": "file:///home/nyx/Lab/Projects/Repos/website/.github/ISSUE_TEMPLATE/config.yml"
+  },
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
