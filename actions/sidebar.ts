@@ -1,11 +1,9 @@
-import { secs } from "@/helpers/time";
+"use server";
 
-export async function toggleSidebar({ request }: Route.ActionArgs) {
-  // oxlint-disable-next-line typescript/strict-boolean-expressions
-  const cookie = (await userPrefs.parse(request.headers.get("Cookie"))) || {};
-  const formData = await request.formData();
-  cookie.minimize = formData.get("minimize") === "true";
-  return data(null, { headers: { "Set-Cookie": await userPrefs.serialize(cookie) } });
+import { getUserPrefs, setUserPrefs } from "@/lib/cookies";
+
+export async function toggleSidebar(formData: FormData) {
+  const minimize = formData.get("minimize") === "true";
+  const values = await getUserPrefs();
+  await setUserPrefs({ ...values, minimize });
 }
-
-export const userPrefs = createCookie("user-prefs", { maxAge: secs({ d: 7 }) });

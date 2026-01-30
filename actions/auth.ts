@@ -1,5 +1,5 @@
 import { SignInSchema, SignUpSchema } from "@/schema/auth";
-import { parseWithZod } from "@conform-to/zod";
+import { parseWithZod } from "@conform-to/zod/v4";
 
 export async function signin(prevState: unknown, formData: FormData) {
   const submission = parseWithZod(formData, { schema: SignInSchema });

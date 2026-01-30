@@ -1,17 +1,21 @@
-import { toggleSidebar } from "@/actions/sidebar";
-import { IconArrowFatLinesLeft, IconLogo, IconLogoX } from "@/assets/media/icons";
-import { tw } from "@/helpers/tailwind";
-import routes from "@/lib/content/routes";
 import Form from "next/form";
 import Link from "next/link";
 
-export default function Layout({
+import { toggleSidebar } from "@/actions/sidebar";
+import { tw } from "@/helpers/tailwind";
+import { getUserPrefs } from "@/lib/cookies";
+
+import { IconArrowFatLinesLeft, IconLogo, IconLogoX } from "@/assets/media/icons";
+import NavLink from "@/components/navlink";
+import routes from "@/lib/content/routes";
+
+export default async function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const rootData = useRouteLoaderData<typeof loader>("root");
-  const expanded = rootData?.minimize ?? true;
+  const { minimize } = await getUserPrefs();
+  const expanded = !minimize;
   const uiState = expanded ? "expanded" : "collapsed";
 
   return (
@@ -42,7 +46,7 @@ export default function Layout({
             className="flex items-center justify-between capitalize lg:flex-col lg:items-stretch lg:gap-1"
           >
             {routes.map((route) => (
-              <Link
+              <NavLink
                 key={route.text}
                 href={route.href}
                 className={tw([
@@ -57,7 +61,7 @@ export default function Layout({
               >
                 <route.Icon className="text-2xl" aria-hidden="true" />
                 <span className="hidden flex-1 sm:not-in-minimized:inline-block">{route.text}</span>
-              </Link>
+              </NavLink>
             ))}
           </nav>
 
@@ -69,7 +73,7 @@ export default function Layout({
               aria-controls="sidebar"
               aria-expanded={expanded}
               aria-label={`${uiState} navigation`}
-              value={`${!expanded}`}
+              value={`${!minimize}`}
               className={tw([
                 "flex w-full items-center justify-center p-2",
                 "lg:gap-6 lg:p-4 lg:not-in-minimized:px-8",
