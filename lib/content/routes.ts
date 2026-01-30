@@ -6,7 +6,15 @@ import {
   IconReceiptX,
 } from "@/assets/media/icons";
 
-export default [
+import type { Route as NextRoute } from "next";
+
+type Route<T extends string = string> = {
+  href: T;
+  text: string;
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+};
+
+const routes: Route<NextRoute>[] = [
   {
     text: "overview",
     href: "/",
@@ -33,3 +41,4 @@ export default [
     Icon: IconReceiptX,
   },
 ];
+export default routes;

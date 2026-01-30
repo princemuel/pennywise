@@ -7,7 +7,7 @@
   "editor.formatOnSaveMode": "file",
   "editor.tabSize": 2,
   "editor.wordWrap": "bounded",
-  "editor.wordWrapColumn": 108,
+  "editor.wordWrapColumn": 120,
   "editor.inlineSuggest.enabled": true,
   "dotenv.enableAutocloaking": false,
   // "oxc.enable": true,
@@ -32,10 +32,7 @@
   "json.validate.enable": true,
   "tailwindCSS.emmetCompletions": true,
   "tailwindCSS.experimental.classRegex": [
-    [
-      "([\"'`][^\"'`]*.*?[\"'`])",
-      "[\"'`]([^\"'`]*).*?[\"'`]"
-    ]
+    ["([\"'`][^\"'`]*.*?[\"'`])", "[\"'`]([^\"'`]*).*?[\"'`]"]
   ],
   "tailwindCSS.includeLanguages": {
     "xslt": "html"
@@ -56,6 +53,9 @@
     "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
   "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

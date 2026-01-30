@@ -9,7 +9,6 @@ import { IconEye, IconEyeSlash } from "@/assets/media/icons";
 import { signin } from "@/actions/auth";
 import { SignInSchema as schema } from "@/schema/auth";
 
-import { Icon } from "@/components/icon";
 import Form from "next/form";
 import Link from "next/link";
 
@@ -81,7 +80,7 @@ export default function Page() {
             />
 
             <button type="button" onClick={handlePassword} className="text-grey-900">
-              {type === "password" ? <Icon src={IconEye} /> : <Icon src={IconEyeSlash} />}
+              {type === "password" ? <IconEye /> : <IconEyeSlash />}
             </button>
           </div>
 

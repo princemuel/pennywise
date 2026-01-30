@@ -1,6 +1,6 @@
 import { Public_Sans } from "next/font/google";
 import "temporal-polyfill/global";
-import "./globals.css";
+import "./global.css";
 
 import type { Metadata, Viewport } from "next";
 
@@ -55,7 +55,11 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${publicSans.variable} motion-safe:scroll-smooth`}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${publicSans.variable} motion-safe:scroll-smooth`}
+    >
       <body className="relative min-h-svh bg-beige-100 font-sans text-base font-normal antialiased">
         {children}
       </body>

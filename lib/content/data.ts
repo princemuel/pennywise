@@ -1,7 +1,7 @@
-import database from "@/content/database.json";
+import database from "@/lib/content/db.json";
 import { createHash } from "node:crypto";
 
-export default {
+const data = {
   ...database,
   pots: database.pots.map((pot) =>
     Object.assign(pot, {
@@ -10,3 +10,5 @@ export default {
     }),
   ),
 };
+
+export default data;
