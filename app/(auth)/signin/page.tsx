@@ -2,18 +2,19 @@
 
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod/v4";
-import Form from "next/form";
-import Link from "next/link";
-import { useState } from "react";
-import { useFormState } from "react-dom";
+import { useActionState, useState } from "react";
 
 import { IconEye, IconEyeSlash } from "@/assets/media/icons";
 
 import { signin } from "@/actions/auth";
 import { SignInSchema as schema } from "@/schema/auth";
 
+import { Icon } from "@/components/icon";
+import Form from "next/form";
+import Link from "next/link";
+
 export default function Page() {
-  const [lastResult, action] = useFormState(signin, undefined);
+  const [lastResult, action] = useActionState(signin, undefined);
   const [form, fields] = useForm({
     lastResult,
     constraint: getZodConstraint(schema),
@@ -59,7 +60,7 @@ export default function Page() {
             role="alert"
             aria-live="polite"
             aria-atomic="true"
-            className="self-end text-xs text-grey-500"
+            className="self-end text-xs text-red-400"
             id={fields.email.errorId}
           >
             {fields.email.errors?.join("\n")}
@@ -80,7 +81,7 @@ export default function Page() {
             />
 
             <button type="button" onClick={handlePassword} className="text-grey-900">
-              {type === "password" ? <IconEye /> : <IconEyeSlash />}
+              {type === "password" ? <Icon src={IconEye} /> : <Icon src={IconEyeSlash} />}
             </button>
           </div>
 
@@ -88,7 +89,7 @@ export default function Page() {
             role="alert"
             aria-live="polite"
             aria-atomic="true"
-            className="self-end text-xs text-grey-500"
+            className="self-end text-xs text-red-400"
             id={fields.password.errorId}
           >
             {fields.password.errors?.join("\n")}

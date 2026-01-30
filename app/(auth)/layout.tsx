@@ -1,6 +1,8 @@
 import { IconLogo } from "@/assets/media/icons";
 import { ImageIllustration } from "@/assets/media/images";
 
+import { Icon } from "@/components/icon";
+
 export default function Layout({
   children,
 }: Readonly<{
@@ -12,15 +14,15 @@ export default function Layout({
       className="@container grid h-svh w-full grid-rows-[auto_1fr] lg:grid-cols-12 lg:grid-rows-1"
     >
       <header className="col-span-full flex items-center justify-center rounded-b-xl bg-grey-900 py-6 text-white lg:hidden">
-        <IconLogo />
+        <Icon src={IconLogo} />
       </header>
 
       <section className="col-span-5 hidden p-5 lg:block">
         <div
-          className="flex h-full flex-col justify-between rounded-xl bg-(image:--img-url) bg-cover bg-no-repeat p-16"
-          style={{ "--img-url": `url(${ImageIllustration})` }}
+          className="flex h-full flex-col justify-between rounded-xl bg-(image:--bgImg) bg-cover bg-no-repeat p-16"
+          style={{ "--bgImg": `url(${ImageIllustration.src})` }}
         >
-          <IconLogo className="text-white" />
+          <Icon src={IconLogo} className="text-white" />
 
           <hgroup className="space-y-6">
             <h2 className="text-3xl font-bold text-white">
