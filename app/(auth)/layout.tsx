@@ -1,8 +1,11 @@
 import { IconLogo } from "@/assets/media/icons";
 import { ImageIllustration } from "@/assets/media/images";
-import { Outlet } from "react-router";
 
-export default function Layout() {
+export default function Layout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <main
       aria-labelledby="a11ty-headline"
@@ -31,9 +34,7 @@ export default function Layout() {
         </div>
       </section>
 
-      <section className="self-center px-[6cqw] lg:col-span-7">
-        <Outlet />
-      </section>
+      <section className="self-center px-[6cqw] lg:col-span-7">{children}</section>
     </main>
   );
 }

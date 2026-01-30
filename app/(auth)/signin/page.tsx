@@ -1,25 +1,19 @@
+"use client";
+
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod/v4";
+import Form from "next/form";
+import Link from "next/link";
 import { useState } from "react";
-import { data, Form, Link, useActionData } from "react-router";
-import { z } from "zod";
+import { useFormState } from "react-dom";
 
 import { IconEye, IconEyeSlash } from "@/assets/media/icons";
 
-import type { Route } from "./+types/signin";
-
-const schema = z.object({ email: z.email(), password: z.string() });
-
-export async function action({ request }: Route.ActionArgs) {
-  const formData = await request.formData();
-  const submission = parseWithZod(formData, { schema });
-  if (submission.status !== "success") {
-    return data(submission.reply());
-  }
-}
+import { signin } from "@/actions/auth";
+import { SignInSchema as schema } from "@/schema/auth";
 
 export default function Page() {
-  const lastResult = useActionData<typeof action>();
+  const [lastResult, action] = useFormState(signin, undefined);
   const [form, fields] = useForm({
     lastResult,
     constraint: getZodConstraint(schema),
@@ -38,7 +32,7 @@ export default function Page() {
 
   return (
     <Form
-      method="post"
+      action={action}
       {...getFormProps(form)}
       className="mx-auto flex w-full max-w-2xl flex-col gap-8 rounded-xl bg-white px-8 py-12 shadow-md"
     >
@@ -108,7 +102,7 @@ export default function Page() {
 
       <footer className="flex items-center justify-center gap-4">
         <p className="text-sm text-grey-500">Need to create an account?</p>
-        <Link to="/signup" className="font-bold text-grey-900 underline">
+        <Link href="/signup" className="font-bold text-grey-900 underline">
           Sign up
         </Link>
       </footer>
