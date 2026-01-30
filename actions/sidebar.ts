@@ -1,8 +1,3 @@
-import { userPrefs } from "@/cookies.server";
-import { data } from "react-router";
-
-import type { Route } from "./+types/sidebar";
-
 export async function action({ request }: Route.ActionArgs) {
   // oxlint-disable-next-line typescript/strict-boolean-expressions
   const cookie = (await userPrefs.parse(request.headers.get("Cookie"))) || {};
