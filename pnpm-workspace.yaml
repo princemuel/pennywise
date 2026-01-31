@@ -1,3 +1,16 @@
+packages:
+  - apps/site
+
+catalog:
+  "@dotenvx/dotenvx": ^1.51.1
+  "@total-typescript/ts-reset": ^0.6.1
+  "@types/node": ^24
+  "@typescript/native-preview": 7.0.0-dev.20260130.1
+  prettier: ^3.8.1
+  tsx: 4.21.0
+
+catalogMode: manual
+
 onlyBuiltDependencies:
   - "@prisma/engines"
   - esbuild
