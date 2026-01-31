@@ -1,14 +1,10 @@
+import Link from "next/link";
+
 import { IconEllipsis } from "@/assets/media/icons";
-import { Link } from "react-router";
-import type { Route } from "./+types/_index";
 
-export async function loader() {
-  const data = (await import("@/content/data")).default;
-  return { response: data.pots };
-}
-
-export default function Page({ loaderData }: Route.ComponentProps) {
-  const pots = loaderData.response;
+export default async function Page() {
+  const data = (await import("@/lib/content/data")).default;
+  const pots = data.pots;
 
   return (
     <>
@@ -23,7 +19,7 @@ export default function Page({ loaderData }: Route.ComponentProps) {
           <article
             key={pot.id}
             className="flex flex-col gap-8 rounded-xl bg-white p-6"
-            style={{ "--bg-color": pot.theme }}
+            style={{ "--bg-color": pot.theme, anchorScope: "--anchor-pot" }}
           >
             <header className="flex items-center gap-4">
               <span className="rounded-full bg-(--bg-color) p-2" />
@@ -39,7 +35,7 @@ export default function Page({ loaderData }: Route.ComponentProps) {
                   aria-label="Open pot actions"
                   aria-controls={pot.id}
                   className="rounded p-2 text-grey-300 hover:text-grey-500 focus-visible:outline-2"
-                  style={{ anchorName: `--anchor-${pot.id}` }}
+                  style={{ anchorName: "--anchor-pot" }}
                 >
                   <span className="sr-only">Open pot actions menu</span>
                   <IconEllipsis className="text-xl" />
@@ -49,12 +45,12 @@ export default function Page({ loaderData }: Route.ComponentProps) {
                   id={`pot-actions-${pot.id}`}
                   popover="auto"
                   className="absolute inset-auto top-[anchor(top)] right-[anchor(right)] m-0 mt-6 rounded-lg bg-white opacity-0 shadow-sm transition transition-discrete duration-1000 ease-in open:grid open:opacity-100 starting:open:grid starting:open:opacity-0"
-                  style={{ positionAnchor: `--anchor-${pot.id}` }}
+                  style={{ positionAnchor: "--anchor-pot" }}
                 >
                   <menu className="flex flex-col divide-y divide-grey-100 px-6">
                     <li className="py-2">
                       <Link
-                        to={`${pot.id}/edit`}
+                        href={`/pots/${pot.id}/edit`}
                         popoverTarget={`pot-actions-${pot.id}`}
                         popoverTargetAction="hide"
                         aria-haspopup="dialog"
@@ -66,7 +62,7 @@ export default function Page({ loaderData }: Route.ComponentProps) {
                     </li>
                     <li className="py-2">
                       <Link
-                        to={`${pot.id}/delete`}
+                        href={`/pots/${pot.id}/destroy`}
                         popoverTarget={`pot-actions-${pot.id}`}
                         popoverTargetAction="hide"
                         aria-haspopup="dialog"

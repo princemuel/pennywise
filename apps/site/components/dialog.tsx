@@ -1,11 +1,14 @@
 "use client";
 
 import { tw } from "@/helpers/tailwind";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 type Props = React.ComponentPropsWithRef<"dialog">;
 
 export const Dialog = ({ className, children, ...attrs }: Props) => {
+  const router = useRouter();
+
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current;
@@ -21,6 +24,7 @@ export const Dialog = ({ className, children, ...attrs }: Props) => {
       closedby="any"
       aria-modal="true"
       {...attrs}
+      onClose={() => router.back()}
       ref={ref}
       className={tw([
         "mx-4 my-auto max-w-xl rounded-xl bg-white p-8 shadow-xl backdrop:pointer-events-auto backdrop:bg-grey-900/50 sm:mx-auto",
