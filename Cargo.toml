@@ -14,7 +14,7 @@ unwrap_or_default      = "allow"
 authors    = ["Prince Muel <68931805+princemuel@users.noreply.github.com>"]
 edition    = "2024"
 license    = "MIT OR Apache-2.0"
-repository = "https://github.com/princemuel/aoctl"
+repository = "https://github.com/princemuel/pennywise"
 
 [workspace.dependencies]
 serde      = "1"
