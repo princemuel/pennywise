@@ -1,6 +1,6 @@
 #:schema https://www.schemastore.org/cargo.json
 [workspace]
-members  = ["apps/api"]
+members  = ["apps/api", "crates/*"]
 resolver = "3"
 
 [workspace.lints.rust]
@@ -17,5 +17,46 @@ license    = "MIT OR Apache-2.0"
 repository = "https://github.com/princemuel/pennywise"
 
 [workspace.dependencies]
-serde      = "1"
+# Runtime
+anyhow = "1"
+async-trait = "0.1"
+chrono = { version = "0.4", features = ["serde"] }
+rust_decimal = { version = "1", features = [
+  "serde-with-str",
+  "db-tokio-postgres",
+  "macros",
+] }
+serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v7", "serde"] }
+
+axum = { version = "0.8" }
+tower-http = { version = "0.6", features = [
+  "cors",
+  "trace",
+  "compression-full",
+] }
+
+# Database
+sqlx = { version = "0.8", features = ["runtime-tokio", "tls-rustls"] }
+
+# Auth
+argon2       = "0.5"
+jsonwebtoken = "10"
+
+# Config
+dotenvy = "0.15"
+
+# Observability
+tracing            = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Internal crates — path deps so `cargo build` from root resolves them
+pennapi-auth = { path = "crates/auth" }
+pennapi-core = { path = "crates/engine" }
+pennapi-db   = { path = "crates/database" }
+
+# Dev
+testcontainers = "0.26"

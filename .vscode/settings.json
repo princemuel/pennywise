@@ -30,10 +30,7 @@
   "markdown.validate.enabled": true,
   "tailwindCSS.emmetCompletions": true,
   "tailwindCSS.experimental.classRegex": [
-    [
-      "([\"'`][^\"'`]*.*?[\"'`])",
-      "[\"'`]([^\"'`]*).*?[\"'`]"
-    ]
+    ["([\"'`][^\"'`]*.*?[\"'`])", "[\"'`]([^\"'`]*).*?[\"'`]"]
   ],
   "tailwindCSS.includeLanguages": {
     "xslt": "html"
@@ -60,7 +57,7 @@
   "rust-analyzer.cargo.features": "all",
   "rust-analyzer.cargo.targetDir": true,
   "rust-analyzer.check.command": "clippy",
-  "rust-analyzer.checkOnSave": false,
+  "rust-analyzer.checkOnSave": true,
   // Auto import and organize imports
   "rust-analyzer.completion.autoimport.enable": true,
   "rust-analyzer.imports.group.enable": true,
@@ -75,9 +72,7 @@
   "rust-analyzer.inlayHints.typeHints.enable": false,
   "rust-analyzer.inlayHints.chainingHints.enable": false,
   // Formatting with rustfmt
-  "rust-analyzer.rustfmt.extraArgs": [
-    "+nightly"
-  ],
+  // "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust-analyzer",
     "editor.formatOnSave": true
@@ -90,9 +85,9 @@
   "files.readonlyInclude": {
     "**/.cargo/registry/src/**/*.rs": true,
     "**/.cargo/git/checkouts/**/*.rs": true,
-    "**/lib/rustlib/src/rust/library/**/*.rs": true,
+    "**/lib/rustlib/src/rust/library/**/*.rs": true
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  }
 }
