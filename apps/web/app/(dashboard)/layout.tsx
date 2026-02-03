@@ -7,7 +7,7 @@ import { getUserPrefs } from "@/lib/cookies";
 
 import { IconArrowFatLinesLeft, IconLogo, IconLogoX } from "@/assets/media/icons";
 import NavLink from "@/components/navlink";
-import routes from "@/lib/content/routes";
+import routes from "@/lib/routes";
 
 export default async function Layout({
   children,

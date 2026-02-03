@@ -59,6 +59,9 @@ tmp-*
 .nx/workspace-data
 .react-router
 
+# Turbo
+.turbo
+
 # Coverage
 coverage
 *.lcov

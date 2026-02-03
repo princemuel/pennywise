@@ -1,4 +1,4 @@
-import database from "@/lib/content/db.json";
+import database from "@/lib/db.json";
 import { createHash } from "node:crypto";
 
 const data = {

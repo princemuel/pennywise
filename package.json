@@ -1,32 +1,23 @@
 {
-  "name": "nxspace",
+  "name": "pennywise",
   "private": true,
-  "type": "module",
-  "version": "0.2.0",
   "scripts": {
-    "dev": "pnpm --filter @core/ui dev",
-    "build": "pnpm --workspace-concurrency=1 --filter \"./pkgs/*\" --filter \"./apps/*\" build",
-    "build:apps": "pnpm --workspace-concurrency=1 --filter './apps/*' run build",
-    "build:pkgs": "pnpm --workspace-concurrency=1 --filter './pkgs/*' run build",
-    "build:crates": "pnpm --workspace-concurrency=1 --filter './crates/*' run build",
-    "preview": "pnpm --filter @core/ui preview",
-    "start": "pnpm --filter @core/ui start",
-    "db:generate": "pnpm --filter @core/db db:generate",
-    "db:push": "pnpm --filter @core/db db:push",
-    "db:studio": "pnpm --filter @core/db db:studio",
-    "db:migrate-dev": "pnpm --filter @core/db db:migrate-dev",
-    "db:migrate-deploy": "pnpm --filter @core/db db:migrate-deploy",
-    "check": "pnpm --recursive run check",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "deploy:build": "pnpm install --frozen-lockfile && pnpm build",
-    "deploy:start": "cd apps/site && node ./dist/server/entry.mjs"
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
   },
   "devDependencies": {
     "@typescript/native-preview": "catalog:",
     "prettier": "catalog:",
     "prettier-plugin-organize-imports": "^4.3.0",
-    "prettier-plugin-tailwindcss": "^0.7.2"
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "turbo": "^2.8.2",
+    "@typescript/native-preview": "catalog:"
   },
-  "packageManager": "pnpm@10.28.1"
+  "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264",
+  "engines": {
+    "node": ">=24"
+  }
 }
