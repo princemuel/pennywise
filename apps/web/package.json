@@ -1,0 +1,42 @@
+{
+  "name": "@repo/web",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint --max-warnings 0",
+    "check-types": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@conform-to/react": "^1.16.0",
+    "@conform-to/zod": "^1.16.0",
+    "@repo/ui": "workspace:*",
+    "isbot": "^5.1.34",
+    "next": "16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwind-variants": "^3.2.2",
+    "temporal-polyfill": "^0.3.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@repo/pennapi": "workspace:*",
+    "@repo/config-eslint": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "@svgr/webpack": "^8.1.0",
+    "@tailwindcss/postcss": "^4",
+    "@total-typescript/ts-reset": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@typescript/native-preview": "catalog:",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "catalog:",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss": "^4.1.18",
+    "typescript": "catalog:"
+  }
+}

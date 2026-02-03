@@ -6,16 +6,12 @@
   "trailingComma": "all",
   "tailwindFunctions": ["tw", "tv"],
   "tailwindAttributes": ["tw"],
-  "tailwindStylesheet": "./app/global.css",
+  "tailwindStylesheet": "./apps/web/app/globals.css",
   "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-tailwindcss"],
   "overrides": [
     {
       "files": ["*.json"],
       "options": { "trailingComma": "es5" }
-    },
-    {
-      "files": ["**/*.astro"],
-      "options": { "parser": "astro" }
     }
   ]
 }

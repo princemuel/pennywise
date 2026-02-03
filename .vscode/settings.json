@@ -1,55 +1,93 @@
 {
-	"javascript.updateImportsOnFileMove.enabled": "always",
-	"js/ts.implicitProjectConfig.target": "ESNext",
-	"typescript.experimental.useTsgo": true,
-	"typescript.updateImportsOnFileMove.enabled": "always",
-	"editor.formatOnSave": true,
-	"editor.formatOnSaveMode": "file",
-	"editor.tabSize": 2,
-	"editor.wordWrap": "bounded",
-	"editor.wordWrapColumn": 108,
-	"editor.inlineSuggest.enabled": true,
-	"dotenv.enableAutocloaking": false,
-	"oxc.enable": true,
-	"oxc.typeAware": true,
-	"oxc.fixKind": "safe_fix_or_suggestion",
-	"material-icon-theme.activeIconPack": "react_redux",
-	"template-string-converter.enabled": true,
-	"template-string-converter.convertWithinTemplateString": true,
-	"template-string-converter.convertOutermostQuotes": true,
-	"template-string-converter.autoRemoveTemplateString": true,
-	"template-string-converter.addBracketsToProps": true,
-	"markdown.validate.enabled": true,
-
-	"editor.bracketPairColorization.independentColorPoolPerBracketType": true,
-	"editor.codeActionsOnSave": {
-		"quickfix.biome": "explicit",
-		"source.addMissingImports": "explicit",
-		"source.fixAll": "explicit",
-		"source.organizeImports.biome": "explicit"
-	},
-	"editor.defaultFormatter": "prettier.prettier-vscode",
-	"json.validate.enable": true,
-	"tailwindCSS.emmetCompletions": true,
-	"tailwindCSS.experimental.classRegex": [
-		["([\"'`][^\"'`]*.*?[\"'`])", "[\"'`]([^\"'`]*).*?[\"'`]"]
-	],
-	"tailwindCSS.includeLanguages": {
-		"xslt": "html"
-	},
-	"tailwindCSS.rootFontSize": 16,
-	"typescript.preferences.preferTypeOnlyAutoImports": true,
-	"[sql]": {
-		"editor.defaultFormatter": "mtxr.sqltools"
-	},
-	"[shellscript]": {
-		"editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
-	},
-	"yaml.schemas": {
-		"./.schemas/collection.schema.json": "*.collection.yml",
-		"https://json.schemastore.org/github-issue-config.json": "file:///home/nyx/Lab/Projects/Repos/website/.github/ISSUE_TEMPLATE/config.yml"
-	},
-	"[toml]": {
-		"editor.defaultFormatter": "tamasfe.even-better-toml"
-	}
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "js/ts.implicitProjectConfig.target": "ESNext",
+  "typescript.experimental.useTsgo": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.tabSize": 2,
+  "editor.wordWrap": "bounded",
+  "editor.wordWrapColumn": 120,
+  "editor.inlineSuggest.enabled": true,
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  "editor.codeActionsOnSave": {
+    "quickfix.biome": "explicit",
+    "source.addMissingImports": "explicit",
+    "source.fixAll": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "dotenv.enableAutocloaking": false,
+  "json.validate.enable": true,
+  "eslint.enable": true,
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "material-icon-theme.activeIconPack": "react_redux",
+  "markdown.validate.enabled": true,
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.experimental.classRegex": [
+    ["([\"'`][^\"'`]*.*?[\"'`])", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "xslt": "html"
+  },
+  "tailwindCSS.rootFontSize": 16,
+  "template-string-converter.enabled": true,
+  "template-string-converter.convertWithinTemplateString": true,
+  "template-string-converter.convertOutermostQuotes": true,
+  "template-string-converter.autoRemoveTemplateString": true,
+  "template-string-converter.addBracketsToProps": true,
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+  },
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+  // Rust Analyzer settings
+  "rust-analyzer.assist.preferSelf": true,
+  "rust-analyzer.assist.emitMustUse": true,
+  // Cargo
+  "rust-analyzer.cargo.features": "all",
+  "rust-analyzer.cargo.targetDir": true,
+  "rust-analyzer.check.command": "clippy",
+  "rust-analyzer.checkOnSave": true,
+  // Auto import and organize imports
+  "rust-analyzer.completion.autoimport.enable": true,
+  "rust-analyzer.imports.group.enable": true,
+  "rust-analyzer.imports.granularity.enforce": true,
+  "rust-analyzer.imports.granularity.group": "module",
+  "rust-analyzer.imports.prefix": "crate",
+  "rust-analyzer.imports.merge.glob": true,
+  "rust-analyzer.imports.prefixExternPrelude": false,
+  "rust-analyzer.imports.preferNoStd": true,
+  "rust-analyzer.imports.preferPrelude": true,
+  // Inlay Hints
+  "rust-analyzer.inlayHints.typeHints.enable": false,
+  "rust-analyzer.inlayHints.chainingHints.enable": false,
+  // Formatting with rustfmt
+  // "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  },
+  "rust-analyzer.testExplorer": true,
+  "rust-analyzer.semanticHighlighting.punctuation.enable": true,
+  "workbench.editor.customLabels.patterns": {
+    "**/mod.rs": "${dirname}.rs"
+  },
+  "files.readonlyInclude": {
+    "**/.cargo/registry/src/**/*.rs": true,
+    "**/.cargo/git/checkouts/**/*.rs": true,
+    "**/lib/rustlib/src/rust/library/**/*.rs": true
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

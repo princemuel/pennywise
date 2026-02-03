@@ -1,60 +1,24 @@
 {
   "name": "pennywise",
   "private": true,
-  "type": "module",
-  "version": "0.1.2",
   "scripts": {
-    "build": "react-router build",
-    "build:icons": "./scripts/icons.sh ./app/assets/media/icons",
-    "dev": "react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
-    "check": "react-router typegen && tsc",
-    "format": "prettier --write .",
-    "lint": "prettier --check . && eslint .",
-    "db:generate": "prisma generate",
-    "db:studio": "prisma studio",
-    "db:push": "prisma db push",
-    "db:migrate-dev": "prisma migrate dev",
-    "db:migrate-deploy": "prisma migrate deploy"
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "dev": "turbo run dev",
+    "format": "turbo run format",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "check-types": "turbo run check-types"
   },
   "devDependencies": {
-    "@fontsource-variable/public-sans": "^5.2.7",
-    "@react-router/dev": "7.12.0",
-    "@svgr/plugin-jsx": "^8.1.0",
-    "@svgr/plugin-svgo": "^8.1.0",
-    "@tailwindcss/forms": "^0.5.11",
-    "@tailwindcss/vite": "^4.1.18",
-    "@total-typescript/ts-reset": "^0.6.1",
-    "@types/node": "^25.0.9",
-    "@types/react": "^19.2.8",
-    "@types/react-dom": "^19.2.3",
-    "@typescript/native-preview": "^7.0.0-dev.20260119.1",
-    "oxlint": "^1.39.0",
-    "oxlint-tsgolint": "^0.11.1",
-    "prettier": "^3.8.0",
+    "@typescript/native-preview": "catalog:",
+    "prettier": "catalog:",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "prisma": "latest",
-    "tailwindcss": "^4.1.18",
-    "vite": "^7.3.1",
-    "vite-plugin-devtools-json": "^1.0.0",
-    "vite-plugin-svgr": "^4.5.0",
-    "vite-tsconfig-paths": "^6.0.4"
+    "turbo": "^2.8.2"
   },
-  "dependencies": {
-    "@conform-to/react": "^1.15.1",
-    "@conform-to/zod": "^1.15.1",
-    "@dotenvx/dotenvx": "^1.51.4",
-    "@prisma/adapter-pg": "latest",
-    "@prisma/client": "latest",
-    "@react-router/node": "7.12.0",
-    "@react-router/serve": "7.12.0",
-    "isbot": "^5.1.32",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "react-router": "7.12.0",
-    "tailwind-variants": "^3.2.2",
-    "zod": "^4.3.5"
-  },
-  "packageManager": "pnpm@10.28.1"
+  "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264",
+  "engines": {
+    "node": ">=24"
+  }
 }

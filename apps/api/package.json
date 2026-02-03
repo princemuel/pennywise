@@ -1,0 +1,8 @@
+{
+  "name": "@repo/pennapi",
+  "scripts": {
+    "build": "cargo build --release",
+    "dev": "cargo run",
+    "test": "cargo test"
+  }
+}
