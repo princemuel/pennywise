@@ -1,8 +1,9 @@
 {
-  "extends": "@repo/config-typescript/nextjs.json",
+  "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
     "plugins": [{ "name": "next" }],
     "paths": { "@/*": ["./*"] },
+    "jsx": "react-jsx",
     "include": [
       "@types/svg.d.ts",
       "next-env.d.ts",

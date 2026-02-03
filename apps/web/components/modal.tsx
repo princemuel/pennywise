@@ -1,6 +1,6 @@
 import { tw } from "@/helpers/tailwind";
 
-import { Dialog } from "@repo/ui/dialog";
+import { Dialog } from "@repo/ui";
 
 type Props = React.ComponentProps<"dialog">;
 

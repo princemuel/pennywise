@@ -15,4 +15,5 @@ catalog:
 catalogMode: manual
 
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - unrs-resolver

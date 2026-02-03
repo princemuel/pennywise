@@ -24,8 +24,9 @@
   },
   "devDependencies": {
     "@repo/pennapi": "workspace:*",
-    "@repo/config-eslint": "workspace:*",
-    "@repo/config-typescript": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/tailwind-config": "workspace:*",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4",
     "@total-typescript/ts-reset": "catalog:",

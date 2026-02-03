@@ -13,7 +13,14 @@ import { usePathname } from "next/navigation";
  * Read more: [Next.js docs: `<Link>`](https://nextjs.org/docs/app/api-reference/components/link)
  */
 
-const NavLink = <RouteType extends Route>(props: LinkProps<RouteType>) => {
+type Props<T> = Prettify<
+  LinkProps<T> & {
+    children?: React.ReactNode;
+    className?: string;
+  } & React.RefAttributes<HTMLAnchorElement>
+>;
+
+const NavLink = <T extends Route>(props: Props<T>) => {
   const pathname = usePathname();
   const isActive = pathname === props.href || pathname?.startsWith(`${props.href}/`);
 

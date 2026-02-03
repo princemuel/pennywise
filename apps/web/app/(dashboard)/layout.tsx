@@ -14,9 +14,9 @@ export default async function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { minimize } = await getUserPrefs();
-  const expanded = !minimize;
-  const uiState = expanded ? "expanded" : "collapsed";
+  const { mini } = await getUserPrefs();
+  const expand = !mini;
+  const uiState = expand ? "expand" : "collapse";
 
   return (
     <section className="grid h-svh grid-rows-[1fr_auto] lg:grid-cols-[auto_1fr] lg:grid-rows-1">
@@ -27,7 +27,7 @@ export default async function Layout({
           "order-2 bg-grey-900 lg:order-1",
           "rounded-t-2xl px-4 pt-2 sm:px-10",
           "lg:order-1 lg:rounded-r-2xl lg:p-0 lg:py-12",
-          expanded
+          expand
             ? "lg:w-75 lg:grid-cols-[auto_1fr] lg:pr-6"
             : "lg:w-22 lg:grid-cols-[auto] lg:pr-2",
         ])}
@@ -35,10 +35,10 @@ export default async function Layout({
         <div className="flex min-h-full flex-col gap-16">
           <Link
             href="/"
-            className="group hidden items-center py-4 text-white not-in-minimized:px-8 in-minimized:justify-center lg:flex"
+            className="group hidden items-center py-4 text-white not-in-mini:px-8 in-mini:justify-center lg:flex"
           >
             <span className="sr-only">Home</span>
-            {expanded ? <IconLogo /> : <IconLogoX />}
+            {expand ? <IconLogo /> : <IconLogoX />}
           </Link>
 
           <nav
@@ -52,7 +52,7 @@ export default async function Layout({
                 className={tw([
                   "flex-1 p-2 text-xs font-bold lg:text-base",
                   "flex flex-col items-center justify-center gap-1",
-                  "lg:flex-row lg:gap-6 lg:p-4 lg:not-in-minimized:px-8",
+                  "lg:flex-row lg:gap-6 lg:p-4 lg:not-in-mini:px-8",
                   "rounded-t-xl border-brand-400 bg-transparent lg:rounded-t-none lg:rounded-r-xl",
                   "text-grey-300 hover:text-grey-100 focus:text-grey-100",
                   "aria-[current=page]:bg-beige-100 aria-[current=page]:text-brand-400",
@@ -60,7 +60,7 @@ export default async function Layout({
                 ])}
               >
                 <route.Icon className="text-2xl" aria-hidden="true" />
-                <span className="hidden flex-1 sm:not-in-minimized:inline-block">{route.text}</span>
+                <span className="hidden flex-1 sm:not-in-mini:inline-block">{route.text}</span>
               </NavLink>
             ))}
           </nav>
@@ -69,23 +69,20 @@ export default async function Layout({
           <Form action={toggleSidebar} className="mt-auto hidden lg:block">
             <button
               type="submit"
-              name="minimize"
+              name="mini"
               aria-controls="sidebar"
-              aria-expanded={expanded}
+              aria-expanded={expand}
               aria-label={`${uiState} navigation`}
-              value={`${!minimize}`}
+              value={`${!mini}`}
               className={tw([
                 "flex w-full items-center justify-center p-2",
-                "lg:gap-6 lg:p-4 lg:not-in-minimized:px-8",
+                "lg:gap-6 lg:p-4 lg:not-in-mini:px-8",
                 "text-xs font-bold capitalize lg:text-base",
                 "text-grey-300 hover:text-grey-100 focus:text-grey-100",
               ])}
             >
-              <IconArrowFatLinesLeft
-                className="text-2xl in-minimized:rotate-180"
-                aria-hidden="true"
-              />
-              <span className="hidden flex-1 sm:not-in-minimized:inline-block">minimize menu</span>
+              <IconArrowFatLinesLeft className="text-2xl in-mini:rotate-180" aria-hidden="true" />
+              <span className="hidden flex-1 sm:not-in-mini:inline-block">mini menu</span>
             </button>
           </Form>
         </div>

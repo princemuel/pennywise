@@ -1,5 +1,6 @@
 import { Public_Sans } from "next/font/google";
 import "temporal-polyfill/global";
+import "@repo/ui/styles.css";
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
