@@ -1,11 +1,19 @@
 import { tw } from "@/helpers/tailwind";
 
-interface Props extends React.ComponentProps<"dialog"> {}
+import { Dialog } from "@repo/ui/dialog";
+
+type Props = React.ComponentProps<"dialog">;
 
 export function Modal({ children, className, ...attrs }: Props) {
   return (
-    <dialog closedby="any" aria-modal="true" {...attrs} className={tw(["", className])}>
-      <div className="">{children}</div>
-    </dialog>
+    <Dialog
+      {...attrs}
+      className={tw([
+        "mx-4 my-auto max-w-xl rounded-xl bg-white p-8 shadow-xl backdrop:pointer-events-auto backdrop:bg-grey-900/50 sm:mx-auto",
+        className,
+      ])}
+    >
+      <section className="flex flex-col gap-6">{children}</section>
+    </Dialog>
   );
 }
