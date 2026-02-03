@@ -1,10 +1,12 @@
 import { secs } from "@/helpers/time";
 import { cookies } from "next/headers";
 
-export async function getUserPrefs(): Promise<Record<string, unknown>> {
+type JSONValue = string | number | boolean | null;
+
+export async function getUserPrefs() {
   const cookieStore = await cookies();
-  const raw = cookieStore.get("user-prefs")?.value;
-  return raw ? (JSON.parse(raw) as Record<string, unknown>) : { minimize: false };
+  const userPrefs = cookieStore.get("user-prefs")?.value;
+  return userPrefs ? (JSON.parse(userPrefs) as Record<string, JSONValue>) : { minimize: false };
 }
 
 export async function setUserPrefs(values: unknown) {

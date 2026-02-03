@@ -21,11 +21,7 @@
   "dotenv.enableAutocloaking": false,
   "json.validate.enable": true,
   "eslint.enable": true,
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
-  ],
+  "eslint.workingDirectories": [{ "mode": "auto" }],
   "material-icon-theme.activeIconPack": "react_redux",
   "markdown.validate.enabled": true,
   "tailwindCSS.emmetCompletions": true,

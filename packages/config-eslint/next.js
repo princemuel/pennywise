@@ -8,7 +8,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
  *
  * @type {import("eslint").Linter.Config[]}
  * */
-export const nextJsConfig = defineConfig([
+export const config = defineConfig([
   ...vitals,
   ...typescript,
   prettier,
