@@ -2,7 +2,9 @@
   "name": "@repo/pennapi",
   "scripts": {
     "build": "cargo build --release",
-    "dev": "cargo run",
-    "test": "cargo test"
+    "dev": "RUSTUP_TOOLCHAIN=nightly bacon clippy",
+    "test": "cargo test",
+    "lint": "cargo clippy",
+    "format": "cargo fmt"
   }
 }

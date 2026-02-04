@@ -47,6 +47,7 @@
     "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
   // Rust Analyzer settings
+  "rust-analyzer.rustc.source": "discover",
   "rust-analyzer.assist.preferSelf": true,
   "rust-analyzer.assist.emitMustUse": true,
   // Cargo

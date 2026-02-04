@@ -1,3 +1,4 @@
+#:schema https://www.schemastore.org/cargo.json
 [package]
 authors.workspace    = true
 edition.workspace    = true
@@ -7,6 +8,13 @@ repository.workspace = true
 version              = "0.1.0"
 
 [dependencies]
+argon2       = { workspace = true }
+jsonwebtoken = { workspace = true }
+pennapi-core = { workspace = true }
+serde        = { workspace = true }
+thiserror    = { workspace = true }
+uuid         = { workspace = true }
+
 
 [lints]
 workspace = true

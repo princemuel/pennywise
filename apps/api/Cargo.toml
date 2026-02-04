@@ -1,3 +1,4 @@
+#:schema https://www.schemastore.org/cargo.json
 [package]
 authors.workspace    = true
 edition.workspace    = true
@@ -7,6 +8,43 @@ repository.workspace = true
 version              = "0.1.0"
 
 [dependencies]
+# Internal libraries
+pennapi-auth = { workspace = true }
+pennapi-core = { workspace = true }
+pennapi-db   = { workspace = true } # inherits the "postgres" default feature
+
+# Runtime
+axum       = { workspace = true }
+tokio      = { workspace = true }
+tower-http = { workspace = true }
+
+# Serialization
+chrono       = { workspace = true }
+rust_decimal = { workspace = true }
+serde        = { workspace = true }
+serde_json   = { workspace = true }
+uuid         = { workspace = true }
+
+# Error handling
+anyhow    = { workspace = true }
+thiserror = { workspace = true }
+
+# Config
+dotenvy = { workspace = true }
+
+# Observability
+tracing            = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[features]
+default  = ["postgres"]
+postgres = ["pennapi-db/postgres"]
+# mysql   = ["pennapi-db/mysql"]
+# sqlite  = ["pennapi-db/sqlite"]
+
+[dev-dependencies]
+testcontainers = { workspace = true }
+tokio          = { workspace = true }
 
 [lints]
 workspace = true
