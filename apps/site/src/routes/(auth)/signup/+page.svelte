@@ -1,100 +1,109 @@
 <script lang="ts">
-	import { signUpSchema } from '$lib/schema/auth';
-	import { superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
+  import { Control, Field, FieldErrors, Label } from "formsnap";
+  import { superForm } from "sveltekit-superforms";
+  import { zod4Client } from "sveltekit-superforms/adapters";
+  import { schema } from "./schema.js";
 
-	import type { PageData } from './$types';
+  import { IconEye, IconEyeSlash } from "@/assets/media/icons";
+  import Honeypot from "@/components/honeypot.svelte";
 
-	let { data }: { data: PageData } = $props();
+  let { data } = $props();
 
-	const form = $derived.by(() =>
-		superForm(data.form, {
-			validators: zod(signUpSchema),
-			taintedMessage: false
-		})
-	);
+  const form = superForm(data.form, { validators: zod4Client(schema) });
 
-	const { form: formData, enhance, errors } = $derived(form);
+  let type = $state<"password" | "text">("password");
+
+  function handlePassword() {
+    type = type === "password" ? "text" : "password";
+  }
+
+  const { form: formData, enhance } = form;
 </script>
 
-<main class="bg-beige-100 flex min-h-screen w-full items-center justify-center px-4">
-	<form
-		action="?/signup"
-		method="POST"
-		use:enhance
-		class={[
-			'mx-auto flex w-full max-w-2xl flex-col gap-8',
-			'rounded-xl bg-white px-8 py-12 shadow-md'
-		]}
-	>
-		<h1 id="a11ty-headline" class="text-grey-900 text-4xl font-bold">Sign Up</h1>
+<form
+  method="POST"
+  class="mx-auto flex w-full max-w-2xl flex-col gap-8 rounded-xl bg-white px-8 py-12 shadow-md"
+  use:enhance
+>
+  <h1 id="a11ty-headline" class="text-4xl font-bold text-grey-900">Sign up</h1>
 
-		<div class="flex flex-col gap-4">
-			<label for={$formData.name} class="flex flex-col gap-2">
-				<span class="text-grey-900 text-sm font-semibold">Name</span>
-				<input
-					type="text"
-					name="name"
-					value={$formData.name}
-					placeholder="John Doe"
-					class={[
-						'rounded border px-4 py-2',
-						$errors.name ? 'border-red-500 bg-red-50' : 'border-grey-300 bg-white'
-					]}
-				/>
-				{#if $errors.name}
-					<span class="text-sm text-red-500">{$errors.name[0]}</span>
-				{/if}
-			</label>
+  <section class="grid grid-cols-6 gap-5">
+    <Honeypot />
 
-			<label for={$formData.email} class="flex flex-col gap-2">
-				<span class="text-grey-900 text-sm font-semibold">Email</span>
-				<input
-					type="email"
-					name="email"
-					value={$formData.email}
-					placeholder="user@example.com"
-					class={[
-						'rounded border px-4 py-2',
-						$errors.email ? 'border-red-500 bg-red-50' : 'border-grey-300 bg-white'
-					]}
-				/>
-				{#if $errors.email}
-					<span class="text-sm text-red-500">{$errors.email[0]}</span>
-				{/if}
-			</label>
+    <div class="group col-span-full flex flex-col gap-2">
+      <Field {form} name="name">
+        <Control>
+          {#snippet children({ props })}
+            <Label class="text-xs font-bold text-grey-500">Name</Label>
+            <input
+              {...props}
+              type="text"
+              bind:value={$formData.name}
+              aria-autocomplete="list"
+              class="rounded-lg border border-beige-500 bg-transparent px-5 py-4 text-grey-900 outline-none autofill:bg-transparent autofill:focus:bg-transparent"
+              autoComplete="name"
+            />
+          {/snippet}
+        </Control>
+        <FieldErrors class="self-end text-xs text-red-400" />
+      </Field>
+    </div>
 
-			<label for={$formData.password} class="flex flex-col gap-2">
-				<span class="text-grey-900 text-sm font-semibold">Password</span>
-				<input
-					type="password"
-					name="password"
-					value={$formData.password}
-					placeholder="••••••••"
-					class={[
-						'rounded border px-4 py-2',
-						$errors.password ? 'border-red-500 bg-red-50' : 'border-grey-300 bg-white'
-					]}
-				/>
-				{#if $errors.password}
-					<span class="text-sm text-red-500">{$errors.password[0]}</span>
-				{/if}
-			</label>
-		</div>
+    <div class="group col-span-full flex flex-col gap-2">
+      <Field {form} name="email">
+        <Control>
+          {#snippet children({ props })}
+            <Label class="text-xs font-bold text-grey-500">Email</Label>
+            <input
+              {...props}
+              type="email"
+              bind:value={$formData.email}
+              aria-autocomplete="list"
+              class="rounded-lg border border-beige-500 bg-transparent px-5 py-4 text-grey-900 outline-none autofill:bg-transparent autofill:focus:bg-transparent"
+              autoComplete="email"
+            />
+          {/snippet}
+        </Control>
+        <FieldErrors class="self-end text-xs text-red-400" />
+      </Field>
+    </div>
 
-		<button
-			type="submit"
-			class={[
-				'bg-brand-500 rounded px-6 py-2 font-semibold text-white',
-				'hover:bg-brand-600 transition-colors'
-			]}
-		>
-			Create Account
-		</button>
+    <div class="group col-span-full flex flex-col gap-2">
+      <Field {form} name="password">
+        <Control>
+          {#snippet children({ props })}
+            <Label class="text-xs font-bold text-grey-500">Create Password</Label>
+            <div class="flex items-center rounded-lg border border-beige-500 px-5">
+              <input
+                {...props}
+                {type}
+                bind:value={$formData.password}
+                aria-autocomplete="list"
+                class="flex-1 bg-transparent py-4 text-grey-900 outline-none autofill:bg-transparent focus:outline-0"
+                autoComplete="current-password"
+              />
 
-		<p class="text-grey-500 text-center text-sm">
-			Already have an account?{' '}
-			<a href="/auth/signin" class="text-brand-500 hover:text-brand-600 font-semibold"> Sign In </a>
-		</p>
-	</form>
-</main>
+              <button type="button" class="text-grey-900" onclick={() => handlePassword()}>
+                {#if type === "password"}
+                  <IconEye />
+                {:else}
+                  <IconEyeSlash />
+                {/if}
+              </button>
+            </div>
+          {/snippet}
+        </Control>
+        <FieldErrors class="self-end text-xs text-red-400" />
+      </Field>
+    </div>
+  </section>
+
+  <button type="submit" class="rounded-lg bg-grey-900 py-4 text-center text-white">
+    Create Account
+  </button>
+
+  <footer class="flex items-center justify-center gap-4">
+    <p class="text-sm text-grey-500">Already have an account?</p>
+    <a href="/signin" class="font-bold text-grey-900 underline">Sign in</a>
+  </footer>
+</form>
