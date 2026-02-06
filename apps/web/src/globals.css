@@ -1,0 +1,2 @@
+@import "@repo/tailwind-config";
+@custom-variant mini (&:where([data-ui~=compact], [data-ui~=compact] *));

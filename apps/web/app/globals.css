@@ -1,4 +1,0 @@
-@import "tailwindcss";
-@import "@repo/tailwind-config";
-
-@custom-variant mini (&:where([data-ui~=collapse], [data-ui~=collapse] *));
