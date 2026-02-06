@@ -3,10 +3,9 @@ packages:
   - packages/*
 
 catalog:
-  '@dotenvx/dotenvx': ^1.52
-  '@total-typescript/ts-reset': ^0.6.1
-  '@types/node': ^24
-  '@typescript/native-preview': ^7.0.0-dev.20260202.1
+  "@dotenvx/dotenvx": ^1.52
+  "@total-typescript/ts-reset": ^0.6.1
+  "@types/node": ^24
   eslint: ^9.39.2
   prettier: ^3.8.1
   tsx: ^4.21.0
@@ -15,5 +14,6 @@ catalog:
 catalogMode: manual
 
 onlyBuiltDependencies:
-  - '@parcel/watcher'
+  - "@parcel/watcher"
   - unrs-resolver
+  - esbuild

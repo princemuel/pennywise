@@ -3,15 +3,25 @@
   "singleQuote": false,
   "printWidth": 100,
   "tabWidth": 2,
-  "trailingComma": "all",
+  "trailingComma": "none",
   "tailwindFunctions": ["tw", "tv"],
   "tailwindAttributes": ["tw"],
-  "tailwindStylesheet": "./apps/web/app/globals.css",
-  "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-tailwindcss"],
+  "tailwindStylesheet": "./apps/site/src/routes/globals.css",
+  "plugins": [
+    "prettier-plugin-organize-imports",
+    "prettier-plugin-svelte",
+    "prettier-plugin-tailwindcss"
+  ],
   "overrides": [
     {
       "files": ["*.json"],
       "options": { "trailingComma": "es5" }
+    },
+    {
+      "files": "*.svelte",
+      "options": {
+        "parser": "svelte"
+      }
     }
   ]
 }

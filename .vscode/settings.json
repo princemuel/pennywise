@@ -1,7 +1,7 @@
 {
   "javascript.updateImportsOnFileMove.enabled": "always",
   "js/ts.implicitProjectConfig.target": "ESNext",
-  "typescript.experimental.useTsgo": true,
+  "typescript.experimental.useTsgo": false,
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.preferences.preferTypeOnlyAutoImports": true,
   "editor.formatOnSave": true,
@@ -12,9 +12,8 @@
   "editor.inlineSuggest.enabled": true,
   "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
   "editor.codeActionsOnSave": {
-    "quickfix.biome": "explicit",
-    "source.addMissingImports": "explicit",
     "source.fixAll": "explicit",
+    "source.addMissingImports": "explicit",
     "source.organizeImports.biome": "explicit"
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -31,6 +30,7 @@
   "tailwindCSS.includeLanguages": {
     "xslt": "html"
   },
+  "files.associations": { "*.css": "tailwindcss" },
   "tailwindCSS.rootFontSize": 16,
   "template-string-converter.enabled": true,
   "template-string-converter.convertWithinTemplateString": true,
@@ -45,6 +45,9 @@
   },
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
   },
   // Rust Analyzer settings
   "rust-analyzer.rustc.source": "discover",
@@ -79,10 +82,17 @@
   "workbench.editor.customLabels.patterns": {
     "**/mod.rs": "${dirname}.rs"
   },
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/routeTree.gen.ts": true
+  },
   "files.readonlyInclude": {
     "**/.cargo/registry/src/**/*.rs": true,
     "**/.cargo/git/checkouts/**/*.rs": true,
-    "**/lib/rustlib/src/rust/library/**/*.rs": true
+    "**/lib/rustlib/src/rust/library/**/*.rs": true,
+    "**/routeTree.gen.ts": true
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

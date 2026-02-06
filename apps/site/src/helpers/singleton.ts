@@ -7,13 +7,13 @@
  * @param {() => T} getValue - The function that generates the value to remember.
  * @returns {NonNullable<T>} - The remembered value.
  */
-export const remember = <T>(name: string, getValue: () => NonNullable<T>) => {
-  const g = globalThis;
-  g.__singletons__ ??= new Map();
-  // oxlint-disable-next-line typescript/strict-boolean-expressions
-  if (!g.__singletons__.has(name)) g.__singletons__.set(name, getValue());
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  return g.__singletons__.get(name) as NonNullable<T>;
+export const remember = <T>(name: string, getValue: () => NonNullable<T>): NonNullable<T> => {
+	const g = globalThis;
+	g.__singletons__ ??= new Map();
+	// oxlint-disable-next-line typescript/strict-boolean-expressions
+	if (!g.__singletons__.has(name)) g.__singletons__.set(name, getValue());
+	// oxlint-disable-next-line typescript/no-unsafe-type-assertion
+	return g.__singletons__.get(name) as NonNullable<T>;
 };
 
 /**
@@ -22,8 +22,8 @@ export const remember = <T>(name: string, getValue: () => NonNullable<T>) => {
  * @param {string} name - The name under which the value was remembered.
  * @return {boolean} - A remembered value existed and has been forgotten.
  */
-export const forget = (name: string) => {
-  const g = globalThis;
-  g.__singletons__ ??= new Map();
-  return g.__singletons__.delete(name);
+export const forget = (name: string): boolean => {
+	const g = globalThis;
+	g.__singletons__ ??= new Map();
+	return g.__singletons__.delete(name);
 };

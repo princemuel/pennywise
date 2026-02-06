@@ -46,6 +46,7 @@ tmp-*
 /out/
 .build
 /output
+.output
 /build
 /.next
 .next
