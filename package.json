@@ -8,16 +8,6 @@
     "format": "turbo run format",
     "lint": "turbo run lint",
     "test": "turbo run test",
-<<<<<<< HEAD
-    "check-types": "turbo run check-types"
-  },
-  "devDependencies": {
-    "@typescript/native-preview": "catalog:",
-    "prettier": "catalog:",
-    "prettier-plugin-organize-imports": "^4.3.0",
-    "prettier-plugin-tailwindcss": "^0.7.2",
-    "turbo": "^2.8.2"
-=======
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
@@ -27,7 +17,6 @@
     "prettier-plugin-tailwindcss": "^0.7.2",
     "turbo": "^2.8.3",
     "typescript": "catalog:"
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
   },
   "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264",
   "engines": {

@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 #:schema https://www.schemastore.org/cargo.json
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 [package]
 authors.workspace    = true
 edition.workspace    = true
@@ -11,8 +8,6 @@ repository.workspace = true
 version              = "0.1.0"
 
 [dependencies]
-<<<<<<< HEAD
-=======
 # Internal libraries
 pennapi-auth = { workspace = true }
 pennapi-core = { workspace = true }
@@ -49,7 +44,6 @@ tracing-subscriber       = { workspace = true }
 [dev-dependencies]
 testcontainers = { workspace = true }
 tokio          = { workspace = true }
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 
 [lints]
 workspace = true

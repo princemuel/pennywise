@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 #:schema https://www.schemastore.org/cargo.json
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 [package]
 authors.workspace    = true
 edition.workspace    = true
@@ -11,8 +8,6 @@ repository.workspace = true
 version              = "0.1.0"
 
 [dependencies]
-<<<<<<< HEAD
-=======
 async-trait  = { workspace = true }
 chrono       = { workspace = true }
 rust_decimal = { workspace = true }
@@ -20,7 +15,6 @@ serde        = { workspace = true }
 serde_json   = { workspace = true }
 thiserror    = { workspace = true }
 uuid         = { workspace = true }
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 
 [lints]
 workspace = true

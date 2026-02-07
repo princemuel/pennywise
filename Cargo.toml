@@ -27,16 +27,10 @@ rust_decimal = { version = "1", features = [
   "macros",
 ] }
 serde = { version = "1", features = ["derive"] }
-<<<<<<< HEAD
-serde_json = "1"
-thiserror = "2"
-tokio = { version = "1", features = ["full"] }
-=======
 serde_json = { version = "1" }
 strum = { version = "0.27", features = ["derive"] }
 thiserror = "2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 uuid = { version = "1", features = ["v7", "serde"] }
 
 axum = { version = "0.8" }
@@ -47,9 +41,6 @@ tower-http = { version = "0.6", features = [
 ] }
 
 # Database
-<<<<<<< HEAD
-sqlx = { version = "0.8", features = ["runtime-tokio", "tls-rustls"] }
-=======
 sqlx = { version = "0.8", features = [
   "runtime-tokio",
   "tls-rustls",
@@ -59,20 +50,12 @@ sqlx = { version = "0.8", features = [
   "chrono",
   "migrate",
 ] }
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 
 # Auth
 argon2       = "0.5"
 jsonwebtoken = "10"
 
 # Config
-<<<<<<< HEAD
-dotenvy = "0.15"
-
-# Observability
-tracing            = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-=======
 config  = { version = "0.15", default-features = false, features = ["toml"] }
 dotenvy = "0.15"
 secrecy = { version = "0.10", features = ["serde"] }
@@ -83,7 +66,6 @@ tracing-bunyan-formatter = "0.3"
 tracing-log              = "0.2"
 tracing-subscriber       = { version = "0.3", features = ["registry", "env-filter"] }
 
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 
 # Internal crates — path deps so `cargo build` from root resolves them
 pennapi-auth = { path = "crates/auth" }

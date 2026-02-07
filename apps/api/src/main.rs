@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-fn main() {}
-=======
 use core::net::{Ipv4Addr, SocketAddr};
 use std::io;
 use std::sync::Arc;
@@ -34,4 +31,3 @@ async fn main() -> anyhow::Result<()> {
 
     Ok(())
 }
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587

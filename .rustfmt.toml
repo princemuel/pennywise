@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 #:schema https://www.schemastore.org/rustfmt.json
 style_edition = "2024"
 # -----------------------------------------------
@@ -12,16 +10,10 @@ tab_spaces    = 4
 # -----------------------------------------------
 # Stable Features
 # -----------------------------------------------
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 array_width                   = 60
 attr_fn_like_width            = 70
 chain_width                   = 60
 fn_call_width                 = 60
-<<<<<<< HEAD
-hard_tabs                     = false
-max_width                     = 100
-=======
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 merge_derives                 = true
 remove_nested_parens          = true
 reorder_imports               = true
@@ -29,13 +21,6 @@ reorder_modules               = true
 single_line_if_else_max_width = 80
 struct_lit_width              = 18
 struct_variant_width          = 35
-<<<<<<< HEAD
-style_edition                 = "2024"
-tab_spaces                    = 4
-use_field_init_shorthand      = false
-use_small_heuristics          = "Default"
-use_try_shorthand             = false
-=======
 use_field_init_shorthand      = true
 use_small_heuristics          = "Default"
 use_try_shorthand             = true
@@ -66,4 +51,3 @@ reorder_impl_items           = true
 struct_field_align_threshold = 20
 struct_lit_single_line       = true
 wrap_comments                = true
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587

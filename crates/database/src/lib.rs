@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-=======
 //! Database connection pooling, migrations, and repository implementations.
 //!
 //! ## Usage
@@ -102,4 +99,3 @@ fn extract_constraint_field(msg: &str) -> Option<String> {
         .and_then(|value| value.split('_').rev().nth(1).map(String::from))
 }
 fn extract_null_column(msg: &str) -> Option<String> { msg.split('"').nth(1).map(String::from) }
->>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
