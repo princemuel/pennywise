@@ -1,0 +1,10 @@
+{
+  "name": "@repo/pennapi",
+  "scripts": {
+    "build": "cargo build --release",
+    "dev": "bacon dev",
+    "test": "cargo test",
+    "lint": "bacon pedantic",
+    "format": "cargo fmt"
+  }
+}

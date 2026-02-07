@@ -10,8 +10,13 @@ insert_final_newline = true
 end_of_line = lf
 indent_style = space
 indent_size = 2
-max_line_length = 104
+max_line_length = 112
 trim_trailing_whitespace = true
+
+# Python - 4 spaces, Black formatter line length
+[{*.db,*.sql,*.sqlite}]
+indent_size = 4
+max_line_length = 48
 
 # Python - 4 spaces, Black formatter line length
 [{*.py,*.pyi}]
@@ -49,5 +54,5 @@ indent_size = 4
 # Specific settings for Markdown files
 [{*.md,*.mdx,*.mdoc}]
 indent_size = 2
-max_line_length = 104
+max_line_length = 108
 trim_trailing_whitespace = false

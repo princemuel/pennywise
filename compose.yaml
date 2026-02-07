@@ -1,0 +1,43 @@
+services:
+  site:
+    container_name: pennsite
+    build:
+      context: .
+      dockerfile: ./apps/site/Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - pennywise
+  api:
+    container_name: pennapi
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - pennywise
+  db:
+    container_name: penndb
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: kalel
+      POSTGRES_PASSWORD: krypton
+      POSTGRES_DB: pennies
+    volumes:
+      - pgdata:/var/lib/postgresql
+    networks:
+      - pennywise
+volumes:
+  pgdata:
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+networks:
+  pennywise:
+    external: true

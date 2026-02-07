@@ -46,6 +46,7 @@ tmp-*
 /out/
 .build
 /output
+.output
 /build
 /.next
 .next
@@ -58,6 +59,9 @@ tmp-*
 .nx/cache
 .nx/workspace-data
 .react-router
+
+# Turbo
+.turbo
 
 # Coverage
 coverage
