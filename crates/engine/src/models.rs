@@ -2,11 +2,13 @@
 // FINANCIAL APP - LEDGER-FIRST RUST MODELS
 // =============================================================================
 
+mod user;
+
 use chrono::{DateTime, NaiveDate, Utc};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+pub use user::*;
 use uuid::Uuid;
-
 // =============================================================================
 // AUTH LAYER (separate from user profile)
 // =============================================================================
@@ -18,20 +20,6 @@ pub struct VerifiedIdentity {
     pub provider_user_id: String, // External ID from provider
     pub email:            String,
     pub session_id:       String,
-}
-
-/// Internal user (your source of truth)
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct User {
-    pub id:                Uuid,
-    pub email:             String,
-    pub email_verified_at: Option<DateTime<Utc>>,
-    pub display_name:      String,
-    pub timezone:          String,
-    pub currency:          String,
-    pub locale:            String,
-    pub created_at:        DateTime<Utc>,
-    pub disabled_at:       Option<DateTime<Utc>>,
 }
 
 /// Maps external identity to internal user

@@ -13,7 +13,7 @@
 //! pennapi-db = { workspace = true, default-features = false, features = ["postgres"] }
 //! ```
 
-#[cfg(feature = "postgres")] pub mod pqsl;
+#[cfg(feature = "postgres")] pub mod postgres;
 // #[cfg(feature = "mysql")]
 // pub mod mysql;
 // #[cfg(feature = "sqlite")]
@@ -31,7 +31,7 @@ use sqlx::pool::PoolOptions;
 /// # Errors
 ///
 /// Returns an error if the database URL is invalid or connection fails.
-pub async fn init_pool(database_url: &str, max_connections: u8) -> Result<PgPool, sqlx::Error> {
+pub async fn pool(database_url: &str, max_connections: u8) -> Result<PgPool, sqlx::Error> {
     PoolOptions::new()
         .max_connections(max_connections.into())
         .connect(database_url)
@@ -105,6 +105,6 @@ impl SqlxErrorExt for sqlx::Error {
 fn extract_constraint_field(msg: &str) -> Option<String> {
     msg.split('"')
         .nth(1)
-        .and_then(|constraint| constraint.split('_').rev().nth(1).map(String::from))
+        .and_then(|value| value.split('_').rev().nth(1).map(String::from))
 }
 fn extract_null_column(msg: &str) -> Option<String> { msg.split('"').nth(1).map(String::from) }

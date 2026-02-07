@@ -144,7 +144,7 @@ Domain entities in [crates/engine/src/models.rs](crates/engine/src/models.rs):
 
 ### Deployment
 
-- Docker builds via [apps/site/src/Dockerfile](apps/site/src/Dockerfile): multi-stage with turbo prune
+- Docker builds via [apps/site/Dockerfile](apps/site/Dockerfile): multi-stage with turbo prune
 - Both API and site services in [compose.yaml](compose.yaml) on shared `app_network`
 - Rust nightly toolchain ([rust-toolchain.toml](rust-toolchain.toml)) required for API
 
