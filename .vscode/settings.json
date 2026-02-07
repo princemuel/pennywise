@@ -20,17 +20,26 @@
   "dotenv.enableAutocloaking": false,
   "json.validate.enable": true,
   "eslint.enable": true,
-  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
   "material-icon-theme.activeIconPack": "react_redux",
   "markdown.validate.enabled": true,
   "tailwindCSS.emmetCompletions": true,
   "tailwindCSS.experimental.classRegex": [
-    ["([\"'`][^\"'`]*.*?[\"'`])", "[\"'`]([^\"'`]*).*?[\"'`]"]
+    [
+      "([\"'`][^\"'`]*.*?[\"'`])",
+      "[\"'`]([^\"'`]*).*?[\"'`]"
+    ]
   ],
   "tailwindCSS.includeLanguages": {
     "xslt": "html"
   },
-  "files.associations": { "*.css": "tailwindcss" },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
   "tailwindCSS.rootFontSize": 16,
   "template-string-converter.enabled": true,
   "template-string-converter.convertWithinTemplateString": true,
@@ -72,7 +81,9 @@
   "rust-analyzer.inlayHints.typeHints.enable": false,
   "rust-analyzer.inlayHints.chainingHints.enable": false,
   // Formatting with rustfmt
-  "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
+  "rust-analyzer.rustfmt.extraArgs": [
+    "+nightly"
+  ],
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust-analyzer",
     "editor.formatOnSave": true
