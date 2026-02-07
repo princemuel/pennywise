@@ -1,0 +1,14 @@
+[database]
+host        = "127.0.0.1"
+name        = "newsletter"
+password    = "password"
+port        = 5432
+require_ssl = false
+username    = "postgres"
+
+[application]
+hmac_secret = "super-long-and-secret-random-key-needed-to-verify-message-integrity"
+host        = "0.0.0.0"
+port        = 8000
+
+redis_uri = "redis://127.0.0.1:6379"

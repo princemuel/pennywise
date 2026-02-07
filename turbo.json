@@ -6,6 +6,7 @@
       "dependsOn": ["^build"],
       "env": ["NEXT_PUBLIC_API_HOST"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
+<<<<<<< HEAD
       "outputs": ["build/**", "dist/**", "target/release/**", ".next/**", "!.next/cache/**"]
     },
     "test": {
@@ -25,5 +26,14 @@
       "cache": false,
       "persistent": true
     }
+=======
+      "outputs": ["build/**", "dist/**", "target/release/**", ".svelte-kit/**"]
+    },
+    "test": { "outputs": ["coverage/**"], "dependsOn": [] },
+    "lint": { "dependsOn": ["^build", "^lint"] },
+    "format": { "dependsOn": ["^format"] },
+    "typecheck": { "dependsOn": ["^build", "^typecheck"] },
+    "dev": { "cache": false, "persistent": true }
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
   }
 }

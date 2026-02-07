@@ -1,7 +1,11 @@
 {
   "javascript.updateImportsOnFileMove.enabled": "always",
   "js/ts.implicitProjectConfig.target": "ESNext",
+<<<<<<< HEAD
   "typescript.experimental.useTsgo": true,
+=======
+  "typescript.experimental.useTsgo": false,
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.preferences.preferTypeOnlyAutoImports": true,
   "editor.formatOnSave": true,
@@ -12,20 +16,29 @@
   "editor.inlineSuggest.enabled": true,
   "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
   "editor.codeActionsOnSave": {
+<<<<<<< HEAD
     "quickfix.biome": "explicit",
     "source.addMissingImports": "explicit",
     "source.fixAll": "explicit",
+=======
+    "source.fixAll": "explicit",
+    "source.addMissingImports": "explicit",
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
     "source.organizeImports.biome": "explicit"
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "dotenv.enableAutocloaking": false,
   "json.validate.enable": true,
   "eslint.enable": true,
+<<<<<<< HEAD
   "eslint.workingDirectories": [
     {
       "mode": "auto"
     }
   ],
+=======
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
   "material-icon-theme.activeIconPack": "react_redux",
   "markdown.validate.enabled": true,
   "tailwindCSS.emmetCompletions": true,
@@ -35,6 +48,10 @@
   "tailwindCSS.includeLanguages": {
     "xslt": "html"
   },
+<<<<<<< HEAD
+=======
+  "files.associations": { "*.css": "tailwindcss" },
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
   "tailwindCSS.rootFontSize": 16,
   "template-string-converter.enabled": true,
   "template-string-converter.convertWithinTemplateString": true,
@@ -50,7 +67,15 @@
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
+<<<<<<< HEAD
   // Rust Analyzer settings
+=======
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  // Rust Analyzer settings
+  "rust-analyzer.rustc.source": "discover",
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
   "rust-analyzer.assist.preferSelf": true,
   "rust-analyzer.assist.emitMustUse": true,
   // Cargo
@@ -72,7 +97,11 @@
   "rust-analyzer.inlayHints.typeHints.enable": false,
   "rust-analyzer.inlayHints.chainingHints.enable": false,
   // Formatting with rustfmt
+<<<<<<< HEAD
   // "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
+=======
+  "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust-analyzer",
     "editor.formatOnSave": true
@@ -82,10 +111,24 @@
   "workbench.editor.customLabels.patterns": {
     "**/mod.rs": "${dirname}.rs"
   },
+<<<<<<< HEAD
   "files.readonlyInclude": {
     "**/.cargo/registry/src/**/*.rs": true,
     "**/.cargo/git/checkouts/**/*.rs": true,
     "**/lib/rustlib/src/rust/library/**/*.rs": true
+=======
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.readonlyInclude": {
+    "**/.cargo/registry/src/**/*.rs": true,
+    "**/.cargo/git/checkouts/**/*.rs": true,
+    "**/lib/rustlib/src/rust/library/**/*.rs": true,
+    "**/routeTree.gen.ts": true
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

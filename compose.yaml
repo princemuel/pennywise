@@ -1,16 +1,30 @@
 services:
+<<<<<<< HEAD
   web:
     container_name: web
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
+=======
+  site:
+    container_name: pennsite
+    build:
+      context: .
+      dockerfile: ./apps/site/Dockerfile
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
     restart: always
     ports:
       - 3000:3000
     networks:
+<<<<<<< HEAD
       - app_network
   api:
     container_name: api
+=======
+      - pennywise
+  api:
+    container_name: pennapi
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
@@ -18,10 +32,34 @@ services:
     ports:
       - 8080:8080
     networks:
+<<<<<<< HEAD
       - app_network
+=======
+      - pennywise
+  db:
+    container_name: penndb
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: kalel
+      POSTGRES_PASSWORD: krypton
+      POSTGRES_DB: pennies
+    volumes:
+      - pgdata:/var/lib/postgresql
+    networks:
+      - pennywise
+volumes:
+  pgdata:
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 
 # Define a network, which allows containers to communicate
 # with each other, by using their container name as a hostname
 networks:
+<<<<<<< HEAD
   app_network:
+=======
+  pennywise:
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
     external: true

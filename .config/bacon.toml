@@ -1,0 +1,12 @@
+[jobs.dev]
+background = false
+command    = ["cargo", "run"]
+# command            = ["cargo", "run", "--", "--serve"]
+kill               = ["kill", "-s", "INT"]
+need_stdout        = true
+on_change_strategy = "kill_then_restart"
+
+[jobs.pedantic]
+command     = ["cargo", "clippy", "--", "-W", "clippy::pedantic"]
+listen      = true
+need_stdout = false

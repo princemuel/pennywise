@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+#:schema https://www.schemastore.org/cargo.json
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 [package]
 authors.workspace    = true
 edition.workspace    = true
@@ -6,7 +10,22 @@ name                 = "pennapi-db"
 repository.workspace = true
 version              = "0.0.0"
 
+<<<<<<< HEAD
 [dependencies]
+=======
+
+[dependencies]
+anyhow       = { workspace = true }
+async-trait  = { workspace = true }
+chrono       = { workspace = true }
+pennapi-core = { workspace = true }
+rust_decimal = { workspace = true }
+serde        = { workspace = true }
+sqlx         = { workspace = true }
+thiserror    = { workspace = true }
+tokio        = { workspace = true }
+uuid         = { workspace = true }
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
 
 [lints]
 workspace = true

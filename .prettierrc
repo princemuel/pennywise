@@ -3,15 +3,33 @@
   "singleQuote": false,
   "printWidth": 100,
   "tabWidth": 2,
-  "trailingComma": "all",
+  "trailingComma": "none",
   "tailwindFunctions": ["tw", "tv"],
   "tailwindAttributes": ["tw"],
+<<<<<<< HEAD
   "tailwindStylesheet": "./apps/web/app/globals.css",
   "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-tailwindcss"],
+=======
+  "tailwindStylesheet": "./apps/site/src/routes/globals.css",
+  "plugins": [
+    "prettier-plugin-organize-imports",
+    "prettier-plugin-svelte",
+    "prettier-plugin-tailwindcss"
+  ],
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
   "overrides": [
     {
       "files": ["*.json"],
       "options": { "trailingComma": "es5" }
+<<<<<<< HEAD
+=======
+    },
+    {
+      "files": "*.svelte",
+      "options": {
+        "parser": "svelte"
+      }
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
     }
   ]
 }

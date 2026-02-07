@@ -2,7 +2,14 @@
   "name": "@repo/pennapi",
   "scripts": {
     "build": "cargo build --release",
+<<<<<<< HEAD
     "dev": "cargo run",
     "test": "cargo test"
+=======
+    "dev": "bacon dev",
+    "test": "cargo test",
+    "lint": "bacon pedantic",
+    "format": "cargo fmt"
+>>>>>>> 64af84e65373887657c6f2b62e0b42f4ea4ea587
   }
 }
