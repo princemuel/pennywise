@@ -1,0 +1,1 @@
+type SidebarState = "default" | "compact";
