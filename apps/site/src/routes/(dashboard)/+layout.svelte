@@ -8,13 +8,12 @@
   let { data, children } = $props();
 
   // svelte-ignore state_referenced_locally
-  let sidebarState = $state(data.sidebarState);
-  let expanded = $derived(sidebarState !== "compact");
-  let uiState = $derived(`sidebar ${sidebarState}`);
+  let state = $state(data.sidebarState);
+  let uiState = $derived(`sidebar ${state}`);
 
   async function toggleSidebar() {
-    sidebarState = sidebarState === "compact" ? "default" : "compact";
-    await setSidebarCookieClient(sidebarState);
+    state = state === "compact" ? "default" : "compact";
+    await setSidebarCookieClient(state);
   }
 </script>
 
@@ -25,7 +24,9 @@
     class={[
       "order-2 rounded-t-2xl bg-grey-900 px-4 pt-2 sm:px-10 lg:order-1",
       "lg:order-1 lg:rounded-r-2xl lg:p-0 lg:py-12",
-      expanded ? "lg:w-75 lg:grid-cols-[auto_1fr] lg:pr-6" : "lg:w-22 lg:grid-cols-[auto] lg:pr-2"
+      state !== "compact"
+        ? "lg:w-75 lg:grid-cols-[auto_1fr] lg:pr-6"
+        : "lg:w-22 lg:grid-cols-[auto] lg:pr-2"
     ]}
   >
     <div class="flex min-h-full flex-col gap-16">
@@ -34,7 +35,7 @@
         class="group hidden items-center py-4 text-white not-in-mini:px-8 in-mini:justify-center lg:flex"
       >
         <span class="sr-only">Home</span>
-        {#if expanded}
+        {#if state !== "compact"}
           <IconLogo />
         {:else}
           <IconLogoX />
@@ -46,12 +47,12 @@
         class="flex items-center justify-between capitalize lg:flex-col lg:items-stretch lg:gap-1"
         data-sveltekit-preload-data="tap"
       >
-        {#each routes as route}
+        {#each routes as route (route.text)}
           <Navlink
             href={route.href}
             class={[
               "flex flex-1 flex-col items-center justify-center gap-1 p-2 text-xs font-bold lg:text-base",
-              "lg:not-in-minimized:px-8 lg:flex-row lg:gap-6 lg:p-4",
+              "lg:flex-row lg:gap-6 lg:p-4 lg:not-in-mini:px-8",
               "rounded-t-xl border-brand-400 bg-transparent lg:rounded-t-none lg:rounded-r-xl",
               "text-grey-300 hover:text-grey-100 focus:text-grey-100",
               "data-active:bg-beige-100 data-active:text-brand-400",
@@ -68,7 +69,7 @@
         <button
           type="button"
           aria-controls="sidebar"
-          aria-expanded={expanded}
+          aria-expanded={state !== "compact"}
           onclick={toggleSidebar}
           data-ui={uiState}
           class={[
