@@ -2,7 +2,7 @@
 -- IDENTITY & AUTH (separate from user profile)
 -- ============================================================================
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
     email TEXT UNIQUE NOT NULL,
     email_verified_at TIMESTAMPTZ,
     display_name TEXT NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE users (
 );
 -- Auth credentials (multiple login methods per user)
 CREATE TABLE auth_credentials (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     provider TEXT NOT NULL,
     -- 'email', 'google', 'github'
@@ -29,7 +29,7 @@ CREATE TABLE auth_credentials (
 CREATE INDEX idx_auth_user ON auth_credentials(user_id);
 -- Optional: session storage if using NextAuth DB mode
 CREATE TABLE sessions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     expires_at TIMESTAMPTZ NOT NULL,
     session_token TEXT UNIQUE NOT NULL,
@@ -50,7 +50,7 @@ CREATE TYPE account_type AS ENUM (
     'investment'
 );
 CREATE TABLE accounts (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     account_type account_type NOT NULL,
@@ -73,7 +73,7 @@ COMMENT ON COLUMN accounts.metadata IS 'Bank sync data, connection status, etc.'
 -- ============================================================================
 -- Transaction represents a real-world event
 CREATE TABLE transactions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     occurred_at TIMESTAMPTZ NOT NULL,
     -- When it happened
@@ -86,7 +86,7 @@ CREATE INDEX idx_transactions_user ON transactions(user_id);
 CREATE INDEX idx_transactions_occurred ON transactions(occurred_at DESC);
 -- TransactionEntry is the double-entry component
 CREATE TABLE transaction_entries (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
     transaction_id UUID NOT NULL REFERENCES transactions(id) ON DELETE CASCADE,
     account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE RESTRICT,
     category_id UUID REFERENCES categories(id) ON DELETE
@@ -111,7 +111,7 @@ COMMENT ON TABLE transaction_entries IS 'Double-entry ledger. One transaction ca
 -- ============================================================================
 CREATE TYPE category_kind AS ENUM ('income', 'expense', 'transfer');
 CREATE TABLE categories (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     -- NULL = system category
     parent_id UUID REFERENCES categories(id) ON DELETE
@@ -132,7 +132,7 @@ COMMENT ON COLUMN categories.user_id IS 'NULL for system categories, user_id for
 CREATE TYPE budget_period AS ENUM ('weekly', 'monthly', 'quarterly', 'yearly');
 CREATE TYPE budget_scope_type AS ENUM ('category', 'account');
 CREATE TABLE budgets (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     scope_type budget_scope_type NOT NULL,
     scope_id UUID NOT NULL,
@@ -163,7 +163,7 @@ COMMENT ON TABLE budgets IS 'Budgets are constraints over time, not containers';
 -- ============================================================================
 CREATE TYPE goal_status AS ENUM ('active', 'completed', 'abandoned');
 CREATE TABLE goals (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     target_amount DECIMAL(19, 4) NOT NULL,
@@ -179,7 +179,7 @@ CREATE INDEX idx_goals_active ON goals(user_id, status)
 WHERE status = 'active';
 -- Goal allocations (link transactions to goals)
 CREATE TABLE goal_allocations (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
     goal_id UUID NOT NULL REFERENCES goals(id) ON DELETE CASCADE,
     transaction_entry_id UUID NOT NULL REFERENCES transaction_entries(id) ON DELETE CASCADE,
     amount DECIMAL(19, 4) NOT NULL,
@@ -201,7 +201,7 @@ CREATE TYPE recurrence_cadence AS ENUM (
     'yearly'
 );
 CREATE TABLE recurring_rules (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     cadence recurrence_cadence NOT NULL,
     amount DECIMAL(19, 4) NOT NULL,

@@ -1,20 +1,39 @@
-// =============================================================================
-// FINANCIAL APP - LEDGER-FIRST RUST MODELS
-// =============================================================================
+//! Domain models for the financial application.
+//!
+//! Models are organized by domain entity and re-exported here for convenience.
 
+mod account;
+mod bills;
+mod budget;
+mod category;
+mod goal;
+mod pots;
+mod recurring;
+mod transaction;
 mod user;
 
-use chrono::{DateTime, NaiveDate, Utc};
-use rust_decimal::Decimal;
+// Re-export all submodule types
+pub use account::*;
+pub use bills::*;
+pub use budget::*;
+pub use category::*;
+use chrono::{DateTime, Utc};
+pub use goal::*;
+pub use pots::*;
+pub use recurring::*;
 use serde::{Deserialize, Serialize};
+pub use transaction::*;
 pub use user::*;
 use uuid::Uuid;
+
 // =============================================================================
-// AUTH LAYER (separate from user profile)
+// AUTH LAYER (session-based, not JWT)
 // =============================================================================
 
-/// Verified identity from auth provider
-#[derive(Clone, Debug, Serialize, Deserialize)]
+/// Verified identity from auth provider (Clerk, NextAuth, Auth0)
+/// This is what your auth middleware produces.
+/// NOT serialized - only used internally for route authorization.
+#[derive(Clone, Debug)]
 pub struct VerifiedIdentity {
     pub provider:         String, // "google", "github", "email"
     pub provider_user_id: String, // External ID from provider
@@ -30,13 +49,13 @@ pub struct AuthCredential {
     pub provider:         String, // "google", "github", "email"
     pub provider_user_id: Option<String>, // NULL for email/password
     #[serde(skip_serializing)]
-    pub password_hash:    Option<String>, // NULL for OAuth
+    pub passhash:         Option<String>, // NULL for OAuth
     pub created_at:       DateTime<Utc>,
     pub last_used_at:     Option<DateTime<Utc>>,
 }
 
 /// Optional: if using NextAuth DB sessions
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug)]
 pub struct Session {
     pub id:               Uuid,
     pub user_id:          Uuid,
@@ -50,396 +69,12 @@ pub struct Session {
 // REQUEST CONTEXT
 // =============================================================================
 
-/// Authenticated request context
-/// Your handlers receive this, never raw auth data
-#[derive(Clone, Debug, Serialize, Deserialize)]
+/// Authenticated request context passed through request extensions.
+/// Your handlers receive this, never raw auth data.
+#[derive(Clone, Debug)]
 pub struct AuthContext {
     pub user_id:    Uuid,   // Internal user ID
     pub session_id: String, // For logging/audit
-}
-
-// =============================================================================
-// ACCOUNTS (containers, not balances)
-// =============================================================================
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub enum AccountType {
-    Checking,
-    Savings,
-    Credit,
-    Cash,
-    Investment,
-}
-
-impl AccountType {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Checking => "checking",
-            Self::Savings => "savings",
-            Self::Credit => "credit",
-            Self::Cash => "cash",
-            Self::Investment => "investment",
-        }
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Account {
-    pub id:                   Uuid,
-    pub user_id:              Uuid,
-    pub name:                 String,
-    pub account_type:         AccountType,
-    pub currency_code:        String,
-    pub institution_name:     Option<String>,
-    pub account_number_last4: Option<String>,
-    pub opened_at:            Option<NaiveDate>,
-    pub closed_at:            Option<NaiveDate>,
-    pub metadata:             Option<serde_json::Value>, // For bank sync
-    pub created_at:           DateTime<Utc>,
-}
-
-/// Balance is derived, never stored
-#[derive(Clone, Debug, Serialize)]
-pub struct AccountWithBalance {
-    #[serde(flatten)]
-    pub account: Account,
-    pub balance: Decimal, // Computed from entries
-}
-
-#[derive(Clone, Debug, Deserialize)]
-pub struct CreateAccountRequest {
-    pub name:                 String,
-    pub account_type:         AccountType,
-    pub currency_code:        Option<String>,
-    pub institution_name:     Option<String>,
-    pub account_number_last4: Option<String>,
-    pub opened_at:            Option<NaiveDate>,
-}
-
-// =============================================================================
-// LEDGER (the heart)
-// =============================================================================
-
-/// Transaction represents a real-world event
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Transaction {
-    pub id:          Uuid,
-    pub user_id:     Uuid,
-    pub occurred_at: DateTime<Utc>,
-    pub description: Option<String>,
-    pub source:      TransactionSource,
-    pub created_at:  DateTime<Utc>,
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub enum TransactionSource {
-    Manual,
-    Import,
-    Api,
-    Recurring,
-}
-
-impl TransactionSource {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Manual => "manual",
-            Self::Import => "import",
-            Self::Api => "api",
-            Self::Recurring => "recurring",
-        }
-    }
-}
-
-/// TransactionEntry is the double-entry component
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct TransactionEntry {
-    pub id:             Uuid,
-    pub transaction_id: Uuid,
-    pub account_id:     Uuid,
-    pub category_id:    Option<Uuid>,
-    pub amount:         Decimal, // Signed (+ or -)
-    pub notes:          Option<String>,
-    pub created_at:     DateTime<Utc>,
-}
-
-/// Full transaction with all entries
-#[derive(Clone, Debug, Serialize)]
-pub struct TransactionWithEntries {
-    #[serde(flatten)]
-    pub transaction: Transaction,
-    pub entries:     Vec<TransactionEntry>,
-}
-
-/// Create transaction request
-#[derive(Clone, Debug, Deserialize)]
-pub struct CreateTransactionRequest {
-    pub occurred_at: Option<DateTime<Utc>>, // Defaults to now
-    pub description: Option<String>,
-    pub entries:     Vec<CreateEntryRequest>, // At least 1 entry required
-}
-
-#[derive(Clone, Debug, Deserialize)]
-pub struct CreateEntryRequest {
-    pub account_id:  Uuid,
-    pub category_id: Option<Uuid>,
-    pub amount:      Decimal,
-    pub notes:       Option<String>,
-}
-
-// impl CreateTransactionRequest {
-//     pub fn validate(&self) -> Result<(), String> {
-//         if self.entries.is_empty() {
-//             return Err("Transaction must have at least one
-// entry".to_string());         }
-//         for entry in &self.entries {
-//             if entry.amount == Decimal::ZERO {
-//                 return Err("Entry amount cannot be zero".to_string());
-//             }
-//         }
-//         Ok(())
-//     }
-// }
-
-// =============================================================================
-// CATEGORIES (hierarchical)
-// =============================================================================
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub enum CategoryKind {
-    Income,
-    Expense,
-    Transfer,
-}
-
-impl CategoryKind {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Income => "income",
-            Self::Expense => "expense",
-            Self::Transfer => "transfer",
-        }
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Category {
-    pub id:          Uuid,
-    pub user_id:     Option<Uuid>, // NULL = system category
-    pub parent_id:   Option<Uuid>,
-    pub name:        String,
-    pub kind:        CategoryKind,
-    pub archived_at: Option<DateTime<Utc>>,
-    pub created_at:  DateTime<Utc>,
-}
-
-#[derive(Clone, Debug, Deserialize)]
-pub struct CreateCategoryRequest {
-    pub name:      String,
-    pub parent_id: Option<Uuid>,
-    pub kind:      CategoryKind,
-}
-
-/// Category with UI metadata (added by frontend)
-#[derive(Clone, Debug, Serialize)]
-pub struct CategoryWithUI {
-    #[serde(flatten)]
-    pub category: Category,
-    // Frontend adds: icon, color
-}
-
-// =============================================================================
-// BUDGETS (rules, not containers)
-// =============================================================================
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub enum BudgetPeriod {
-    Weekly,
-    Monthly,
-    Quarterly,
-    Yearly,
-}
-
-impl BudgetPeriod {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Weekly => "weekly",
-            Self::Monthly => "monthly",
-            Self::Quarterly => "quarterly",
-            Self::Yearly => "yearly",
-        }
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub enum BudgetScopeType {
-    Category,
-    Account,
-}
-
-impl BudgetScopeType {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Category => "category",
-            Self::Account => "account",
-        }
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Budget {
-    pub id:              Uuid,
-    pub user_id:         Uuid,
-    pub scope_type:      BudgetScopeType,
-    pub scope_id:        Uuid, // category_id or account_id
-    pub period:          BudgetPeriod,
-    pub limit_amount:    Decimal,
-    pub currency_code:   String,
-    pub starts_on:       NaiveDate,
-    pub ends_on:         Option<NaiveDate>,
-    pub rollover:        bool,
-    pub alert_threshold: Option<Decimal>, // Alert at 80%, etc.
-    pub created_at:      DateTime<Utc>,
-}
-
-#[derive(Clone, Debug, Deserialize)]
-pub struct CreateBudgetRequest {
-    pub scope_type:      BudgetScopeType,
-    pub scope_id:        Uuid,
-    pub period:          BudgetPeriod,
-    pub limit_amount:    Decimal,
-    pub currency_code:   Option<String>,
-    pub starts_on:       NaiveDate,
-    pub ends_on:         Option<NaiveDate>,
-    pub rollover:        Option<bool>,
-    pub alert_threshold: Option<Decimal>,
-}
-
-/// Budget with current spending (derived)
-#[derive(Clone, Debug, Serialize)]
-pub struct BudgetWithProgress {
-    #[serde(flatten)]
-    pub budget:           Budget,
-    pub amount_spent:     Decimal, // Computed from entries
-    pub amount_remaining: Decimal,
-    pub percentage_used:  Decimal,
-    pub is_exceeded:      bool,
-}
-
-// =============================================================================
-// GOALS (mental accounting)
-// =============================================================================
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub enum GoalStatus {
-    Active,
-    Completed,
-    Abandoned,
-}
-
-impl GoalStatus {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Active => "active",
-            Self::Completed => "completed",
-            Self::Abandoned => "abandoned",
-        }
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Goal {
-    pub id:            Uuid,
-    pub user_id:       Uuid,
-    pub name:          String,
-    pub target_amount: Decimal,
-    pub currency_code: String,
-    pub target_date:   Option<NaiveDate>,
-    pub status:        GoalStatus,
-    pub created_at:    DateTime<Utc>,
-    pub completed_at:  Option<DateTime<Utc>>,
-}
-
-/// Link transaction entries to goals
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct GoalAllocation {
-    pub id:                   Uuid,
-    pub goal_id:              Uuid,
-    pub transaction_entry_id: Uuid,
-    pub amount:               Decimal,
-    pub created_at:           DateTime<Utc>,
-}
-
-#[derive(Clone, Debug, Deserialize)]
-pub struct CreateGoalRequest {
-    pub name:          String,
-    pub target_amount: Decimal,
-    pub currency_code: Option<String>,
-    pub target_date:   Option<NaiveDate>,
-}
-
-/// Goal with progress (derived from allocations)
-#[derive(Clone, Debug, Serialize)]
-pub struct GoalWithProgress {
-    #[serde(flatten)]
-    pub goal:                Goal,
-    pub current_amount:      Decimal, // Sum of allocations
-    pub remaining:           Decimal,
-    pub percentage_complete: Decimal,
-}
-
-// =============================================================================
-// RECURRING RULES (not booleans)
-// =============================================================================
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub enum RecurrenceCadence {
-    Daily,
-    Weekly,
-    BiWeekly,
-    Monthly,
-    Quarterly,
-    Yearly,
-}
-
-impl RecurrenceCadence {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Daily => "daily",
-            Self::Weekly => "weekly",
-            Self::BiWeekly => "biweekly",
-            Self::Monthly => "monthly",
-            Self::Quarterly => "quarterly",
-            Self::Yearly => "yearly",
-        }
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct RecurringRule {
-    pub id:          Uuid,
-    pub user_id:     Uuid,
-    pub cadence:     RecurrenceCadence,
-    pub amount:      Decimal,
-    pub account_id:  Uuid,
-    pub category_id: Option<Uuid>,
-    pub description: String,
-    pub next_run_at: NaiveDate,
-    pub end_at:      Option<NaiveDate>,
-    pub active:      bool,
-    pub auto_create: bool, // Auto-post or just notify
-    pub created_at:  DateTime<Utc>,
-}
-
-#[derive(Clone, Debug, Deserialize)]
-pub struct CreateRecurringRuleRequest {
-    pub cadence:     RecurrenceCadence,
-    pub amount:      Decimal,
-    pub account_id:  Uuid,
-    pub category_id: Option<Uuid>,
-    pub description: String,
-    pub start_date:  NaiveDate,
-    pub end_at:      Option<NaiveDate>,
-    pub auto_create: bool,
 }
 
 // =============================================================================
@@ -486,7 +121,7 @@ pub struct PaginatedResponse<T> {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct DashboardSummary {
-    pub total_balance:       Decimal, // Sum of all account balances
+    pub total_balance:       rust_decimal::Decimal,
     pub accounts:            Vec<AccountWithBalance>,
     pub recent_transactions: Vec<TransactionWithEntries>,
     pub budget_progress:     Vec<BudgetWithProgress>,
@@ -496,10 +131,10 @@ pub struct DashboardSummary {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct MonthlySpending {
-    pub month:          NaiveDate,
-    pub total_income:   Decimal,
-    pub total_expenses: Decimal,
-    pub net:            Decimal,
+    pub month:          chrono::NaiveDate,
+    pub total_income:   rust_decimal::Decimal,
+    pub total_expenses: rust_decimal::Decimal,
+    pub net:            rust_decimal::Decimal,
     pub by_category:    Vec<CategorySpending>,
 }
 
@@ -507,7 +142,7 @@ pub struct MonthlySpending {
 pub struct CategorySpending {
     pub category_id:       Uuid,
     pub category_name:     String,
-    pub amount:            Decimal,
+    pub amount:            rust_decimal::Decimal,
     pub transaction_count: i32,
 }
 
@@ -520,21 +155,17 @@ pub trait UserOwned {
     fn user_id(&self) -> Uuid;
 }
 
-impl UserOwned for Transaction {
-    fn user_id(&self) -> Uuid { self.user_id }
-}
+// impl UserOwned for Goal {
+//     fn user_id(&self) -> Uuid { self.user_id }
+// }
 
-impl UserOwned for Account {
-    fn user_id(&self) -> Uuid { self.user_id }
-}
+// impl UserOwned for RecurringRule {
+//     fn user_id(&self) -> Uuid { self.user_id }
+// }
 
-impl UserOwned for Budget {
-    fn user_id(&self) -> Uuid { self.user_id }
-}
-
-impl UserOwned for Goal {
-    fn user_id(&self) -> Uuid { self.user_id }
-}
+// impl UserOwned for Category {
+//     fn user_id(&self) -> Uuid { self.user_id.unwrap_or_else(Uuid::now_v7) }
+// }
 
 // =============================================================================
 // EXAMPLE: Transaction Creation

@@ -20,11 +20,5 @@ thiserror    = { workspace = true }
 tokio        = { workspace = true }
 uuid         = { workspace = true }
 
-[features]
-default  = ["postgres"]
-postgres = ["sqlx/postgres"]
-# mysql   = ["sqlx/mysql"]
-# sqlite  = ["sqlx/sqlite"]
-
 [lints]
 workspace = true

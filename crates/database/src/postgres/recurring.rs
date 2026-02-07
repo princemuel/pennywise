@@ -1,35 +1,48 @@
 use pennapi_core::errors::DBError;
 use pennapi_core::models::*;
-use pennapi_core::repos::BudgetRepository;
+use pennapi_core::repos::RecurringRuleRepository;
 use sqlx::PgPool;
 use uuid::Uuid;
 
 #[derive(Debug, Clone)]
-pub struct BudgetRepo(PgPool);
-impl BudgetRepo {
+pub struct RecurringRuleRepo(PgPool);
+impl RecurringRuleRepo {
     pub fn new(pool: PgPool) -> Self { Self(pool) }
 }
 
 #[async_trait::async_trait]
-impl BudgetRepository for BudgetRepo {
-    async fn find_many(&self, args: BudgetFilterArgs) -> Result<Vec<Budget>, DBError> {
+impl RecurringRuleRepository for RecurringRuleRepo {
+    async fn find_many(
+        &self,
+        args: RecurringRuleFilterArgs,
+    ) -> Result<Vec<RecurringRule>, DBError> {
         // TODO: Implement
         Ok(vec![])
     }
 
-    async fn find_unique(&self, args: BudgetFilterArgs) -> Result<Option<Budget>, DBError> {
+    async fn find_unique(
+        &self,
+        args: RecurringRuleFilterArgs,
+    ) -> Result<Option<RecurringRule>, DBError> {
         // TODO: Implement
         Ok(None)
     }
 
-    async fn create(&self, params: &BudgetCreateParams) -> Result<Budget, DBError> {
+    async fn create(
+        &self,
+        params: &RecurringRuleCreateParams,
+    ) -> Result<RecurringRule, DBError> {
         // TODO: Implement
         Err(DBError::Internal {
             message: "Not implemented".to_string(),
         })
     }
 
-    async fn update(&self, id: Uuid, params: &BudgetUpdateParams) -> Result<Budget, DBError> {
+    async fn update(
+        &self,
+        id: Uuid,
+        params: &RecurringRuleUpdateParams,
+    ) -> Result<RecurringRule, DBError> {
         // TODO: Implement
         Err(DBError::Internal {
             message: "Not implemented".to_string(),

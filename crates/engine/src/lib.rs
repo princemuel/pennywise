@@ -11,4 +11,8 @@
 pub mod errors;
 pub mod models;
 pub mod repos;
-pub mod structs;
+
+// Re-export common types
+pub use errors::DBError;
+pub use models::*;
+pub use repos::*;

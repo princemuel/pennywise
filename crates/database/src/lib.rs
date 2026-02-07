@@ -2,22 +2,13 @@
 //!
 //! ## Usage
 //!
-//! - `init_pool()` - Creates connection pool from database URL
+//! - `pool()` - Creates PostgreSQL connection pool from database URL
 //! - `migrate()` - Applies pending SQL migrations
-//! - Implements all `pennapi_core::repositories` traits for the active backend
-//!
-//! ## Backend Selection
-//!
-//! Enable exactly one backend feature in your `Cargo.toml`:
-//! ```toml
-//! pennapi-db = { workspace = true, default-features = false, features = ["postgres"] }
-//! ```
+//! - Exposes repository implementations via `postgres` module
 
-#[cfg(feature = "postgres")] pub mod postgres;
-// #[cfg(feature = "mysql")]
-// pub mod mysql;
-// #[cfg(feature = "sqlite")]
-// pub mod sqlite;
+pub mod postgres;
+
+pub use postgres::Database;
 
 use std::path::Path;
 

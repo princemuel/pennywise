@@ -1,35 +1,65 @@
 use uuid::Uuid;
 
 use crate::errors::DBError;
-use crate::models::*;
+use crate::models::{
+    Transaction,
+    TransactionCreateParams,
+    TransactionEntry,
+    TransactionEntryCreateParams,
+    TransactionEntryFilterArgs,
+    TransactionEntryUpdateParams,
+    TransactionFilterArgs,
+    TransactionUpdateParams,
+};
 
 #[async_trait::async_trait]
 pub trait TransactionRepository: Send + Sync {
-    async fn create(
+    async fn find_many(&self, args: TransactionFilterArgs)
+    -> Result<Vec<Transaction>, DBError>;
+
+    async fn find_unique(
         &self,
-        user_id: Uuid,
-        input: &CreateTransactionRequest,
+        args: TransactionFilterArgs,
+    ) -> Result<Option<Transaction>, DBError>;
+
+    async fn create(&self, params: &TransactionCreateParams) -> Result<Transaction, DBError>;
+
+    async fn update(
+        &self,
+        id: Uuid,
+        params: &TransactionUpdateParams,
     ) -> Result<Transaction, DBError>;
 
-    async fn find_by_id(&self, id: Uuid) -> Result<Option<Transaction>, DBError>;
+    async fn delete(&self, id: Uuid) -> Result<bool, DBError>;
+}
 
-    /// Paginated list, newest first.
-    async fn find_by_user(
+#[async_trait::async_trait]
+pub trait TransactionEntryRepository: Send + Sync {
+    async fn find_many(
         &self,
-        user_id: Uuid,
-        limit: i64,
-        offset: i64,
-    ) -> Result<Vec<Transaction>, DBError>;
+        args: TransactionEntryFilterArgs,
+    ) -> Result<Vec<TransactionEntry>, DBError>;
 
-    /// Aggregate: sum of `amount` for a user in a given month.
-    /// If `category_id` is `Some`, the sum is scoped to that category.
-    /// Returns `Decimal::ZERO` when there are no matching rows (never
-    /// `NotFound`).
-    async fn sum_by_user_and_month(
+    async fn find_unique(
         &self,
-        user_id: Uuid,
-        month: chrono::NaiveDate,
-        category_id: Option<Uuid>,
+        args: TransactionEntryFilterArgs,
+    ) -> Result<Option<TransactionEntry>, DBError>;
+
+    async fn create(
+        &self,
+        params: &TransactionEntryCreateParams,
+    ) -> Result<TransactionEntry, DBError>;
+
+    async fn update(
+        &self,
+        id: Uuid,
+        params: &TransactionEntryUpdateParams,
+    ) -> Result<TransactionEntry, DBError>;
+
+    /// Compute balance for an account (sum of all entries)
+    async fn compute_account_balance(
+        &self,
+        account_id: Uuid,
     ) -> Result<rust_decimal::Decimal, DBError>;
 
     async fn delete(&self, id: Uuid) -> Result<bool, DBError>;

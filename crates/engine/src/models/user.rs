@@ -22,3 +22,31 @@ pub struct CreateUserRequest {
     pub password: String,
     pub name:     String,
 }
+
+// =============================================================================
+// Repository Parameters
+// =============================================================================
+
+#[derive(Clone, Debug, Default)]
+pub struct UserFilterArgs {
+    pub id: Option<Uuid>,
+    pub email: Option<String>,
+}
+
+#[derive(Clone, Debug)]
+pub struct UserCreateParams {
+    pub email: String,
+    pub display_name: String,
+    pub timezone: String,
+    pub currency: String,
+    pub locale: String,
+}
+
+#[derive(Clone, Debug, Default)]
+pub struct UserUpdateParams {
+    pub display_name: Option<String>,
+    pub timezone: Option<String>,
+    pub currency: Option<String>,
+    pub locale: Option<String>,
+    pub disabled_at: Option<Option<DateTime<Utc>>>,
+}

@@ -33,7 +33,7 @@ packages/
 
 ### Build & Run
 
-- **Root commands** (via Turbo): `pnpm build`, `pnpm dev`, `pnpm lint`, `pnpm test`, `pnpm check-types`, `pnpm format`
+- **Root commands** (via Turbo): `pnpm build`, `pnpm dev`, `pnpm lint`, `pnpm test`, `pnpm typecheck`, `pnpm format`
 - **API Rust build** (nightly toolchain): `cd apps/api && cargo build --release`
 - **Local dev server**: `pnpm dev` starts all apps (API on 8080, site on 3000)
 - **Docker deployment**: [compose.yaml](compose.yaml) expects `app_network` to exist; uses multi-stage builds
@@ -47,7 +47,7 @@ packages/
 
 ### Type Checking & Linting
 
-- **TypeScript strict**: `pnpm check-types` (TanStack Start with tsc)
+- **TypeScript strict**: `pnpm typecheck` (TanStack Start with tsc)
 - **ESLint**: Shared config with Turbo env var rule, no-warn plugin
 - **Rust clippy**: `cargo clippy` (linter config in workspace [Cargo.toml](Cargo.toml#L7-L12))
 - **Format**: `pnpm format` (Prettier with import/tailwind plugins)
