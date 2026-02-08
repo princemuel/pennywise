@@ -1,0 +1,30 @@
+.layout {
+  display: grid;
+  /* grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr)); */
+  /* grid-template-rows: auto 1fr auto; */
+  gap: 2rem;
+}
+
+@media (width >= 48em /* 768px */) {
+  .layout {
+    grid-template-areas:
+      "pot pot pot bud bud"
+      "txn txn txn bud bud"
+      "txn txn txn bud bud"
+      "txn txn txn bil bil"
+      "txn txn txn bil bil";
+  }
+  .pot {
+    grid-area: pot;
+  }
+  .budget {
+    grid-area: bud;
+  }
+  .transact {
+    grid-area: txn;
+  }
+  .bill {
+    grid-area: bil;
+  }
+}
