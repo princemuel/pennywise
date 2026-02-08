@@ -1,3 +1,5 @@
 @import "@repo/tailwind-config";
 @import "@fontsource-variable/public-sans";
-@custom-variant mini (&:where([data-ui~=compact], [data-ui~=compact] *));
+@custom-variant mini (&:where([data-size~=compact], [data-size~=compact] *));
+@custom-variant aria-asc (&:where([aria-sort=ascending]));
+@custom-variant aria-desc (&:where([aria-sort=descending]));

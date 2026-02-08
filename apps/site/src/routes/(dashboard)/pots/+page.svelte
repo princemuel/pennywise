@@ -15,10 +15,10 @@
     <article
       class="flex flex-col gap-8 rounded-xl bg-white p-6"
       style:anchor-scope="--anchor-pot"
-      style={`--bg-color:${pot.theme};`}
+      style="--color:{pot.theme};"
     >
       <header class="flex items-center gap-4">
-        <span class="rounded-full bg-(--bg-color) p-2"></span>
+        <span class="rounded-full bg-(--color) p-2"></span>
 
         <h4 class="text-xl font-semibold text-grey-900">
           {pot.name}
@@ -88,7 +88,7 @@
           class="h-2 overflow-hidden rounded-full bg-beige-100"
         >
           <div
-            class="h-full w-(--width) rounded-full bg-(--bg-color)"
+            class="h-full w-(--width) rounded-full bg-(--color)"
             style={`--width:${Math.min(100, Number(pot.percent.toFixed(2)))}%`}
           ></div>
         </div>

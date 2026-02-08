@@ -4,12 +4,19 @@ import data from "$lib/content/db.json";
 
 const db = {
   ...data,
-  pots: data.pots.map((pot) =>
-    Object.assign(pot, {
-      id: createHash("sha1").update(pot.name).digest("hex").slice(0, 6),
-      percent: (pot.total / pot.target) * 100
-    })
-  )
+  transactions: data.transactions.map((transaction) => {
+    return { ...id(transaction, transaction.name) };
+  }),
+  budgets: data.budgets.map((budget) => {
+    return { ...id(budget, budget.category) };
+  }),
+  pots: data.pots.map((pot) => {
+    return { ...id(pot, pot.name), percent: (pot.total / pot.target) * 100 };
+  })
 };
 
 export default db;
+
+function id<T extends object>(target: T, data: string) {
+  return Object.assign(target, { id: createHash("sha1").update(data).digest("hex").slice(0, 6) });
+}
