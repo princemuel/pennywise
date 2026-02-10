@@ -23,6 +23,11 @@ max_line_length = 48
 indent_size = 4
 max_line_length = 96
 
+# Python - 4 spaces, Black formatter line length
+[{*.toml,*.yaml}]
+indent_size = 2
+max_line_length = 96
+
 # Rust - 4 spaces, rustfmt default line length
 [*.rs]
 indent_size = 4

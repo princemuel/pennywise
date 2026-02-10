@@ -1,6 +1,16 @@
 debug = true
+
 [application]
-base_url = "http://127.0.0.1"
+base_url = "http://127.0.0.1:8080"
 host     = "127.0.0.1"
+port     = 8080
+
 [database]
-require_ssl = false
+host                 = "127.0.0.1"
+pool_max_connections = 5
+pool_min_connections = 1
+require_ssl          = false
+
+[redis]
+host = "127.0.0.1"
+port = 6379

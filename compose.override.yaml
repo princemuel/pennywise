@@ -1,0 +1,14 @@
+# Local: only run DB, open ports for host access
+services:
+  site:
+    profiles: ["prod"]
+
+  api:
+    profiles: ["prod"]
+
+  db:
+    env_file:
+      - .env
+      - .env.local
+    ports:
+      - "5432:5432" # Expose to host for local debugging

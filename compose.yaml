@@ -3,41 +3,50 @@ services:
     container_name: pennsite
     build:
       context: .
-      dockerfile: ./apps/site/Dockerfile
-    restart: always
-    ports:
-      - 3000:3000
+      dockerfile: apps/site/Dockerfile
+    restart: unless-stopped
+    expose:
+      - "3000"
     networks:
       - pennywise
+    depends_on:
+      api:
+        condition: service_started
+
   api:
     container_name: pennapi
     build:
       context: .
-      dockerfile: ./apps/api/Dockerfile
-    restart: always
-    ports:
-      - 8080:8080
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    expose:
+      - "8080"
     networks:
       - pennywise
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
     container_name: penndb
-    image: postgres
+    image: postgres:18-trixie
     restart: unless-stopped
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: kalel
-      POSTGRES_PASSWORD: krypton
-      POSTGRES_DB: pennies
+    expose:
+      - "5432" # Internal only by default
     volumes:
-      - pgdata:/var/lib/postgresql
+      - pgdata:/var/lib/postgresql/data
     networks:
       - pennywise
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 volumes:
   pgdata:
+    driver: local
 
-# Define a network, which allows containers to communicate
-# with each other, by using their container name as a hostname
 networks:
   pennywise:
-    external: true
+    driver: bridge

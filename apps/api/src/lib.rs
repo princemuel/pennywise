@@ -1,4 +1,7 @@
-mod app;
+pub mod application;
+pub mod bootstrap;
 pub mod config;
+pub mod domain;
 pub mod http;
-pub mod telemetry;
+pub mod infra;
+pub mod shared;
