@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO budgets (user_id, category_id, maximum, theme)\n            VALUES ($1, $2, $3, $4)\n            ON CONFLICT DO NOTHING\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Numeric",
+        "Bpchar"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a801c11e467e5ecc7406b25b1a7749d6dd0f61fbe93da8d18bd1a491a6476608"
+}

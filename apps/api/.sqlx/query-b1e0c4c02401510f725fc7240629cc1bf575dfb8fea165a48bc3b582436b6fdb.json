@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO recurring_bills (user_id, avatar_id, category_id, amount, billday)\n            VALUES ($1, $2, $3, $4, $5)\n            ON CONFLICT DO NOTHING\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Numeric",
+        "Int2"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "b1e0c4c02401510f725fc7240629cc1bf575dfb8fea165a48bc3b582436b6fdb"
+}

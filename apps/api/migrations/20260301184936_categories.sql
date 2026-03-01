@@ -1,0 +1,22 @@
+-- Add migration script here
+CREATE TABLE categories (
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
+    name TEXT NOT NULL UNIQUE,
+    description TEXT,
+    deleted_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE TRIGGER trg_categories_updated_at BEFORE
+UPDATE ON categories FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+INSERT INTO categories (name)
+VALUES ('General'),
+    ('Entertainment'),
+    ('Dining Out'),
+    ('Groceries'),
+    ('Transportation'),
+    ('Lifestyle'),
+    ('Shopping'),
+    ('Bills'),
+    ('Personal Care'),
+    ('Education');
