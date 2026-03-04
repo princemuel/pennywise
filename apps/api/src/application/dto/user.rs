@@ -1,1 +1,1 @@
-pub struct Foo;
+pub struct User;
