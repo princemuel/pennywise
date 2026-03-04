@@ -1,6 +1,6 @@
+use core::net::{Ipv4Addr, SocketAddr};
 use core::str::FromStr;
 use core::time::Duration;
-use std::fmt;
 
 use config::{Config, ConfigError, Environment, File};
 use secrecy::{ExposeSecret, SecretString};
@@ -13,10 +13,8 @@ pub fn load() -> Result<Settings, ConfigError> {
 
     let env: AppEnvironment = std::env::var("APP_ENVIRONMENT")
         .unwrap_or_else(|_| "local".into())
-        .parse()
-        .expect("Invalid APP_ENVIRONMENT");
+        .parse()?;
 
-    // Config dir relative to the binary's workspace location
     let config_dir = std::path::PathBuf::from(
         std::env::var("CARGO_MANIFEST_DIR").unwrap_or_else(|_| ".".to_string()),
     )
@@ -34,7 +32,7 @@ pub fn load() -> Result<Settings, ConfigError> {
         .try_deserialize()
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Settings {
     pub debug:       bool,
     pub application: ApplicationSettings,
@@ -44,7 +42,7 @@ pub struct Settings {
     pub oauth:       OAuthSettings,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct ApplicationSettings {
     pub host:     String,
     pub port:     u16,
@@ -54,9 +52,13 @@ pub struct ApplicationSettings {
 
 impl ApplicationSettings {
     pub fn addr(&self) -> String { format!("{}:{}", self.host, self.port) }
+
+    pub fn socket_addr(&self) -> SocketAddr {
+        SocketAddr::from((Ipv4Addr::UNSPECIFIED, self.port))
+    }
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct DatabaseSettings {
     pub host:        String,
     pub port:        u16,
@@ -73,7 +75,7 @@ pub struct DatabaseSettings {
 }
 
 impl DatabaseSettings {
-    pub fn pool_options(&self) -> PgPoolOptions {
+    pub(crate) fn pool_options(&self) -> PgPoolOptions {
         PgPoolOptions::new()
             .min_connections(self.pool_min_connections)
             .max_connections(self.pool_max_connections)
@@ -82,18 +84,12 @@ impl DatabaseSettings {
             .max_lifetime(Duration::from_millis(self.pool_max_lifetime_ms))
     }
 
-    pub fn connect_options(&self) -> PgConnectOptions {
-        PgConnectOptions::new()
-            .host(&self.host)
-            .port(self.port)
-            .username(&self.username)
-            .password(self.password.expose_secret())
-            .ssl_mode(if self.require_ssl { PgSslMode::Require } else { PgSslMode::Prefer })
-            .database(&self.name)
+    pub(crate) fn connect_options(&self) -> PgConnectOptions {
+        self.connect_options_without_db().database(&self.name)
     }
 
     // Without DB name - useful for admin ops like CREATE DATABASE
-    pub fn connect_options_without_db(&self) -> PgConnectOptions {
+    pub(crate) fn connect_options_without_db(&self) -> PgConnectOptions {
         PgConnectOptions::new()
             .host(&self.host)
             .port(self.port)
@@ -103,7 +99,34 @@ impl DatabaseSettings {
     }
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[cfg(test)]
+impl DatabaseSettings {
+    pub fn test_with_pg_port(port: u16) -> Self {
+        use secrecy::SecretString;
+
+        Self {
+            host: "127.0.0.1".into(),
+            port,
+            name: "postgres".into(),
+            username: "postgres".into(),
+            password: SecretString::from("postgres"),
+            require_ssl: false,
+
+            // Tight but realistic values for tests - fast acquire timeout
+            // so failures surface quickly rather than hanging the suite.
+            pool_min_connections: 1,
+            pool_max_connections: 2,
+            pool_acquire_timeout_ms: 2_000,
+            pool_idle_timeout_ms: 10_000,
+            pool_max_lifetime_ms: 30_000,
+        }
+        // If Settings has other fields (e.g. RedisSettings), fill them
+        // with sensible stubs or use `..Settings::default()` if it's
+        // derived/implemented.
+    }
+}
+
+#[derive(Clone, Debug, Deserialize)]
 pub struct RedisSettings {
     pub host: String,
     pub port: u16,
@@ -113,20 +136,20 @@ impl RedisSettings {
     pub fn uri(&self) -> String { format!("redis://{}:{}", self.host, self.port) }
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct AuthSettings {
     pub jwt_secret:      SecretString, // APP_AUTH__JWT_SECRET
     pub hmac_secret:     SecretString, // APP_AUTH__HMAC_SECRET
     pub jwt_expiry_secs: u64,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct OAuthSettings {
     pub google: OAuthProviderSettings,
     pub github: OAuthProviderSettings,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct OAuthProviderSettings {
     pub client_id:     String, // APP_OAUTH__GOOGLE__CLIENT_ID
     pub client_secret: String, // APP_OAUTH__GOOGLE__CLIENT_SECRET
@@ -139,35 +162,37 @@ impl OAuthProviderSettings {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum AppEnvironment {
     Local,
     Production,
 }
 
 impl AppEnvironment {
-    pub fn as_str(&self) -> &'static str {
+    pub const fn as_str(&self) -> &'static str {
         match self {
-            AppEnvironment::Local => "local",
-            AppEnvironment::Production => "production",
+            Self::Local => "local",
+            Self::Production => "production",
         }
     }
 }
 
 impl FromStr for AppEnvironment {
-    type Err = String;
+    type Err = ConfigError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s.to_lowercase().as_str() {
+        match s.to_lowercase().trim() {
             "local" => Ok(Self::Local),
             "production" => Ok(Self::Production),
-            e => Err(format!(
+            e => Err(ConfigError::Message(format!(
                 "Unknown environment: `{e}`. Use either `local` or `production`"
-            )),
+            ))),
         }
     }
 }
 
-impl fmt::Display for AppEnvironment {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result { write!(f, "{}", self.as_str()) }
+impl core::fmt::Display for AppEnvironment {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "{}", self.as_str())
+    }
 }

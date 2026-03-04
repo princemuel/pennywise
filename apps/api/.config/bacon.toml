@@ -1,0 +1,42 @@
+default_job = "dev"
+
+[jobs.dev]
+background         = false
+command            = ["cargo", "run"]
+kill               = ["kill", "-s", "INT"]
+need_stdout        = true
+on_change_strategy = "kill_then_restart"
+watch              = ["src", "config", "migrations"]
+
+[jobs.check]
+command     = ["cargo", "check", "--all-features"]
+need_stdout = false
+
+[jobs.clippy]
+command     = ["cargo", "clippy", "--all-features"]
+need_stdout = false
+
+[jobs.pedantic]
+command     = ["cargo", "clippy", "--", "-W", "clippy::pedantic"]
+need_stdout = false
+
+[jobs.test]
+command            = ["cargo", "test"]
+need_stdout        = true
+on_change_strategy = "wait_then_restart"
+
+[jobs.test-verbose]
+command            = ["cargo", "test", "--", "--nocapture"]
+need_stdout        = true
+on_change_strategy = "wait_then_restart"
+
+[jobs.migrate]
+background  = false
+command     = ["sqlx", "migrate", "run"]
+need_stdout = true
+watch       = ["migrations"]
+
+[jobs.prepare]
+background  = false
+command     = ["cargo", "sqlx", "prepare"]
+need_stdout = true

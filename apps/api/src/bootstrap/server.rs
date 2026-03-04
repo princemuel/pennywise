@@ -1,41 +1,52 @@
-use core::net::{Ipv4Addr, SocketAddr};
-use std::sync::Arc;
-
-use axum::Router;
 use tokio::net::TcpListener;
-use tower_http::cors::{Any, CorsLayer};
 
-use super::database::create_pool;
+use super::{database, router, services, state, telemetry};
 use crate::config;
 
+/// .
+///
+/// # Errors
+///
+/// This function will return an error if .
 pub async fn run() -> anyhow::Result<()> {
-    let settings = config::load()?;
+    let config = config::load()?;
 
-    super::o11ty::init_telemetry(&settings);
+    telemetry::init(&config);
+
+    let pool = database::create_pool_with_defaults(&config.database).await?;
+    let services = services::build(&pool);
+    let state = state::build(&pool, &config, &services);
+    let router = router::build();
+
+    let address = config.application.socket_addr();
+    let listener = TcpListener::bind(address).await?;
 
     tracing::info!(
         env   = %std::env::var("APP_ENVIRONMENT").unwrap_or("local".into()),
-        addr  = %settings.application.addr(),
-        db    = %settings.database.host,
-        debug = %settings.debug,
-        "Starting the Pennywise API"
+        bind  = %address,
+        db    = %config.database.host,
+        debug = %config.debug,
+        "🚀 Pennywise API listening"
     );
 
-    let _db_pool = create_pool(&settings).await;
-
-    let router = Router::new();
-
-    let address = SocketAddr::from((Ipv4Addr::UNSPECIFIED, settings.application.port));
-    let listener = TcpListener::bind(address).await?;
+    tracing::info!(
+        "🚀 Pennywise API listening on http://{:?}",
+        &listener.local_addr()?
+    );
 
     axum::serve(listener, router.into_make_service())
-        .with_graceful_shutdown(shutdown_signal())
+        .with_graceful_shutdown(shutdown_signal(state))
         .await?;
+
+    tracing::info!("Server shut down gracefully");
 
     Ok(())
 }
 
-async fn shutdown_signal() {
+async fn shutdown_signal(state: state::AppState) {
+    use core::sync::atomic::Ordering;
+    use core::time::Duration;
+
     use tokio::signal;
 
     let ctrl_c = async {
@@ -56,7 +67,15 @@ async fn shutdown_signal() {
     let terminate = std::future::pending::<()>();
 
     tokio::select! {
-        _ = ctrl_c => {},
-        _ = terminate => {},
+        () = ctrl_c => {},
+        () = terminate => {},
     }
+
+    tracing::info!("Shutdown signal received, starting graceful shutdown");
+
+    // Mark as not ready for new connections
+    state.ready.store(false, Ordering::SeqCst);
+
+    // Allow time for load balancer to detect
+    tokio::time::sleep(Duration::from_secs(5)).await;
 }

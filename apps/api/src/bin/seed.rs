@@ -10,8 +10,8 @@
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 use anyhow::{Context, Result};
-use bigdecimal::BigDecimal;
 use chrono::{DateTime, Datelike, TimeZone, Utc};
+use rust_decimal::Decimal;
 use serde::Deserialize;
 use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
@@ -42,16 +42,17 @@ struct Db {
 #[derive(Debug, Deserialize)]
 struct BudgetJson {
     category: String,
-    maximum:  f64,
+    // Deserialize directly as Decimal — no f64 intermediate, no precision loss.
+    maximum:  Decimal,
     theme:    String,
 }
 
 #[derive(Debug, Deserialize)]
 struct PotJson {
     name:   String,
-    target: f64,
+    target: Decimal,
     theme:  String,
-    total:  f64,
+    total:  Decimal,
 }
 
 #[derive(Debug, Deserialize)]
@@ -60,9 +61,11 @@ struct TransactionJson {
     avatar:    String, // filename e.g. "assets/emma-richardson.jpg"
     category:  String,
     date:      DateTime<Utc>, // chrono parses ISO 8601 / RFC 3339 natively
-    amount:    f64,           // negative = debit, positive = credit
+    // Decimal deserializes JSON numbers exactly — "-49.99" stays "-49.99".
+    amount:    Decimal,
     recurring: bool,
 }
+
 // ---------------------------------------------------------------------------
 // Entry point
 // ---------------------------------------------------------------------------
@@ -137,7 +140,7 @@ async fn seed_categories(pool: &PgPool, db: &Db) -> Result<HashMap<String, Uuid>
 // ---------------------------------------------------------------------------
 
 async fn seed_avatars(pool: &PgPool, db: &Db) -> Result<HashMap<String, Uuid>> {
-    let mut seen = BTreeMap::new();
+    let mut seen: BTreeMap<String, String> = BTreeMap::new();
     for t in &db.transactions {
         seen.entry(t.name.clone())
             .or_insert_with(|| t.avatar.clone());
@@ -185,13 +188,14 @@ async fn seed_transactions(
             .with_context(|| format!("No avatar id found for '{}'", t.name))?;
 
         let category_id = category_ids
-            .get(&t.category)
+            .get(&t.category.to_lowercase())
             .with_context(|| format!("No category id found for '{}'", t.category))?;
 
-        let (amount, direction) = if t.amount >= 0.0 {
-            (to_decimal(t.amount)?, Direction::Credit)
+        // Decimal is Copy and base-10, so abs() is exact with no precision loss.
+        let (amount, direction) = if t.amount >= Decimal::ZERO {
+            (t.amount, Direction::Credit)
         } else {
-            (to_decimal(t.amount.abs())?, Direction::Debit)
+            (t.amount.abs(), Direction::Debit)
         };
 
         sqlx::query!(
@@ -230,7 +234,7 @@ async fn seed_budgets(
 
     for b in &db.budgets {
         let category_id = category_ids
-            .get(&b.category)
+            .get(&b.category.to_lowercase())
             .with_context(|| format!("No category id found for '{}'", b.category))?;
 
         sqlx::query!(
@@ -241,7 +245,7 @@ async fn seed_budgets(
             "#,
             user_id,
             category_id,
-            to_decimal(b.maximum)?,
+            b.maximum,
             b.theme,
         )
         .execute(pool)
@@ -270,22 +274,22 @@ async fn seed_pots(pool: &PgPool, db: &Db) -> Result<()> {
             "#,
             user_id,
             p.name,
-            to_decimal(p.target)?,
+            p.target,
             p.theme,
-            to_decimal(p.total)?,
+            p.total,
         )
         .fetch_one(pool)
         .await
         .with_context(|| format!("Failed to insert pot '{}'", p.name))?;
 
-        if p.total > 0.0 {
+        if p.total > Decimal::ZERO {
             sqlx::query!(
                 r#"
                 INSERT INTO pot_transactions (pot_id, amount, note)
                 VALUES ($1, $2, 'initial seed deposit')
                 "#,
                 pot_id,
-                to_decimal(p.total)?,
+                p.total,
             )
             .execute(pool)
             .await
@@ -310,12 +314,11 @@ async fn seed_recurring_bills(
     let user_id = get_or_create_seed_user(pool).await?;
 
     // Deduplicate by name, keeping the latest date.
-    let mut latest = HashMap::new();
+    let mut latest: HashMap<&str, &TransactionJson> = HashMap::new();
     for t in &db.transactions {
         if !t.recurring {
             continue;
         }
-
         let entry = latest.entry(t.name.as_str()).or_insert(t);
         if t.date > entry.date {
             *entry = t;
@@ -330,13 +333,12 @@ async fn seed_recurring_bills(
             .with_context(|| format!("No avatar id for '{}'", t.name))?;
 
         let category_id = category_ids
-            .get(t.category.as_str())
+            .get(&t.category.to_lowercase())
             .with_context(|| format!("No category id for '{}'", t.category))?;
 
         // billday = day-of-month in UTC, clamped to 28.
         let billday = (t.date.day() as i16).min(28);
-
-        let amount = to_decimal(t.amount.abs())?;
+        let amount = t.amount.abs();
 
         sqlx::query!(
             r#"
@@ -363,13 +365,6 @@ async fn seed_recurring_bills(
 
 // ---------------------------------------------------------------------------
 // recurring_bill_payments
-//
-// For every recurring transaction in the JSON, find the recurring_bill row
-// (by avatar + category), compute the due deadline for that billing cycle,
-// then insert a payment record linking back to the transaction.
-//
-// Bills with one occurrence → one payment record.
-// Bills with two occurrences (Jul + Aug) → two payment records.
 // ---------------------------------------------------------------------------
 
 async fn seed_recurring_bill_payments(
@@ -390,7 +385,7 @@ async fn seed_recurring_bill_payments(
             .with_context(|| format!("No avatar id for '{}'", t.name))?;
 
         let category_id = category_ids
-            .get(t.category.as_str())
+            .get(&t.category.to_lowercase())
             .with_context(|| format!("No category id for '{}'", t.category))?;
 
         // Look up the bill and its billday in one query.
@@ -411,7 +406,6 @@ async fn seed_recurring_bill_payments(
         .with_context(|| format!("No recurring_bill found for '{}'", t.name))?;
 
         // deadline = first of the transaction's month + (billday - 1) days.
-        // e.g. billday=2, July transaction → deadline = 2024-07-02
         let month_start = Utc
             .with_ymd_and_hms(t.date.year(), t.date.month(), 1, 0, 0, 0)
             .single()
@@ -420,7 +414,7 @@ async fn seed_recurring_bill_payments(
         let deadline = (month_start + chrono::Duration::days(billday as i64 - 1)).date_naive();
 
         // Look up the transaction's DB id by exact match on the natural key.
-        let transaction_id: Uuid = sqlx::query_scalar!(
+        let transaction_id = sqlx::query_scalar!(
             r#"
             SELECT id FROM transactions
             WHERE avatar_id   = $1
@@ -431,7 +425,7 @@ async fn seed_recurring_bill_payments(
             "#,
             avatar_id,
             category_id,
-            to_decimal(t.amount.abs())?,
+            t.amount.abs(),
             t.date,
         )
         .fetch_one(pool)
@@ -446,7 +440,7 @@ async fn seed_recurring_bill_payments(
             "#,
             bill_id,
             deadline,
-            t.date, // paid_at = when the transaction occurred
+            t.date,
             transaction_id,
         )
         .execute(pool)
@@ -478,10 +472,4 @@ async fn get_or_create_seed_user(pool: &PgPool) -> Result<Uuid> {
     .context("Failed to upsert seed user")?;
 
     Ok(id)
-}
-
-/// Converts f64 → BigDecimal for NUMERIC columns.
-/// Safe here since all values in db.json have at most 2 decimal places.
-fn to_decimal(value: f64) -> Result<BigDecimal> {
-    BigDecimal::try_from(value).context("Failed to convert f64 to BigDecimal")
 }

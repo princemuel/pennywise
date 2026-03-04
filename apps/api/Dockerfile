@@ -1,14 +1,14 @@
 ARG RUST_VERSION=1.93
 
 # --- Planner: generate dependency recipe
-FROM rust:${RUST_VERSION}-slim-bookworm AS planner
+FROM rust:${RUST_VERSION}-slim-trixie AS planner
 RUN cargo install cargo-chef
 WORKDIR /app
 COPY . .
 RUN cargo chef prepare --recipe-path recipe.json
 
 # --- Cacher: build dependencies only (cached unless Cargo.toml changes)
-FROM rust:${RUST_VERSION}-slim-bookworm AS cacher
+FROM rust:${RUST_VERSION}-slim-trixie AS cacher
 RUN apt-get update && apt-get install -y pkg-config libssl-dev && \
     rm -rf /var/lib/apt/lists/*
 RUN cargo install cargo-chef
@@ -17,17 +17,18 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 
 # --- Builder: compile your actual code
-FROM rust:${RUST_VERSION}-slim-bookworm AS builder
+FROM rust:${RUST_VERSION}-slim-trixie AS builder
 RUN apt-get update && apt-get install -y pkg-config libssl-dev && \
-    rm -rf /var/lib/apt/lists/*
+rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 # Reuse compiled dependencies
 COPY --from=cacher /app/target target
 COPY --from=cacher /usr/local/cargo /usr/local/cargo
 # Copy source
 COPY . .
+ENV SQLX_OFFLINE=false
 # Build only the api binary
-RUN cargo build --release -p --bin api
+RUN cargo build --release --bin api
 
 # --- Runtime: minimal final image
 FROM debian:trixie-slim AS runtime
@@ -40,14 +41,15 @@ RUN groupadd --gid 1001 axum && \
 WORKDIR /app
 
 COPY --from=builder /app/target/release/api        ./api
+COPY --from=builder /app/apps/api/config       ./config
 COPY --from=builder /app/apps/api/migrations       ./migrations
+COPY --from=builder /app/apps/api/.sqlx       ./sqlx
 
 RUN chown -R axum:axum /app
 USER axum
 
 ENV RUST_LOG=info
 ENV PORT=8080
-ENV SQLX_OFFLINE=true
+ENV APP_ENVIRONMENT=production
 EXPOSE 8080
-
 CMD ["./api"]

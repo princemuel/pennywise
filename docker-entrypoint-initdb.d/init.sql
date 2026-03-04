@@ -1,0 +1,2 @@
+CREATE USER kalel WITH PASSWORD 'krypton';
+CREATE DATABASE pennies OWNER kalel;

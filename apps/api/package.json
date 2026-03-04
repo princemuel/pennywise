@@ -1,10 +1,16 @@
 {
-  "name": "@repo/pennapi",
+  "name": "@repo/api",
   "scripts": {
     "build": "cargo build --release",
     "dev": "bacon dev",
-    "test": "cargo test",
-    "lint": "bacon pedantic",
-    "format": "cargo fmt"
+    "check": "bacon check",
+    "test": "bacon test",
+    "lint": "bacon clippy",
+    "lint:strict": "bacon pedantic",
+    "format": "cargo fmt",
+    "db:migrate": "sqlx migrate add",
+    "db:deploy": "sqlx migrate run",
+    "db:prepare": "cargo sqlx prepare",
+    "db:seed": "cargo run --bin seed"
   }
 }

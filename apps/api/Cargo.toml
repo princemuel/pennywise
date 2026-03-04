@@ -27,6 +27,8 @@ tower-http = { version = "0.6", features = [
   "timeout",
   "compression-full",
 ] }
+tower-sessions = "0.15"
+tower-sessions-redis-store = "0.16"
 
 # Database
 sqlx = { version = "0.8", features = [
@@ -36,11 +38,12 @@ sqlx = { version = "0.8", features = [
   "postgres",
   "uuid",
   "migrate",
+  "rust_decimal",
+  "chrono",
 ] }
 
 # Serialization
-serde      = { version = "1", features = ["derive"] }
-serde_json = "1"
+serde = { version = "1", features = ["derive"] }
 
 # Auth
 argon2        = "0.5"
@@ -54,28 +57,23 @@ dotenvy = "0.15"
 secrecy = { version = "0.10", features = ["serde"] }
 
 # Utils
-anyhow = "1"
-async-trait = "0.1"
-jiff = { version = "0.2", features = ["serde"] }
-jiff-sqlx = "0.1"
-rust_decimal = { version = "1", features = [
-  "serde-with-str",
-  "db-tokio-postgres",
-  "macros",
-] }
-strum = { version = "0.27", features = ["derive"] }
-thiserror = "2"
+anyhow       = "1"
+async-trait  = "0.1"
+chrono       = { version = "0.4", features = ["serde"] }
+rust_decimal = { version = "1", features = ["serde-with-str", "macros"] }
+thiserror    = "2"
+uuid         = { version = "1", features = ["serde", "v7"] }
 
 # Observability
+serde_json               = "1.0.149"
 tracing                  = "0.1"
 tracing-bunyan-formatter = "0.3"
 tracing-log              = "0.2"
 tracing-subscriber       = { version = "0.3", features = ["registry", "env-filter"] }
 
 [dev-dependencies]
-testcontainers = "0.26"
-tokio          = "1"
-
+testcontainers-modules = { version = "0.15", features = ["postgres", "redis"] }
+tokio                  = { version = "1", features = ["full"] }
 
 [profile.release]
 codegen-units = 1
