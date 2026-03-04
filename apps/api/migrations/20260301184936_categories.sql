@@ -10,13 +10,13 @@ CREATE TABLE categories (
 CREATE TRIGGER trg_categories_updated_at BEFORE
 UPDATE ON categories FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 INSERT INTO categories (name)
-VALUES ('General'),
-    ('Entertainment'),
-    ('Dining Out'),
-    ('Groceries'),
-    ('Transportation'),
-    ('Lifestyle'),
-    ('Shopping'),
-    ('Bills'),
-    ('Personal Care'),
-    ('Education');
+VALUES ('general'),
+    ('entertainment'),
+    ('dining out'),
+    ('groceries'),
+    ('transportation'),
+    ('lifestyle'),
+    ('shopping'),
+    ('bills'),
+    ('personal care'),
+    ('education');

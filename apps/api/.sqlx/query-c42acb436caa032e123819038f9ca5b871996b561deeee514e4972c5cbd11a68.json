@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO recurring_bill_payments (bill_id, deadline, paid_at, transaction_id)\n            VALUES ($1, $2, $3, $4)\n            ON CONFLICT (bill_id, deadline) DO NOTHING\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Date",
+        "Timestamptz",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c42acb436caa032e123819038f9ca5b871996b561deeee514e4972c5cbd11a68"
+}

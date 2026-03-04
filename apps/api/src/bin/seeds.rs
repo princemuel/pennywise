@@ -7,7 +7,7 @@
 ///
 /// Run with:
 ///     cargo run --bin seed
-use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::collections::{BTreeMap, HashMap, HashSet};
 
 use anyhow::{Context, Result};
 use bigdecimal::BigDecimal;
@@ -56,13 +56,14 @@ struct PotJson {
 
 #[derive(Debug, Deserialize)]
 struct TransactionJson {
-    name:      String, // sender / recipient display name
-    avatar:    String, // filename e.g. "assets/emma-richardson.jpg"
+    name:      String,          // sender / recipient display name
+    avatar:    String,          // filename e.g. "emma-richardson.jpg"
     category:  String,
-    date:      DateTime<Utc>, // chrono parses ISO 8601 / RFC 3339 natively
-    amount:    f64,           // negative = debit, positive = credit
+    date:      DateTime<Utc>,   // chrono parses ISO 8601 / RFC 3339 natively
+    amount:    f64,             // negative = debit, positive = credit
     recurring: bool,
 }
+
 // ---------------------------------------------------------------------------
 // Entry point
 // ---------------------------------------------------------------------------
@@ -79,14 +80,14 @@ async fn main() -> Result<()> {
         .await
         .context("Failed to connect to database")?;
 
-    // db.json lives next to this file: src/bin/db.json
+    // Embedded at compile time — no runtime file path needed.
     let raw = include_str!("db.json");
     let db: Db = serde_json::from_str(raw).context("Failed to parse db.json")?;
 
     println!("⏳ Seeding database...");
 
     let category_ids = seed_categories(&pool, &db).await?;
-    let avatar_ids = seed_avatars(&pool, &db).await?;
+    let avatar_ids   = seed_avatars(&pool, &db).await?;
     seed_transactions(&pool, &db, &category_ids, &avatar_ids).await?;
     seed_budgets(&pool, &db, &category_ids).await?;
     seed_pots(&pool, &db).await?;
@@ -99,17 +100,25 @@ async fn main() -> Result<()> {
 
 // ---------------------------------------------------------------------------
 // categories
+//
+// HashSet<String> for dedup — we only care about membership, not order.
+// Sorted Vec for stable insert order into the DB.
 // ---------------------------------------------------------------------------
 
 async fn seed_categories(pool: &PgPool, db: &Db) -> Result<HashMap<String, Uuid>> {
-    let names: BTreeSet<String> = db
+    // HashSet is the right tool here: we want unique names, nothing else.
+    let unique: HashSet<String> = db
         .transactions
         .iter()
-        .map(|t| t.category.to_lowercase())
-        .chain(db.budgets.iter().map(|b| b.category.to_lowercase()))
+        .map(|t| t.category.clone())
+        .chain(db.budgets.iter().map(|b| b.category.clone()))
         .collect();
 
-    let mut map = HashMap::with_capacity(names.len());
+    // Sort for deterministic insert order.
+    let mut names: Vec<String> = unique.into_iter().collect();
+    names.sort();
+
+    let mut map: HashMap<String, Uuid> = HashMap::with_capacity(names.len());
 
     for name in &names {
         let id = sqlx::query_scalar!(
@@ -134,18 +143,23 @@ async fn seed_categories(pool: &PgPool, db: &Db) -> Result<HashMap<String, Uuid>
 
 // ---------------------------------------------------------------------------
 // avatars
+//
+// BTreeMap<name, filename>: gives us dedup + stable alphabetical iteration
+// for free — no sort step needed.
 // ---------------------------------------------------------------------------
 
 async fn seed_avatars(pool: &PgPool, db: &Db) -> Result<HashMap<String, Uuid>> {
-    let mut seen = BTreeMap::new();
+    // BTreeMap: deduplicates by name (same as HashMap) AND iterates in sorted
+    // order, so insert sequence is deterministic without a separate sort step.
+    let mut seen: BTreeMap<String, String> = BTreeMap::new();
     for t in &db.transactions {
-        seen.entry(t.name.clone())
-            .or_insert_with(|| t.avatar.clone());
+        seen.entry(t.name.clone()).or_insert_with(|| t.avatar.clone());
     }
 
-    let mut map = HashMap::with_capacity(seen.len());
+    // Output map doesn't need ordering — HashMap is fine for lookups.
+    let mut map: HashMap<String, Uuid> = HashMap::with_capacity(seen.len());
 
-    for (name, avatar_url) in &seen {
+    for (name, filename) in &seen {
         let id = sqlx::query_scalar!(
             r#"
             INSERT INTO avatars (name, avatar_url)
@@ -154,7 +168,7 @@ async fn seed_avatars(pool: &PgPool, db: &Db) -> Result<HashMap<String, Uuid>> {
             RETURNING id
             "#,
             name,
-            avatar_url,
+            filename,   // stored as-is; avatar_url is just the filename from the JSON
         )
         .fetch_one(pool)
         .await
@@ -172,10 +186,10 @@ async fn seed_avatars(pool: &PgPool, db: &Db) -> Result<HashMap<String, Uuid>> {
 // ---------------------------------------------------------------------------
 
 async fn seed_transactions(
-    pool: &PgPool,
-    db: &Db,
+    pool:         &PgPool,
+    db:           &Db,
     category_ids: &HashMap<String, Uuid>,
-    avatar_ids: &HashMap<String, Uuid>,
+    avatar_ids:   &HashMap<String, Uuid>,
 ) -> Result<()> {
     let user_id = get_or_create_seed_user(pool).await?;
 
@@ -222,8 +236,8 @@ async fn seed_transactions(
 // ---------------------------------------------------------------------------
 
 async fn seed_budgets(
-    pool: &PgPool,
-    db: &Db,
+    pool:         &PgPool,
+    db:           &Db,
     category_ids: &HashMap<String, Uuid>,
 ) -> Result<()> {
     let user_id = get_or_create_seed_user(pool).await?;
@@ -299,23 +313,26 @@ async fn seed_pots(pool: &PgPool, db: &Db) -> Result<()> {
 
 // ---------------------------------------------------------------------------
 // recurring_bills
+//
+// HashMap<&str, &TransactionJson>: keyed by name for O(1) dedup lookups.
+// We only need the latest transaction per bill — no ordering required.
 // ---------------------------------------------------------------------------
 
 async fn seed_recurring_bills(
-    pool: &PgPool,
-    db: &Db,
+    pool:         &PgPool,
+    db:           &Db,
     category_ids: &HashMap<String, Uuid>,
-    avatar_ids: &HashMap<String, Uuid>,
+    avatar_ids:   &HashMap<String, Uuid>,
 ) -> Result<()> {
     let user_id = get_or_create_seed_user(pool).await?;
 
-    // Deduplicate by name, keeping the latest date.
-    let mut latest = HashMap::new();
+    // HashMap is correct here: we deduplicate by name, keeping the latest date.
+    // We don't need sorted iteration — inserts are independent of each other.
+    let mut latest: HashMap<&str, &TransactionJson> = HashMap::new();
     for t in &db.transactions {
         if !t.recurring {
             continue;
         }
-
         let entry = latest.entry(t.name.as_str()).or_insert(t);
         if t.date > entry.date {
             *entry = t;
@@ -373,10 +390,10 @@ async fn seed_recurring_bills(
 // ---------------------------------------------------------------------------
 
 async fn seed_recurring_bill_payments(
-    pool: &PgPool,
-    db: &Db,
+    pool:         &PgPool,
+    db:           &Db,
     category_ids: &HashMap<String, Uuid>,
-    avatar_ids: &HashMap<String, Uuid>,
+    avatar_ids:   &HashMap<String, Uuid>,
 ) -> Result<()> {
     let mut count = 0;
 
@@ -417,7 +434,8 @@ async fn seed_recurring_bill_payments(
             .single()
             .with_context(|| format!("Invalid month_start for '{}'", t.name))?;
 
-        let deadline = (month_start + chrono::Duration::days(billday as i64 - 1)).date_naive();
+        let deadline = (month_start + chrono::Duration::days(billday as i64 - 1))
+            .date_naive();
 
         // Look up the transaction's DB id by exact match on the natural key.
         let transaction_id: Uuid = sqlx::query_scalar!(
@@ -446,7 +464,7 @@ async fn seed_recurring_bill_payments(
             "#,
             bill_id,
             deadline,
-            t.date, // paid_at = when the transaction occurred
+            t.date,         // paid_at = when the transaction occurred
             transaction_id,
         )
         .execute(pool)
@@ -464,11 +482,13 @@ async fn seed_recurring_bill_payments(
 // Helpers
 // ---------------------------------------------------------------------------
 
+/// Upserts a seed user and returns their id. Called by any seeder that needs
+/// a user_id FK. Uses a single round-trip per seeder via ON CONFLICT.
 async fn get_or_create_seed_user(pool: &PgPool) -> Result<Uuid> {
     let id = sqlx::query_scalar!(
         r#"
         INSERT INTO users (email, name, password)
-        VALUES ('kalel@pennies.dev', 'kalel', 'kryptonite')
+        VALUES ('seed@example.com', 'Seed User', 'not-a-real-hash')
         ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email
         RETURNING id
         "#,
