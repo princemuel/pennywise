@@ -23,13 +23,12 @@ max_line_length = 48
 indent_size = 4
 max_line_length = 96
 
-# Python - 4 spaces, Black formatter line length
 [{*.toml,*.yaml}]
 indent_size = 2
 max_line_length = 96
 
-# Rust - 4 spaces, rustfmt default line length
-[*.rs]
+# Rust/Zig - 4 spaces, rustfmt default line length
+[{*.rs,*.zig}]
 indent_size = 4
 
 [{*.c,*.h,*.cpp,*.hpp,*.cc,*.cxx,*.hh,*.hxx}]
@@ -52,6 +51,9 @@ indent_size = unset # Allow user-defined tab width
 [Makefile]
 indent_style = tab
 indent_size = unset # Allow user-defined tab width
+
+[CMakeLists.txt]
+indent_size = 4
 
 [justfile]
 indent_size = 4
