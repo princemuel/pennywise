@@ -2,7 +2,7 @@
 -- Direction enum: cleaner than relying on sign of amount.
 -- amount is always positive; direction tells you which way money moved.
 CREATE TYPE transaction_direction AS ENUM ('credit', 'debit');
-CREATE TABLE transactions (
+CREATE TABLE IF NOT EXISTS transactions (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     avatar_id UUID NOT NULL REFERENCES avatars(id) ON DELETE RESTRICT,

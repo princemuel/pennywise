@@ -1,5 +1,5 @@
 -- Add up migration script here
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
     email TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,

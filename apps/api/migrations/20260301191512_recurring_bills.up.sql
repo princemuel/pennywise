@@ -1,5 +1,5 @@
 -- Add up migration script here
-CREATE TABLE recurring_bills (
+CREATE TABLE IF NOT EXISTS recurring_bills (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     avatar_id UUID NOT NULL REFERENCES avatars(id) ON DELETE RESTRICT,
@@ -20,7 +20,7 @@ UPDATE ON recurring_bills FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 -- One payment record per bill per billing cycle.
 -- paid_at NULL  = upcoming/overdue
 -- paid_at NOT NULL = paid
-CREATE TABLE recurring_bill_payments (
+CREATE TABLE IF NOT EXISTS recurring_bill_payments (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
     bill_id UUID NOT NULL REFERENCES recurring_bills(id) ON DELETE CASCADE,
     deadline DATE NOT NULL,

@@ -1,5 +1,5 @@
 -- Add up migration script here
-CREATE TABLE pots (
+CREATE TABLE IF NOT EXISTS pots (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
@@ -17,7 +17,7 @@ CREATE TRIGGER trg_pots_updated_at BEFORE
 UPDATE ON pots FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 -- Audit trail for every add/withdraw.
 -- Positive = deposit, negative = withdrawal.
-CREATE TABLE pot_transactions (
+CREATE TABLE IF NOT EXISTS pot_transactions (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
     pot_id UUID NOT NULL REFERENCES pots(id) ON DELETE CASCADE,
     amount NUMERIC(12, 2) NOT NULL CHECK (amount <> 0),

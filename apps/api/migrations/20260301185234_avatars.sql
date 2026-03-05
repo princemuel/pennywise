@@ -1,5 +1,5 @@
 -- Add migration script here
-CREATE TABLE avatars (
+CREATE TABLE IF NOT EXISTS avatars (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
     name TEXT NOT NULL UNIQUE,
     avatar_url TEXT NOT NULL,
