@@ -4,4 +4,5 @@
 -- Remaining triggers, indexes, policies, and RLS drop automatically with each table.
 DROP TABLE IF EXISTS pot_transactions CASCADE;
 
+
 DROP TABLE IF EXISTS pots CASCADE;

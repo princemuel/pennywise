@@ -6,4 +6,5 @@
 -- tables migrations are rolled back.
 DROP FUNCTION IF EXISTS sync_pot_total () CASCADE;
 
+
 DROP FUNCTION IF EXISTS set_updated_at () CASCADE;

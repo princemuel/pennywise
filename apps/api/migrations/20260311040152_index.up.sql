@@ -7,9 +7,11 @@
 --    query WHERE clauses must filter expires_at themselves.
 DROP INDEX IF EXISTS idx_auth_tokens_hash_active;
 
+
 CREATE INDEX idx_auth_tokens_hash_active ON auth_tokens (token_hash)
 WHERE
     revoked_at IS NULL;
+
 
 -- 2. categories: drop the blanket UNIQUE constraint on name and replace it with a
 --    partial unique index that only enforces uniqueness among non-deleted rows.
@@ -17,6 +19,7 @@ WHERE
 --    (e.g. after a rename cycle) raises a spurious unique-violation error.
 ALTER TABLE categories
 DROP CONSTRAINT IF EXISTS categories_name_key;
+
 
 CREATE UNIQUE INDEX idx_categories_name_active ON categories (name)
 WHERE

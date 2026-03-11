@@ -1,6 +1,15 @@
 {
+  "$schema": "/home/maia/schemas/sql-formatter/schema.json",
   "language": "postgresql",
-  "tabWidth": 4,
+  "dataTypeCase": "upper",
+  "denseOperators": false,
+  "expressionWidth": 60,
+  "functionCase": "upper",
+  "identifierCase": "preserve",
   "keywordCase": "upper",
-  "linesBetweenQueries": 2
+  "linesBetweenQueries": 2,
+  "logicalOperatorNewline": "after",
+  "newlineBeforeSemicolon": false,
+  "tabWidth": 4,
+  "useTabs": false
 }

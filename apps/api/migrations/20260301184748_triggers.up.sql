@@ -6,6 +6,7 @@ RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
+
 -- Trigger function to keep pots.total in sync with pot_transactions.
 -- Fires after every insert/update/delete on pot_transactions.
 -- This replaces the previous app-logic contract, which was fragile and

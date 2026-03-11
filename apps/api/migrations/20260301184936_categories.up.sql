@@ -12,9 +12,11 @@ CREATE TABLE IF NOT EXISTS categories (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+
 CREATE TRIGGER trg_categories_updated_at BEFORE
 UPDATE ON categories FOR EACH ROW
 EXECUTE FUNCTION set_updated_at ();
+
 
 INSERT INTO
     categories (name)

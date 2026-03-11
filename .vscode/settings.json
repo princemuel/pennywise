@@ -97,12 +97,20 @@
     "**/routeTree.gen.ts": true
   },
   "files.readonlyInclude": {
-    "**/.cargo/registry/src/**/*.rs": true,
     "**/.cargo/git/checkouts/**/*.rs": true,
+    "**/.cargo/registry/src/**/*.rs": true,
     "**/lib/rustlib/src/rust/library/**/*.rs": true,
+    "**/node_modules/**/*.js": true,
+    "**/node_modules/**/*.ts": true,
     "**/routeTree.gen.ts": true
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[powershell]": {
+    "editor.defaultFormatter": "ms-vscode.powershell"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
   }
 }

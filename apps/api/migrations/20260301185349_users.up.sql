@@ -19,14 +19,17 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+
 -- Unique email among non-deleted users only
 CREATE UNIQUE INDEX idx_users_email_active ON users (email)
 WHERE
     deleted_at IS NULL;
 
+
 CREATE TRIGGER trg_users_updated_at BEFORE
 UPDATE ON users FOR EACH ROW
 EXECUTE FUNCTION set_updated_at ();
+
 
 -- Row-level security: users can only see and modify their own rows.
 -- The application must set the config parameter before querying:
@@ -34,7 +37,9 @@ EXECUTE FUNCTION set_updated_at ();
 -- This provides a DB-level safety net against missing WHERE clauses in app code.
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
+
 CREATE POLICY users_isolation ON users USING (id = CURRENT_SETTING('app.current_user_id', TRUE)::UUID);
+
 
 -- Auth tokens table for session/refresh token management.
 -- Stores hashed tokens only — never the raw token value.
@@ -51,7 +56,9 @@ CREATE TABLE IF NOT EXISTS auth_tokens (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+
 CREATE INDEX idx_auth_tokens_user_id ON auth_tokens (user_id);
+
 
 -- Fast lookup of valid tokens by hash
 CREATE INDEX idx_auth_tokens_hash_active ON auth_tokens (token_hash)

@@ -8,9 +8,10 @@
 -- recurring_bills to check ownership. This is consistent with how the table
 -- is queried in practice (always via bill_id).
 --
--- NOTE: if query plans on this policy become a concern at scale, adding a
--- denormalised user_id column (as done on pot_transactions) is the escape hatch.
+-- NOTE: if query plans on this policy become a concern at scale,
+-- adding a denormalised user_id column (as done on pot_transactions) is the escape hatch.
 ALTER TABLE recurring_bill_payments ENABLE ROW LEVEL SECURITY;
+
 
 CREATE POLICY recurring_bill_payments_isolation ON recurring_bill_payments USING (
     EXISTS (

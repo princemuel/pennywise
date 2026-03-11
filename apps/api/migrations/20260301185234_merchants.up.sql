@@ -16,8 +16,10 @@ CREATE TABLE IF NOT EXISTS merchants (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+
 -- Trigram index for fuzzy merchant name search
 CREATE INDEX idx_merchants_name_trgm ON merchants USING gin (name gin_trgm_ops);
+
 
 CREATE TRIGGER trg_merchants_updated_at BEFORE
 UPDATE ON merchants FOR EACH ROW

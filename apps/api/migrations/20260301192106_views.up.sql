@@ -36,6 +36,7 @@ FROM
 GROUP BY
     user_id;
 
+
 -- v_budget_spending: per-user budget vs actual spending for a given calendar month.
 -- The target month is passed as a session variable: SET app.budget_month = '2024-08-01';
 -- Defaults to the current calendar month if not set.
@@ -95,6 +96,7 @@ GROUP BY
     b.maximum,
     b.theme,
     c.name;
+
 
 -- v_recurring_bill_summary: per-user bill summary for the current calendar month.
 -- Adds overdue_count/overdue_amount (missing from original).
@@ -167,6 +169,7 @@ WHERE
     rb.is_active = TRUE
 GROUP BY
     rb.user_id;
+
 
 -- v_pot_summary: per-user pot overview including progress toward target.
 -- Pot total is maintained by trigger; this view just formats it for display.
