@@ -1,12 +1,7 @@
 -- Add down migration script here
--- Drop the covering/indexes first
-DROP INDEX IF EXISTS idx_transactions_keyset;
-DROP INDEX IF EXISTS idx_transactions_user_id;
-DROP INDEX IF EXISTS idx_transactions_avatar_id;
-DROP INDEX IF EXISTS idx_transactions_category_id;
-DROP INDEX IF EXISTS idx_transactions_date;
-DROP INDEX IF EXISTS idx_transactions_id_desc;
--- Drop the table
-DROP TABLE IF EXISTS transactions;
--- Drop the enum type
-DROP TYPE IF EXISTS transaction_direction;
+-- Triggers, indexes, policies, and RLS are dropped automatically with the table.
+DROP TABLE IF EXISTS transactions CASCADE;
+
+-- Drop the kind enum only after all tables using it are gone.
+-- CASCADE handles any residual dependencies (e.g. pot_transactions if already dropped).
+DROP TYPE IF EXISTS kind CASCADE;

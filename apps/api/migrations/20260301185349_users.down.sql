@@ -1,3 +1,6 @@
 -- Add down migration script here
-DROP TRIGGER IF EXISTS trg_users_updated_at ON users;
-DROP TABLE IF EXISTS users;
+-- Dropping users cascades to auth_tokens (FK ON DELETE CASCADE).
+-- Triggers, indexes, policies, and RLS are dropped automatically with each table.
+DROP TABLE IF EXISTS auth_tokens CASCADE;
+
+DROP TABLE IF EXISTS users CASCADE;
