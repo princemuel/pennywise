@@ -8,9 +8,7 @@
   <h1 id="a11ty-headline" class="text-4xl font-bold text-grey-900">Pots</h1>
 </header>
 
-<section
-  class="grid gap-8 @md/main:grid-cols-[repeat(auto-fit,minmax(clamp(24rem,100%,28rem),1fr))]"
->
+<section class="grid gap-8 @md:grid-cols-[repeat(auto-fit,minmax(24rem,1fr))]">
   {#each data.data as pot (pot.id)}
     <article
       class="flex flex-col gap-8 rounded-xl bg-white p-6"

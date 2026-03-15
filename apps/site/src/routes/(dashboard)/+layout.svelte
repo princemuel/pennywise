@@ -87,8 +87,10 @@
 
   <main
     aria-labelledby="a11ty-headline"
-    class="@container order-1 flex flex-col gap-8 overflow-y-auto px-[1cqmax] py-8 lg:order-2 lg:px-8"
+    class="@container order-1 overflow-y-auto px-[1cqmax] py-8 lg:order-2 lg:px-8"
   >
-    {@render children()}
+    <div class="mx-auto flex w-full flex-col gap-8 3xl:max-w-7xl">
+      {@render children()}
+    </div>
   </main>
 </div>

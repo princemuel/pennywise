@@ -79,6 +79,7 @@
   // Inlay Hints
   "rust-analyzer.inlayHints.typeHints.enable": false,
   "rust-analyzer.inlayHints.chainingHints.enable": false,
+
   // Formatting with rustfmt
   "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
   "[rust]": {
@@ -86,7 +87,9 @@
     "editor.formatOnSave": true
   },
   "rust-analyzer.testExplorer": true,
+  "rust-analyzer.semanticHighlighting.doc.comment.inject.enable": true,
   "rust-analyzer.semanticHighlighting.punctuation.enable": true,
+  "rust-analyzer.semanticHighlighting.punctuation.specialization.enable": true,
   "workbench.editor.customLabels.patterns": {
     "**/mod.rs": "${dirname}.rs"
   },

@@ -1,4 +1,5 @@
 import svg from "@poppanator/sveltekit-svg";
+import { enhancedImages } from "@sveltejs/enhanced-img";
 import { sveltekit } from "@sveltejs/kit/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { playwright } from "@vitest/browser-playwright";
@@ -10,17 +11,12 @@ export default defineConfig({
   server: { host: true, port: 3000 },
   plugins: [
     tailwindcss(),
-    sveltekit(),
+    enhancedImages(), // must come before the SvelteKit plugin
     svg({
       includePaths: ["src/assets/media/icons/"],
-      svgoOptions: {
-        multipass: true,
-        plugins: [
-          { name: "preset-default" }
-          // { name: 'removeAttrs', params: { attrs: '(fill|stroke)' } }
-        ]
-      }
+      svgoOptions: { multipass: true, plugins: [{ name: "preset-default" }] }
     }),
+    sveltekit(),
     devtoolsJson()
   ],
   define: { __BUILD_DATE__: JSON.stringify(new Date()) },

@@ -1,5 +1,6 @@
 # Financial Management App - CTO Architecture (Revised)
-**Version:** 2.0 - Ledger-First Design  
+
+**Version:** 2.0 - Ledger-First Design
 **Date:** February 4, 2026
 
 ---
@@ -20,16 +21,19 @@ This document replaces the previous design with a **ledger-first architecture** 
 ## 1. Core Architectural Principles
 
 ### 1.1 Money is Immutable History
+
 - Transactions are **facts**, not editable records
 - Balances are **derived**, never authoritative
 - Audit trail is built-in, not added later
 
 ### 1.2 Auth vs Authorization Separation
+
 - **Auth provider** says "who you are"
 - **Your backend** decides "what you can touch"
 - Never trust frontend identity claims
 
 ### 1.3 Database is for Facts, Not UI
+
 - No colors, themes, avatars, icons in Postgres
 - Frontend owns presentation
 - Backend owns business rules
@@ -95,7 +99,7 @@ This document replaces the previous design with a **ledger-first architecture** 
      - If Clerk: validates session token via Clerk API
      - If NextAuth: looks up session in database
      - If Auth0: validates JWT signature
-   
+
    Extracts verified identity:
      provider: "google"
      provider_user_id: "google:108234..."
@@ -103,12 +107,12 @@ This document replaces the previous design with a **ledger-first architecture** 
      session_id: "sess_abc123"
 
 3. Internal User Resolution
-   Query: SELECT user_id FROM auth_credentials 
-          WHERE provider = 'google' 
+   Query: SELECT user_id FROM auth_credentials
+          WHERE provider = 'google'
           AND provider_user_id = 'google:108234...'
-   
+
    Result: internal_user_id = uuid_v7("...")
-   
+
    Attach to request context:
      ctx.user_id = internal_user_id
 
@@ -130,15 +134,15 @@ This document replaces the previous design with a **ledger-first architecture** 
 
 ### 2.3 Auth Provider Comparison
 
-| Feature | Clerk | NextAuth (DB mode) | Auth0 |
-|---------|-------|-------------------|-------|
-| **Session Storage** | Clerk's infra | Your Postgres | Auth0's infra |
-| **Immediate Logout** | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Device Management** | ✅ Built-in | ⚠️ Manual | ✅ Built-in |
-| **Cost** | $25/mo → $99/mo | Free (OSS) | $23/mo → $240/mo |
-| **OAuth Providers** | 20+ built-in | Any via config | 30+ built-in |
-| **Complexity** | Low | Medium | High |
-| **Best For** | Startups | Budget-conscious | Enterprise |
+| Feature               | Clerk           | NextAuth (DB mode) | Auth0            |
+| --------------------- | --------------- | ------------------ | ---------------- |
+| **Session Storage**   | Clerk's infra   | Your Postgres      | Auth0's infra    |
+| **Immediate Logout**  | ✅ Yes          | ✅ Yes             | ✅ Yes           |
+| **Device Management** | ✅ Built-in     | ⚠️ Manual          | ✅ Built-in      |
+| **Cost**              | $25/mo → $99/mo | Free (OSS)         | $23/mo → $240/mo |
+| **OAuth Providers**   | 20+ built-in    | Any via config     | 30+ built-in     |
+| **Complexity**        | Low             | Medium             | High             |
+| **Best For**          | Startups        | Budget-conscious   | Enterprise       |
 
 **CTO Recommendation: Start with Clerk or NextAuth (DB sessions)**
 
@@ -241,6 +245,7 @@ Rotation:
 ### 2.7 Logout & Revocation
 
 **Single Device Logout:**
+
 ```
 1. User clicks "Logout"
 2. Frontend calls auth provider logout endpoint
@@ -250,6 +255,7 @@ Rotation:
 ```
 
 **All Devices Logout:**
+
 ```
 1. User clicks "Logout all devices"
 2. Backend calls auth provider API:
@@ -267,12 +273,14 @@ Rotation:
 ### 3.1 Core Principle Changes
 
 **REMOVED (compared to v1):**
+
 - ❌ Account.balance (derived, not stored)
 - ❌ UI fields (colors, icons, themes, avatars)
 - ❌ Naive Transaction table
 - ❌ Boolean is_recurring flag
 
 **ADDED:**
+
 - ✅ Ledger-style transaction entries
 - ✅ Separate transaction events vs entries
 - ✅ RecurringRule table
@@ -286,7 +294,7 @@ Rotation:
 -- IDENTITY & AUTH (separate from user profile)
 -- ============================================================================
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT UNIQUE NOT NULL,
     email_verified_at TIMESTAMPTZ,
@@ -299,7 +307,7 @@ CREATE TABLE users (
 );
 
 -- Auth credentials (multiple login methods per user)
-CREATE TABLE auth_credentials (
+CREATE TABLE IF NOT EXISTS auth_credentials (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     provider TEXT NOT NULL,                    -- 'email', 'google', 'github'
@@ -307,14 +315,14 @@ CREATE TABLE auth_credentials (
     password_hash TEXT,                        -- NULL for OAuth
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     last_used_at TIMESTAMPTZ,
-    
+
     UNIQUE(provider, provider_user_id)
 );
 
 CREATE INDEX idx_auth_user ON auth_credentials(user_id);
 
 -- Optional: session storage if using NextAuth DB mode
-CREATE TABLE sessions (
+CREATE TABLE IF NOT EXISTS sessions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     expires_at TIMESTAMPTZ NOT NULL,
@@ -333,7 +341,7 @@ CREATE INDEX idx_sessions_expires ON sessions(expires_at);
 
 CREATE TYPE account_type AS ENUM ('checking', 'savings', 'credit', 'cash', 'investment');
 
-CREATE TABLE accounts (
+CREATE TABLE IF NOT EXISTS accounts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
@@ -358,7 +366,7 @@ COMMENT ON COLUMN accounts.metadata IS 'Bank sync data, connection status, etc.'
 -- ============================================================================
 
 -- Transaction represents a real-world event
-CREATE TABLE transactions (
+CREATE TABLE IF NOT EXISTS transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     occurred_at TIMESTAMPTZ NOT NULL,          -- When it happened
@@ -371,7 +379,7 @@ CREATE INDEX idx_transactions_user ON transactions(user_id);
 CREATE INDEX idx_transactions_occurred ON transactions(occurred_at DESC);
 
 -- TransactionEntry is the double-entry component
-CREATE TABLE transaction_entries (
+CREATE TABLE IF NOT EXISTS transaction_entries (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     transaction_id UUID NOT NULL REFERENCES transactions(id) ON DELETE CASCADE,
     account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE RESTRICT,
@@ -379,7 +387,7 @@ CREATE TABLE transaction_entries (
     amount DECIMAL(19,4) NOT NULL,             -- Signed (positive or negative)
     notes TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+
     CONSTRAINT amount_not_zero CHECK (amount != 0)
 );
 
@@ -401,7 +409,7 @@ COMMENT ON TABLE transaction_entries IS 'Double-entry ledger. One transaction ca
 
 CREATE TYPE category_kind AS ENUM ('income', 'expense', 'transfer');
 
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE, -- NULL = system category
     parent_id UUID REFERENCES categories(id) ON DELETE SET NULL,
@@ -424,7 +432,7 @@ COMMENT ON COLUMN categories.user_id IS 'NULL for system categories, user_id for
 CREATE TYPE budget_period AS ENUM ('weekly', 'monthly', 'quarterly', 'yearly');
 CREATE TYPE budget_scope_type AS ENUM ('category', 'account');
 
-CREATE TABLE budgets (
+CREATE TABLE IF NOT EXISTS budgets (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     scope_type budget_scope_type NOT NULL,
@@ -437,7 +445,7 @@ CREATE TABLE budgets (
     rollover BOOLEAN NOT NULL DEFAULT FALSE,
     alert_threshold DECIMAL(5,2),              -- Alert at 80%, etc.
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+
     CONSTRAINT positive_limit CHECK (limit_amount > 0),
     CONSTRAINT valid_threshold CHECK (alert_threshold IS NULL OR (alert_threshold > 0 AND alert_threshold <= 100))
 );
@@ -453,7 +461,7 @@ COMMENT ON TABLE budgets IS 'Budgets are constraints over time, not containers';
 
 CREATE TYPE goal_status AS ENUM ('active', 'completed', 'abandoned');
 
-CREATE TABLE goals (
+CREATE TABLE IF NOT EXISTS goals (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
@@ -463,7 +471,7 @@ CREATE TABLE goals (
     status goal_status NOT NULL DEFAULT 'active',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     completed_at TIMESTAMPTZ,
-    
+
     CONSTRAINT positive_target CHECK (target_amount > 0)
 );
 
@@ -471,13 +479,13 @@ CREATE INDEX idx_goals_user ON goals(user_id);
 CREATE INDEX idx_goals_active ON goals(user_id, status) WHERE status = 'active';
 
 -- Goal allocations (link transactions to goals)
-CREATE TABLE goal_allocations (
+CREATE TABLE IF NOT EXISTS goal_allocations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     goal_id UUID NOT NULL REFERENCES goals(id) ON DELETE CASCADE,
     transaction_entry_id UUID NOT NULL REFERENCES transaction_entries(id) ON DELETE CASCADE,
     amount DECIMAL(19,4) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+
     CONSTRAINT positive_allocation CHECK (amount > 0),
     UNIQUE(goal_id, transaction_entry_id)
 );
@@ -492,7 +500,7 @@ COMMENT ON TABLE goal_allocations IS 'Links transaction entries to savings goals
 
 CREATE TYPE recurrence_cadence AS ENUM ('daily', 'weekly', 'biweekly', 'monthly', 'quarterly', 'yearly');
 
-CREATE TABLE recurring_rules (
+CREATE TABLE IF NOT EXISTS recurring_rules (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     cadence recurrence_cadence NOT NULL,
@@ -518,7 +526,7 @@ COMMENT ON TABLE recurring_rules IS 'Drives forecasts, reminders, auto-posting';
 
 -- Account balances (derived from entries)
 CREATE OR REPLACE VIEW v_account_balances AS
-SELECT 
+SELECT
     a.id AS account_id,
     a.user_id,
     a.name,
@@ -532,7 +540,7 @@ GROUP BY a.id, a.user_id, a.name, a.account_type, a.currency_code;
 
 -- Current month spending by category
 CREATE OR REPLACE VIEW v_current_month_spending AS
-SELECT 
+SELECT
     e.account_id,
     te.user_id,
     c.id AS category_id,
@@ -542,24 +550,24 @@ SELECT
 FROM transaction_entries e
 JOIN transactions te ON te.id = e.transaction_id
 JOIN categories c ON c.id = e.category_id
-WHERE 
+WHERE
     DATE_TRUNC('month', te.occurred_at) = DATE_TRUNC('month', CURRENT_DATE)
     AND e.amount < 0  -- Expenses only
 GROUP BY e.account_id, te.user_id, c.id, c.name;
 
 -- Goal progress
 CREATE OR REPLACE VIEW v_goal_progress AS
-SELECT 
+SELECT
     g.id AS goal_id,
     g.user_id,
     g.name,
     g.target_amount,
     COALESCE(SUM(ga.amount), 0) AS current_amount,
     g.target_amount - COALESCE(SUM(ga.amount), 0) AS remaining,
-    CASE 
-        WHEN g.target_amount > 0 
+    CASE
+        WHEN g.target_amount > 0
         THEN (COALESCE(SUM(ga.amount), 0) / g.target_amount * 100)
-        ELSE 0 
+        ELSE 0
     END AS percentage_complete
 FROM goals g
 LEFT JOIN goal_allocations ga ON ga.goal_id = g.id
@@ -611,28 +619,29 @@ INSERT INTO categories (name, kind, parent_id) VALUES
 // Frontend constants (never fetch from DB)
 
 const CATEGORY_ICONS = {
-  'Salary': 'briefcase',
-  'Groceries': 'shopping-cart',
-  'Dining Out': 'utensils',
+  Salary: "briefcase",
+  Groceries: "shopping-cart",
+  "Dining Out": "utensils"
   // ... etc
-}
+};
 
 const CATEGORY_COLORS = {
-  'Salary': '#277C78',
-  'Groceries': '#82C9D7',
-  'Dining Out': '#F2CDAC',
+  Salary: "#277C78",
+  Groceries: "#82C9D7",
+  "Dining Out": "#F2CDAC"
   // ... etc
-}
+};
 
 const ACCOUNT_TYPE_ICONS = {
-  checking: 'bank',
-  savings: 'piggy-bank',
-  credit: 'credit-card',
-  cash: 'wallet'
-}
+  checking: "bank",
+  savings: "piggy-bank",
+  credit: "credit-card",
+  cash: "wallet"
+};
 ```
 
 **User Preferences (localStorage or cookies):**
+
 ```typescript
 {
   theme: 'dark' | 'light',
@@ -643,6 +652,7 @@ const ACCOUNT_TYPE_ICONS = {
 ```
 
 **Why this matters:**
+
 - Database stays small and fast
 - No migrations when you change icons
 - Frontend can update instantly
@@ -651,6 +661,7 @@ const ACCOUNT_TYPE_ICONS = {
 ### 4.2 API Response Shape
 
 **Backend returns minimal data:**
+
 ```json
 {
   "id": "01944f7c-...",
@@ -661,12 +672,13 @@ const ACCOUNT_TYPE_ICONS = {
 ```
 
 **Frontend enriches for display:**
+
 ```typescript
 const enrichedCategory = {
   ...category,
   icon: CATEGORY_ICONS[category.name],
   color: CATEGORY_COLORS[category.name]
-}
+};
 ```
 
 ---
@@ -674,6 +686,7 @@ const enrichedCategory = {
 ## 5. Transaction Examples (Ledger Model)
 
 ### Example 1: Simple Expense
+
 **User buys coffee for $5**
 
 ```sql
@@ -694,6 +707,7 @@ VALUES (
 ```
 
 ### Example 2: Transfer Between Accounts
+
 **User moves $100 from checking to savings**
 
 ```sql
@@ -711,6 +725,7 @@ INSERT INTO transaction_entries (transaction_id, account_id, amount) VALUES
 ```
 
 ### Example 3: Split Transaction
+
 **User pays $100 restaurant bill, split across categories**
 
 ```sql
@@ -729,26 +744,31 @@ INSERT INTO transaction_entries (transaction_id, account_id, category_id, amount
 ## 6. Why This Architecture Wins
 
 ### 6.1 Correctness
+
 - **Double-entry ledger**: Transfers can't go wrong
 - **Immutable history**: Audit trail is automatic
 - **Derived balances**: No stale balance bugs
 
 ### 6.2 Flexibility
+
 - **Supports any transaction type**: Simple, transfers, splits, refunds
 - **Envelope budgeting ready**: Just add allocation logic
 - **Bank sync compatible**: Metadata JSONB field ready
 
 ### 6.3 Security
+
 - **Clean auth boundary**: No vendor lock-in
 - **Session revocation**: Immediate logout works
 - **Ownership enforcement**: Every query scoped to user_id
 
 ### 6.4 Performance
+
 - **Views cache derived data**: Balance lookups are fast
 - **Indexes on hot paths**: User queries optimized
 - **No UI bloat**: Database stays lean
 
 ### 6.5 Maintainability
+
 - **Separation of concerns**: Auth ≠ User ≠ Business Logic
 - **Frontend freedom**: Change icons/colors without migrations
 - **Clear boundaries**: Each layer has one job
@@ -760,16 +780,18 @@ INSERT INTO transaction_entries (transaction_id, account_id, category_id, amount
 ### Mapping Sample JSON to Ledger
 
 **Old transaction:**
+
 ```json
 {
   "name": "Starbucks",
   "category": "Dining Out",
-  "amount": -5.50,
+  "amount": -5.5,
   "recurring": false
 }
 ```
 
 **New structure:**
+
 ```sql
 -- 1. Find or create payee (if you add payees later)
 -- 2. Create transaction
@@ -782,9 +804,10 @@ VALUES ('txn_id', 'account_id', 'dining_out_id', -5.50);
 ```
 
 **Old recurring flag → New recurring rule:**
+
 ```sql
 INSERT INTO recurring_rules (
-    user_id, cadence, amount, account_id, 
+    user_id, cadence, amount, account_id,
     category_id, description, next_run_at, auto_create
 ) VALUES (
     'user_id', 'monthly', -9.99, 'account_id',
@@ -797,24 +820,28 @@ INSERT INTO recurring_rules (
 ## 8. Next Steps
 
 ### Phase 1: Foundation (Week 1-2)
+
 - [ ] Set up Postgres 18 with schema
 - [ ] Choose auth provider (Clerk recommended)
 - [ ] Implement auth adapter in Axum
 - [ ] Test OAuth flows (Google, GitHub)
 
 ### Phase 2: Core Ledger (Week 3-4)
+
 - [ ] Transaction creation API
 - [ ] Account balance views
 - [ ] Category management
 - [ ] Basic queries
 
 ### Phase 3: Features (Week 5-8)
+
 - [ ] Budgets with alerts
 - [ ] Goals with allocations
 - [ ] Recurring rules
 - [ ] Analytics endpoints
 
 ### Phase 4: Polish (Week 9-12)
+
 - [ ] Frontend UI components
 - [ ] Mobile responsiveness
 - [ ] Performance optimization
@@ -824,16 +851,16 @@ INSERT INTO recurring_rules (
 
 ## Appendix: Key Differences from V1
 
-| Aspect | V1 (Naive) | V2 (Ledger-First) |
-|--------|-----------|-------------------|
-| **Transactions** | Single table, balance updates | Ledger entries, derived balances |
-| **Transfers** | Two transactions | One transaction, two entries |
-| **Auth** | User table only | Separate auth_credentials table |
-| **UI Data** | In database | Frontend constants |
-| **Recurring** | Boolean flag | Separate rules table |
-| **Balances** | Stored column | Derived view |
-| **Categories** | Flat | Hierarchical |
-| **Auth Provider** | Locked in | Adapter pattern |
+| Aspect            | V1 (Naive)                    | V2 (Ledger-First)                |
+| ----------------- | ----------------------------- | -------------------------------- |
+| **Transactions**  | Single table, balance updates | Ledger entries, derived balances |
+| **Transfers**     | Two transactions              | One transaction, two entries     |
+| **Auth**          | User table only               | Separate auth_credentials table  |
+| **UI Data**       | In database                   | Frontend constants               |
+| **Recurring**     | Boolean flag                  | Separate rules table             |
+| **Balances**      | Stored column                 | Derived view                     |
+| **Categories**    | Flat                          | Hierarchical                     |
+| **Auth Provider** | Locked in                     | Adapter pattern                  |
 
 ---
 

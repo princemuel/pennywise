@@ -1,4 +1,4 @@
-ARG NODE_VERSION=24.13.0
+ARG NODE_VERSION=lts
 FROM node:${NODE_VERSION}-slim AS base
 
 # This Dockerfile is copy-pasted into our main docs at /docs/handbook/deploying-with-docker.
@@ -14,7 +14,7 @@ FROM base AS prepare
 # Use pnpm via Corepack and run turbo without global install
 COPY . .
 # Add lockfile and package.json's of isolated subworkspace
-RUN pnpm dlx turbo prune web --docker
+RUN pnpm dlx turbo prune site --docker
 
 # ---
 FROM base AS deps
@@ -57,13 +57,23 @@ RUN corepack enable
 
 # Don't run production as root for security reasons
 RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-USER nextjs
+RUN adduser --system --uid 1001 sveltekit
+USER sveltekit
 
 # Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+# Copy the built SvelteKit app
+# SvelteKit with adapter-node outputs to build/ by default
+COPY --from=builder --chown=sveltekit:nodejs /app/apps/site/build ./apps/site/build
+COPY --from=builder --chown=sveltekit:nodejs /app/apps/site/package.json ./apps/site/package.json
 
-CMD ["node", "apps/web/server.js"]
+# Copy node_modules (SvelteKit needs runtime dependencies)
+COPY --from=builder --chown=sveltekit:nodejs /app/node_modules ./node_modules
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+
+EXPOSE 3000
+
+# Run the SvelteKit app
+CMD ["node", "apps/site/build"]

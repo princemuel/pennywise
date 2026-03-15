@@ -7,8 +7,23 @@
         },
       },
     },
+    "kulala-http": {
+      "formatter": {
+        "external": {
+          "command": "kulala-fmt",
+          "arguments": ["format", "--stdin", "{buffer_path}"],
+        },
+      },
+      "format_on_save": "on",
+    },
   },
   "lsp": {
+    "kulala-http": {
+      "binary": {
+        "path": "/home/maia/.local/share/pnpm/kulala-ls",
+        "arguments": ["--stdio"],
+      },
+    },
     "rust-analyzer": {
       "initialization_options": {
         // Rust Analyzer settings

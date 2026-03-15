@@ -27,6 +27,12 @@ services:
       - "8080"
     networks:
       - pennywise
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost/misc/ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
     depends_on:
       db:
         condition: service_healthy
@@ -39,6 +45,7 @@ services:
       - "5432"
     volumes:
       - pgdata:/var/lib/postgresql
+      # - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     networks:
       - pennywise
     healthcheck:
@@ -49,7 +56,7 @@ services:
 
   pgadmin:
     container_name: pennpgadmin
-    image: dpage/pgadmin4:latest
+    image: dpage/pgadmin4@sha256:10137f33be7ed61e47f56004493710cb5b80ba7fb0ca01758855e242f1f284a7
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
