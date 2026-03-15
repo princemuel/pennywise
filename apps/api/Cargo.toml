@@ -22,9 +22,11 @@ anyhow = "1"
 fake = { version = "4" }
 figment = { version = "0.10" }
 googletest = { version = "0.14" }
+hyper = { version = "1", features = ["full"] }
 regex = { version = "1" }
 secrecy = { version = "0.10", features = ["serde"] }
 serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1" }
 sqlx = { version = "0.8", features = [
   "runtime-tokio",
   "tls-rustls",
@@ -37,7 +39,16 @@ sqlx = { version = "0.8", features = [
 ] }
 thiserror = "2"
 tokio = { version = "1", features = ["full"] }
+tower = { version = "0.5" }
 tracing = "0.1"
+uuid = { version = "1", features = ["serde"] }
+
+######################################
+api-cli    = { path = "./cli" }
+api-config = { path = "./config" }
+api-db     = { path = "./db" }
+api-macros = { path = "./macros" }
+api-web    = { path = "./web" }
 
 [profile.dev]
 debug     = true
@@ -46,7 +57,7 @@ opt-level = 1
 [profile.release]
 codegen-units = 1
 lto           = "thin"
-opt-level     = 3
+opt-level     = "s"
 panic         = "abort"
 strip         = true
 

@@ -1,3 +1,9 @@
+#![warn(clippy::pedantic)]
+#![warn(clippy::ptr_arg)]
+#![warn(clippy::use_self)]
+#![warn(clippy::suspicious)]
+#![warn(clippy::perf)]
+
 use std::collections::HashMap;
 use std::fs::{self, File, OpenOptions};
 use std::io::prelude::*;

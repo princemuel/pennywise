@@ -17,7 +17,7 @@ path = "src/bin/generate.rs"
 
 [dependencies]
 anyhow      = { workspace = true }
-api-config  = { path = "../config" }
+api-config  = { workspace = true }
 clap        = { version = "4", features = ["derive"] }
 cruet       = "0.15"
 guppy       = "0.17"

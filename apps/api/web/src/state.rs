@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use api_config::Config;
-use api_db::{connect_pool, DbPool};
+use api_db::{DbPool, connect_pool};
 
 /// The application's state that is available in [`crate::controllers`] and
 /// [`crate::middlewares`].
@@ -21,8 +21,8 @@ pub type SharedAppState = Arc<AppState>;
 ///
 /// This function creates an [`AppState`] based on the current
 /// [`api_config::Config`].
-pub async fn init_app_state(config: Config) -> AppState {
-    let db_pool = connect_pool(config.database)
+pub async fn init_app_state(config: &Config) -> AppState {
+    let db_pool = connect_pool(&config.database)
         .await
         .expect("Could not connect to database!");
 

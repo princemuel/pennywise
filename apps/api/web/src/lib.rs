@@ -50,18 +50,22 @@ pub async fn run() -> anyhow::Result<()> {
     let app_state = state::init_app_state(&config).await;
     let app = routes::init_routes(app_state);
 
-    let [v4, v6] = config.server.addrs();
+    let [v4, v6] = config.server.addrs().map(|item| TcpListener::bind(item));
 
-    let (l4, l6) = tokio::try_join!(TcpListener::bind(v4), TcpListener::bind(v6),)
-        .context("Cannot bind to the socket address!")?;
+    let (l4, l6) = tokio::try_join!(v4, v6,).context("Cannot bind to the socket address!")?;
 
-    info!("Listening on {v4} (IPv4) and {v6} (IPv6)",);
+    info!(
+        "Listening on {ipv4} (IPv4) and {ipv6} (IPv6)",
+        ipv4 = l4.local_addr()?,
+        ipv6 = l6.local_addr()?
+    );
 
     tokio::try_join!(
-        axum::serve(l4, app.clone().into_make_service())
-            .with_graceful_shutdown(shutdown_signal()),
-        axum::serve(l6, app.into_make_service()).with_graceful_shutdown(shutdown_signal()),
-    )
+        serve(l4, app.clone().into_make_service()).with_graceful_shutdown(shutdown_signal()),
+        serve(l6, app.into_make_service()).with_graceful_shutdown(shutdown_signal()),
+    )?;
+
+    Ok(())
 }
 
 /// Initializes tracing.

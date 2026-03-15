@@ -1,5 +1,10 @@
 //! The api-db crate contains all code related to database access: entities,
 //! migrations, functions for validating and reading and writing data.
+#![warn(clippy::pedantic)]
+#![warn(clippy::ptr_arg)]
+#![warn(clippy::use_self)]
+#![warn(clippy::suspicious)]
+#![warn(clippy::perf)]
 
 use anyhow::{Context, Result};
 use api_config::DatabaseConfig;
@@ -46,7 +51,7 @@ pub enum Error {
     /// No record was found, e.g. when loading a record by ID. This variant is
     /// different from `Error::DbError(sqlx::Error::RowNotFound)` in that
     /// the latter indicates a bug, and `Error::NoRecordFound` does not. It
-    /// merely originates from [sqlx::Executor::fetch_optional]
+    /// merely originates from [`sqlx::Executor::fetch_optional`]
     /// returning `None`.
     #[error("no record found")]
     NoRecordFound,
@@ -58,7 +63,7 @@ pub enum Error {
 
 /// Creates a connection pool to the database specified in the passed
 /// [`api-config::DatabaseConfig`]
-pub async fn connect_pool(config: DatabaseConfig) -> Result<DbPool, anyhow::Error> {
+pub async fn connect_pool(config: &DatabaseConfig) -> Result<DbPool, anyhow::Error> {
     let pool = PgPoolOptions::new()
         .connect_with(config.connect_opts_with_db())
         .await

@@ -1,18 +1,13 @@
-use std::str::FromStr;
 use std::sync::Arc;
 
 use api_config::DatabaseConfig;
 use rand::distr::Alphanumeric;
-use rand::{rng, Rng};
+use rand::{Rng, rng};
 // use regex::{Captures, Regex};
-use sqlx::postgres::{PgConnectOptions, PgConnection};
+use sqlx::postgres::PgConnection;
 use sqlx::{Connection, Executor};
 
-use crate::{connect_pool, DbPool};
-
-/// All test functionality related to the [`crate::entities::users::User`]
-/// entity
-pub mod users;
+use crate::{DbPool, connect_pool};
 
 /// Sets up a dedicated database to be used in a test case.
 ///
@@ -26,7 +21,7 @@ pub mod users;
 #[allow(unused)]
 pub async fn setup_db(config: &DatabaseConfig) -> DbPool {
     let test_db_config = prepare_db(config).await;
-    connect_pool(test_db_config)
+    connect_pool(&test_db_config)
         .await
         .expect("Could not connect to database!")
 }
@@ -47,7 +42,7 @@ pub async fn teardown_db(db_pool: DbPool) {
 
     let test_db_name = db_config.get_database().unwrap();
 
-    let query = format!("DROP DATABASE IF EXISTS {}", test_db_name);
+    let query = format!("DROP DATABASE IF EXISTS {test_db_name}");
     connection.execute(query.as_str()).await.unwrap();
 }
 
@@ -64,7 +59,7 @@ async fn prepare_db(config: &DatabaseConfig) -> DatabaseConfig {
 
     let test_db_name = build_test_db_name(db_name);
 
-    let query = format!("CREATE DATABASE {} TEMPLATE {}", test_db_name, db_name);
+    let query = format!("CREATE DATABASE {test_db_name} TEMPLATE {db_name}");
     connection.execute(query.as_str()).await.unwrap();
 
     let mut test_db_config = config.clone();
@@ -84,9 +79,9 @@ fn build_test_db_name(base_name: &str) -> String {
         .take(30)
         .map(char::from)
         .collect();
-    format!("{}_{}", base_name, test_db_suffix).to_lowercase()
+    format!("{base_name}_{test_db_suffix}").to_lowercase()
 }
 
-fn parse_db_config(url: &str) -> PgConnectOptions {
-    PgConnectOptions::from_str(url).expect("Invalid DATABASE_URL!")
-}
+// fn parse_db_config(url: &str) -> PgConnectOptions {
+//     PgConnectOptions::from_str(url).expect("Invalid DATABASE_URL!")
+// }
