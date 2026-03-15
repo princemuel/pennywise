@@ -1,0 +1,22 @@
+[package]
+edition.workspace = true
+name              = "api-config"
+publish.workspace = true
+version           = "0.0.1"
+
+[lib]
+# examples in docs don't run without config files being in place, etc.
+doctest = false
+
+[dependencies]
+anyhow  = { workspace = true }
+dotenvy = "0.15"
+figment = { workspace = true, features = ["toml", "env"] }
+secrecy = { workspace = true }
+serde   = { workspace = true }
+sqlx    = { workspace = true, features = ["postgres"] }
+tracing = { workspace = true }
+
+[dev-dependencies]
+figment    = { workspace = true, features = ["toml", "env", "test"] }
+googletest = { workspace = true }
