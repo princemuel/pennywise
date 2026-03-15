@@ -1,8 +1,13 @@
 //! The api-macros crate contains the `test` and `db_test` macros.
+#![warn(clippy::pedantic)]
+#![warn(clippy::ptr_arg)]
+#![warn(clippy::use_self)]
+#![warn(clippy::suspicious)]
+#![warn(clippy::perf)]
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, ItemFn};
+use syn::{ItemFn, parse_macro_input};
 
 #[allow(clippy::test_attr_in_doctest)]
 /// Used to mark an application test.
@@ -30,7 +35,7 @@ pub fn test(_: TokenStream, item: TokenStream) -> TokenStream {
     let test_arguments = input.sig.inputs;
     let test_block = input.block;
     let inner_test_name = syn::Ident::new(
-        format!("inner_{}", test_name).as_str(),
+        format!("inner_{test_name}").as_str(),
         input.sig.ident.span(),
     );
 
@@ -100,7 +105,7 @@ pub fn db_test(_: TokenStream, item: TokenStream) -> TokenStream {
     let test_arguments = input.sig.inputs;
     let test_block = input.block;
     let inner_test_name = syn::Ident::new(
-        format!("inner_{}", test_name).as_str(),
+        format!("inner_{test_name}").as_str(),
         input.sig.ident.span(),
     );
 
