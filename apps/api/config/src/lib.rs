@@ -227,7 +227,6 @@ pub struct DatabaseConfig {
     pub pool_max_lifetime_ms:    u64,
 }
 
-// password:                SecretString::from("p£AwJj6)e*]A13j0"),
 impl Default for DatabaseConfig {
     fn default() -> Self {
         Self {
@@ -236,7 +235,7 @@ impl Default for DatabaseConfig {
             name:                    "pennies".to_string(),
             username:                "kalel".to_string(),
             require_ssl:             false,
-            password:                SecretString::from("kalel"),
+            password:                SecretString::from("p£AwJj6)e*]A13j0"),
             pool_min_connections:    1,
             pool_max_connections:    5,
             pool_acquire_timeout_ms: 5000,
@@ -268,11 +267,9 @@ impl DatabaseConfig {
             ..
         } = self;
 
+        let password = password.expose_secret();
         let ssl_mode = if self.require_ssl { "require" } else { "prefer" };
-        format!(
-            "postgresql://{username}:{password}@{host}:{port}/{name}?sslmode={ssl_mode}",
-            password = password.expose_secret(),
-        )
+        format!("postgresql://{username}:{password}@{host}:{port}/{name}?sslmode={ssl_mode}",)
     }
 
     /// Returns the pool options to use when creating a connection pool with

@@ -29,7 +29,7 @@
         // Rust Analyzer settings
         "rustc": { "source": "discover" },
         "assist": { "preferSelf": true, "emitMustUse": true },
-        // "linkedProjects": ["apps/api/Cargo.toml"],
+        "linkedProjects": ["apps/api/Cargo.toml"],
         "cargo": { "features": "all", "targetDir": true },
         "check": { "command": "clippy" },
         "checkOnSave": true,

@@ -1,6 +1,5 @@
 services:
   site:
-    container_name: pennsite
     build:
       context: .
       dockerfile: apps/site/Dockerfile
@@ -14,7 +13,6 @@ services:
         condition: service_healthy
 
   api:
-    container_name: pennapi
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -28,7 +26,7 @@ services:
     networks:
       - pennywise
     healthcheck:
-      test: ["CMD", "wget", "-O", "-", "http://localhost/misc/ping"]
+      test: ["CMD", "wget", "-O", "-", "http://localhost:8080/misc/ping"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -38,9 +36,12 @@ services:
         condition: service_healthy
 
   db:
-    container_name: penndb
     image: postgres:18-trixie
     restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     expose:
       - "5432"
     volumes:
@@ -50,6 +51,26 @@ services:
       - pennywise
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  db_test:
+    image: postgres:18-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: api_test
+      POSTGRES_PASSWORD: api_test
+      POSTGRES_DB: api_test
+    expose:
+      - "5432"
+    volumes:
+      - pgdata_test:/var/lib/postgresql
+      # - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    networks:
+      - pennywise
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U api_test -d api_test"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -71,6 +92,8 @@ services:
 
 volumes:
   pgdata:
+    driver: local
+  pgdata_test:
     driver: local
 
 networks:

@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use api_config::DatabaseConfig;
 use rand::distr::Alphanumeric;
-use rand::{Rng, rng};
+use rand::{RngExt, rng};
 // use regex::{Captures, Regex};
 use sqlx::postgres::PgConnection;
 use sqlx::{Connection, Executor};

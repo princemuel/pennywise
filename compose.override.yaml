@@ -1,10 +1,18 @@
-# Local: only run DB, open ports for host access
+# Local dev: only run DB services, expose ports to host.
+# site and api are not started unless explicitly requested.
+#
+# Usage:
+#   docker compose up                  → db, db_test, pgadmin only
+#   docker compose up site api         → add app services on demand
+
 services:
   site:
-    profiles: ["prod"]
+    profiles:
+      - app
 
   api:
-    profiles: ["prod"]
+    profiles:
+      - app
 
   db:
     env_file:
@@ -12,6 +20,10 @@ services:
       - .env.local
     ports:
       - "5432:5432"
+
+  db_test:
+    ports:
+      - "5433:5432"
 
   pgadmin:
     env_file:

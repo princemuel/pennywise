@@ -15,7 +15,7 @@ test-helpers = ["dep:fake", "dep:rand", "dep:regex"]
 anyhow     = "1.0"
 api-config = { workspace = true }
 fake       = { workspace = true, features = ["derive"], optional = true }
-rand       = { version = "0.9", optional = true }
+rand       = { version = "0.10", optional = true }
 regex      = { workspace = true, optional = true }
 serde      = { workspace = true }
 sqlx       = { workspace = true }
