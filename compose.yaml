@@ -1,0 +1,101 @@
+services:
+  site:
+    build:
+      context: .
+      dockerfile: apps/site/Dockerfile
+    restart: unless-stopped
+    expose:
+      - "3000"
+    networks:
+      - pennywise
+    depends_on:
+      api:
+        condition: service_healthy
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    expose:
+      - "8080"
+    networks:
+      - pennywise
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost:8080/misc/ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:18-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    expose:
+      - "5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./docker-entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./docker-entrypoint-initdb.d/init_grants.sh:/docker-entrypoint-initdb.d/init_grants.sh:ro
+    networks:
+      - pennywise
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  db_test:
+    image: postgres:18-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: api_test
+      POSTGRES_PASSWORD: api_test
+      POSTGRES_DB: api_test
+    expose:
+      - "5432"
+    volumes:
+      - pgdata_test:/var/lib/postgresql
+      - ./docker-entrypoint-initdb.d/init.test.sql:/docker-entrypoint-initdb.d/init.test.sql:ro
+    networks:
+      - pennywise
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U api_test -d api_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 5i
+
+  pgadmin:
+    image: dpage/pgadmin4@sha256:10137f33be7ed61e47f56004493710cb5b80ba7fb0ca01758855e242f1f284a7
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    expose:
+      - "80"
+    networks:
+      - pennywise
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+    driver: local
+  pgdata_test:
+    driver: local
+
+networks:
+  pennywise:
+    driver: bridge

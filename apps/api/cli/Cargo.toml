@@ -1,0 +1,32 @@
+[package]
+edition.workspace = true
+name              = "api-cli"
+publish.workspace = true
+version           = "0.0.1"
+
+[lib]
+# examples in docs don't run without additional setup
+doctest = false
+
+[[bin]]
+name = "db"
+path = "src/bin/db.rs"
+[[bin]]
+name = "generate"
+path = "src/bin/generate.rs"
+
+[dependencies]
+anyhow      = { workspace = true }
+api-config  = { workspace = true }
+clap        = { version = "4", features = ["derive"] }
+cruet       = "0.15"
+guppy       = "0.17"
+include_dir = "0.7"
+liquid      = "~0.26"
+regex       = { workspace = true }
+sqlx        = { workspace = true }
+tokio       = { workspace = true }
+url         = "2"
+
+[dev-dependencies]
+insta = "1.38"

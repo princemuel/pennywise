@@ -10,44 +10,55 @@ insert_final_newline = true
 end_of_line = lf
 indent_style = space
 indent_size = 2
-max_line_length = 104
+max_line_length = 112
 trim_trailing_whitespace = true
 
-# Python - 4 spaces, Black formatter line length
+[{*.db,*.sql,*.sqlite}]
+indent_size = 4
+max_line_length = 108
+
+[*.prisma]
+indent_size = 2
+max_line_length = 108
+
 [{*.py,*.pyi}]
 indent_size = 4
 max_line_length = 96
 
-# Rust - 4 spaces, rustfmt default line length
-[*.rs]
+[{*.toml,*.yaml}]
+indent_size = 2
+max_line_length = 96
+
+[{*.rs,*.zig}]
 indent_size = 4
 
 [{*.c,*.h,*.cpp,*.hpp,*.cc,*.cxx,*.hh,*.hxx}]
 indent_size = 4
 
-# Java and JVM languages - 4 spaces
 [{*.java,*.kt,*.kts,*.scala,*.groovy,*.gradle}]
 indent_size = 4
 
-# Scripts
-[*.sh]
+[*.sh,*.fish]
 indent_size = 4
 
-# Go - tabs (idiomatic Go style)
+[*.http,*.ps1]
+indent_size = 2
+
 [*.go]
 indent_style = tab
 indent_size = unset # Allow user-defined tab width
 
-# Makefiles always use tabs for indentation
 [Makefile]
 indent_style = tab
 indent_size = unset # Allow user-defined tab width
 
+[CMakeLists.txt]
+indent_size = 4
+
 [justfile]
 indent_size = 4
 
-# Specific settings for Markdown files
 [{*.md,*.mdx,*.mdoc}]
 indent_size = 2
-max_line_length = 104
+max_line_length = 108
 trim_trailing_whitespace = false

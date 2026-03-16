@@ -1,0 +1,52 @@
+[package]
+edition.workspace = true
+name              = "api-web"
+publish.workspace = true
+version           = "0.0.1"
+
+[lib]
+# examples in docs don't run without a running database, etc.
+doctest = false
+
+[features]
+test-helpers = ["dep:serde_json", "dep:tower", "dep:hyper", "dep:api-macros"]
+
+[dependencies]
+api-config = { workspace = true }
+api-db     = { workspace = true }
+api-macros = { workspace = true, optional = true }
+
+######################
+anyhow = { workspace = true }
+axum = { version = "0.8", features = ["macros"] }
+hyper = { workspace = true, optional = true }
+secrecy = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true, optional = true }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = [
+  "net",
+  "macros",
+  "rt-multi-thread",
+  "signal",
+] }
+tower = { workspace = true, features = ["util"], optional = true }
+tower-http = { version = "0.6", features = ["full"] }
+tracing = { workspace = true }
+tracing-panic = "0.1"
+tracing-subscriber = { version = "0.3", features = [
+  "env-filter",
+  "registry",
+  "fmt",
+] }
+uuid = { workspace = true }
+validator = "0.20"
+
+[dev-dependencies]
+api-db     = { workspace = true, features = ["test-helpers"] }
+fake       = { workspace = true }
+googletest = { workspace = true }
+api-macros = { workspace = true }
+hyper      = { workspace = true }
+serde_json = { workspace = true }
+tower      = { workspace = true }

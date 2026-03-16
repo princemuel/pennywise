@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/turbo/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "env": ["NEXT_PUBLIC_API_HOST"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["build/**", "dist/**", "target/release/**", ".svelte-kit/**"]
+    },
+    "test": { "outputs": ["coverage/**"], "dependsOn": [] },
+    "lint": { "dependsOn": ["^build", "^lint"] },
+    "format": { "dependsOn": ["^format"] },
+    "typecheck": { "dependsOn": ["^build", "^typecheck"] },
+    "dev": { "cache": false, "persistent": true },
+    "migrate": { "cache": false }
+  }
+}

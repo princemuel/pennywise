@@ -1,0 +1,10 @@
+[files]
+exclude = ["node_modules/**/*.toml"]
+
+[format]
+[format.rules]
+key-value-equals-sign-alignment = true
+indent-sub-tables = true
+indent-table-key-value-pairs = true
+indent-width = 4
+line-width = 100
