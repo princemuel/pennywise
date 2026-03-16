@@ -1,5 +1,8 @@
 {
   "languages": {
+    "CSS": {
+      "language_servers": ["tailwindcss-intellisense-css", "!vscode-css-language-server", "..."],
+    },
     "SQL": {
       "formatter": {
         "external": {
@@ -15,6 +18,16 @@
         },
       },
       "format_on_save": "on",
+    },
+    "Shell Script": {
+      "format_on_save": "on",
+      "formatter": {
+        "external": {
+          "command": "shfmt",
+          // Change `--indent 2` to match your preferred tab_size
+          "arguments": ["--filename", "{buffer_path}", "--indent", "2"],
+        },
+      },
     },
   },
   "lsp": {

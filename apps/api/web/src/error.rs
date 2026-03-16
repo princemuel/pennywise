@@ -4,7 +4,7 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 
 /// Error type that encapsultes anything that can go wrong
-/// in this application. Implements [IntoResponse],
+/// in this application. Implements [`IntoResponse`],
 /// so that it can be returned directly from a request handler.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -19,14 +19,14 @@ pub enum Error {
 impl IntoResponse for Error {
     fn into_response(self) -> axum::response::Response {
         match self {
-            Error::Database(api_db::Error::NoRecordFound) => {
+            Self::Database(api_db::Error::NoRecordFound) => {
                 StatusCode::NOT_FOUND.into_response()
             }
-            Error::Database(api_db::Error::ValidationError(e)) => {
-                validation_error(e).into_response()
+            Self::Database(api_db::Error::ValidationError(e)) => {
+                validation_error(&e).into_response()
             }
-            Error::Database(api_db::Error::DbError(e)) => internal_error(e).into_response(),
-            Error::Other(e) => internal_error(e).into_response(),
+            Self::Database(api_db::Error::DbError(e)) => internal_error(e).into_response(),
+            Self::Other(e) => internal_error(e).into_response(),
         }
     }
 }
@@ -48,7 +48,7 @@ where
 
 /// Helper function to create an unprocessable entity error response while
 /// taking care to log the error itself.
-fn validation_error(e: validator::ValidationErrors) -> (StatusCode, String) {
+fn validation_error(e: &validator::ValidationErrors) -> (StatusCode, String) {
     tracing::info!(err.msg = %e, err.details = ?e, "Validation failed");
     (StatusCode::UNPROCESSABLE_ENTITY, e.to_string())
 }

@@ -46,8 +46,6 @@ validator = "0.20"
 api-db     = { workspace = true, features = ["test-helpers"] }
 fake       = { workspace = true }
 googletest = { workspace = true }
-
-[target.'cfg(test)'.dependencies]
 api-macros = { workspace = true }
 hyper      = { workspace = true }
 serde_json = { workspace = true }

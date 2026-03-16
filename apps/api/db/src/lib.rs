@@ -11,7 +11,6 @@ use api_config::DatabaseConfig;
 pub use sqlx::postgres::PgPool as DbPool;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Postgres, Transaction};
-
 /// Entity definitions and related functions
 pub mod entities;
 

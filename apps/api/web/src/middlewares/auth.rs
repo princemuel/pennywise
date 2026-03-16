@@ -1,9 +1,9 @@
-use api_db::entities::users;
+// use api_db::entities::users;
 use axum::body::Body;
 use axum::extract::State;
-use axum::http::{self, Request, StatusCode};
+use axum::http::{Request, StatusCode, header};
 use axum::middleware::Next;
-use axum::response::Response;
+use axum::response::{IntoResponse, Response};
 use tracing::Span;
 
 use crate::state::SharedAppState;
@@ -22,30 +22,29 @@ pub async fn auth(
 ) -> Result<Response, StatusCode> {
     let auth_header = req
         .headers()
-        .get(http::header::AUTHORIZATION)
+        .get(header::AUTHORIZATION)
         .and_then(|header| header.to_str().ok());
 
-    let auth_header = if let Some(auth_header) = auth_header {
-        auth_header
-    } else {
+    let Some(_auth_header) = auth_header else {
         log_rejection_reason("Missing authorization header");
         return Err(StatusCode::UNAUTHORIZED);
     };
 
-    match users::load_with_token(auth_header, &app_state.db_pool).await {
-        Ok(Some(current_user)) => {
-            req.extensions_mut().insert(current_user);
-            Ok(next.run(req).await)
-        }
-        Ok(None) => {
-            log_rejection_reason("Unknown user token");
-            return Err(StatusCode::UNAUTHORIZED);
-        }
-        Err(_) => {
-            log_rejection_reason("Database error");
-            Err(StatusCode::INTERNAL_SERVER_ERROR)
-        }
-    }
+    Ok(StatusCode::OK.into_response())
+    // match users::load_with_token(auth_header, &app_state.db_pool).await {
+    //     Ok(Some(current_user)) => {
+    //         req.extensions_mut().insert(current_user);
+    //         Ok(next.run(req).await)
+    //     }
+    //     Ok(None) => {
+    //         log_rejection_reason("Unknown user token");
+    //         return Err(StatusCode::UNAUTHORIZED);
+    //     }
+    //     Err(_) => {
+    //         log_rejection_reason("Database error");
+    //         Err(StatusCode::INTERNAL_SERVER_ERROR)
+    //     }
+    // }
 }
 
 fn log_rejection_reason(msg: &str) { Span::current().record("rejection_reason", msg); }
