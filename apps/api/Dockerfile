@@ -13,6 +13,7 @@ RUN cargo chef prepare --recipe-path recipe.json
 FROM chef AS cacher
 RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev && \
     rm -rf /var/lib/apt/lists/*
+
 COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 
@@ -20,15 +21,19 @@ RUN cargo chef cook --release --recipe-path recipe.json
 FROM rust:${RUST_VERSION}-slim-trixie AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev && \
     rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
+
 # Reuse compiled dependencies
 COPY --from=cacher /app/target target
 COPY --from=cacher /usr/local/cargo /usr/local/cargo
 COPY rust-toolchain.toml rust-toolchain.toml
 COPY .cargo/config.toml .cargo/config.toml
+
 # Copy the source
 COPY . .
 ENV SQLX_OFFLINE=true
+
 # Build only the entrypoint's binary
 RUN cargo build --release --bin web
 

@@ -46,7 +46,8 @@ services:
       - "5432"
     volumes:
       - pgdata:/var/lib/postgresql
-      # - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - ./docker-entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./docker-entrypoint-initdb.d/init_grants.sh:/docker-entrypoint-initdb.d/init_grants.sh:ro
     networks:
       - pennywise
     healthcheck:
@@ -66,17 +67,16 @@ services:
       - "5432"
     volumes:
       - pgdata_test:/var/lib/postgresql
-      # - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - ./docker-entrypoint-initdb.d/init.test.sql:/docker-entrypoint-initdb.d/init.test.sql:ro
     networks:
       - pennywise
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U api_test -d api_test"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 5i
 
   pgadmin:
-    container_name: pennpgadmin
     image: dpage/pgadmin4@sha256:10137f33be7ed61e47f56004493710cb5b80ba7fb0ca01758855e242f1f284a7
     restart: unless-stopped
     environment:
