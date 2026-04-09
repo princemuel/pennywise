@@ -23,7 +23,7 @@
   "dependencies": {
     "@js-temporal/polyfill": "^0.5.1",
     "@libsql/client": "^0.15.7",
-    "@netlify/functions": "^3.1.10",
+    "@netlify/functions": "^5.2.0",
     "@upstash/ratelimit": "^2.0.5",
     "@upstash/redis": "^1.34.9",
     "astro": "^5.8.1",
