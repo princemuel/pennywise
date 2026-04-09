@@ -71,7 +71,7 @@
     "eslint-plugin-prettier": "^5.4.1",
     "lefthook": "^1.11.13",
     "mdast-util-to-string": "^4.0.0",
-    "netlify-cli": "^21.5.0",
+    "netlify-cli": "^24.11.1",
     "oxlint": "^0.16.12",
     "preact": "^10.26.8",
     "prettier": "^3.5.3",
