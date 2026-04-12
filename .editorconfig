@@ -10,29 +10,58 @@ insert_final_newline = true
 end_of_line = lf
 indent_style = space
 indent_size = 2
-max_line_length = 84
+max_line_length = 112
 trim_trailing_whitespace = true
 
-# Specific settings for Rust/Python files
-[{*.rs,*.py,*.toml}]
+[{*.db,*.sql,*.sqlite}]
+indent_size = 4
+max_line_length = 108
+
+[*.prisma]
+indent_size = 2
+max_line_length = 108
+
+[{*.py,*.pyi}]
+indent_size = 4
+max_line_length = 96
+
+[{*.toml,*.yaml}]
+indent_size = 2
+max_line_length = 96
+
+[{*.rs,*.zig}]
 indent_size = 4
 
-# Specific settings for some files
-[{*.yml,*.yaml,*.md,*.hs,*.cabal}]
+[{*.c,*.h,*.cpp,*.hpp,*.cc,*.cxx,*.hh,*.hxx}]
+indent_size = 4
+
+[{*.java,*.kt,*.kts,*.scala,*.groovy,*.gradle}]
+indent_size = 4
+
+[*.sh,*.fish]
+indent_size = 4
+
+[Dockerfile]
+indent_size = 4
+
+[*.http,*.ps1]
 indent_size = 2
 
-# Specific settings for Markdown files
-[{*.md,*.mdx,*.mdoc}]
-max_line_length = 96
-trim_trailing_whitespace = false
-
-# Specific settings for shell scripts
-[{*.sh,*.bash}]
+[*.go]
 indent_style = tab
-indent_size =  4
+indent_size = unset # Allow user-defined tab width
 
-# Makefiles always use tabs for indentation
 [Makefile]
 indent_style = tab
 indent_size = unset # Allow user-defined tab width
 
+[CMakeLists.txt]
+indent_size = 4
+
+[justfile]
+indent_size = 4
+
+[{*.md,*.mdx,*.mdoc}]
+indent_size = 2
+max_line_length = 108
+trim_trailing_whitespace = false

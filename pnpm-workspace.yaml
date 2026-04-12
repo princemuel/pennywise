@@ -1,9 +1,3 @@
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@sentry/cli'
-  - '@tailwindcss/oxide'
-  - esbuild
-  - lefthook
-  - netlify-cli
-  - sharp
-  - unix-dgram
+allowBuilds:
+  '@clerk/shared': true
+  esbuild: true

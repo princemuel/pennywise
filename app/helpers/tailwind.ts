@@ -1,3 +1,5 @@
-import { type CnOptions, cn } from "tailwind-variants";
+import { cn } from "tailwind-variants";
 
-export const tw = (...args: CnOptions) => cn(...args)({ twMerge: true });
+import type { CnOptions } from "tailwind-variants";
+
+export const tw = <T extends CnOptions>(...classes: T) => cn(...classes);

@@ -1,15 +1,26 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "astro/tsconfigs/strictest",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", ".netlify", "**/ignored/*"],
+  "include": [
+    "**/*",
+    "**/.server/**/*",
+    "**/.client/**/*",
+    ".react-router/types/**/*"
+  ],
   "compilerOptions": {
-    "noErrorTruncation": true,
-    "exactOptionalPropertyTypes": false,
-    "baseUrl": ".",
-    "paths": { "@/*": ["./app/*"] },
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "types": ["node", "vite/client"],
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx",
-    "jsxImportSource": "preact"
+    "rootDirs": [".", "./.react-router/types"],
+    "paths": {
+      "~/*": ["./app/*"]
+    },
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true
   }
-  // "mdx": { "checkMdx": true }
 }
