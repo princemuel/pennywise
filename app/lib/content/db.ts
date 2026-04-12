@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 
-import data from "$lib/content/db.json";
+import data from "@/lib/content/db.json";
+
 import { avatar } from "./images";
 
 const db = {
@@ -13,7 +14,7 @@ const db = {
   }),
   pots: data.pots.map((pot) => {
     return { ...id(pot), percent: (pot.total / pot.target) * 100 };
-  })
+  }),
 };
 
 export default db;
