@@ -175,3 +175,6 @@ styled-system
 prisma.rs
 **/database/prisma
 generated
+
+# clerk configuration (can include secrets)
+/.clerk/
