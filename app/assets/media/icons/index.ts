@@ -7,7 +7,7 @@
  * This is a barrel export file for all the icons in this directory as React components.
  *
  * 🟢 You can import this file directly.
- * Generated on: Sun Apr 12 01:17:52 PM WAT 2026
+ * Generated on: Sun Apr 12 08:12:26 PM WAT 2026
  */
 export { default as IconArrowFatLinesLeft } from "./arrow-fat-lines-left.svg?component";
 export { default as IconArrowUpDown } from "./arrow-up-down.svg?component";

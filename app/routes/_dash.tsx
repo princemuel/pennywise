@@ -4,9 +4,7 @@ import { IconArrowFatLinesLeft, IconLogo, IconLogoX } from "@/assets/media/icons
 import { tw } from "@/helpers/tailwind";
 import routes from "@/lib/content/routes";
 
-import type { Route } from "./+types/_dash";
-
-export default function Layout({ loaderData }: Route.ComponentProps) {
+export default function Layout() {
   // let [state, setState] = useState(loaderData.sideBar)
   //   async function toggleSidebar() {
 
