@@ -3,7 +3,7 @@
 # Icon export generator - transforms kebab-case to PascalCase
 # Usage: ./export-icons.sh [directory]
 
-set -euo pipefail # Fail fast, fail hard
+set -euo pipefail  # Fail fast, fail hard
 
 ICON_DIR="${1:-.}"
 OUTPUT_FILE="${ICON_DIR}/index.ts"
@@ -22,10 +22,7 @@ kebab_to_pascal() {
 }
 
 # Validate directory exists
-[[ ! -d "$ICON_DIR" ]] && {
-    echo "Directory '$ICON_DIR' not found"
-    exit 1
-}
+[[ ! -d "$ICON_DIR" ]] && { echo "Directory '$ICON_DIR' not found"; exit 1; }
 
 # Find SVG files and generate exports
 {
@@ -45,8 +42,8 @@ kebab_to_pascal() {
         filename=$(basename "$svg_file")
         pascal_name="Icon$(kebab_to_pascal "$filename")"
 
-        echo "export { default as $pascal_name } from \"./$filename?react\";"
+        echo "export { default as $pascal_name } from \"./$filename?component\";"
     done
-} >"$OUTPUT_FILE"
+} > "$OUTPUT_FILE"
 
 echo "Generated exports for $(find "$ICON_DIR" -maxdepth 1 -name "*.svg" -type f | wc -l) icons in $OUTPUT_FILE"
