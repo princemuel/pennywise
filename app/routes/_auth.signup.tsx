@@ -7,7 +7,7 @@ import { IconEye, IconEyeSlash } from "@/assets/media/icons";
 import { Pot } from "@/components/pot";
 
 import type { Route } from "./+types/_auth.signup";
-import { signup as schema } from "./_auth.schema";
+import { signup as schema } from "./_auth.server";
 
 export async function action({ request }: Route.ActionArgs) {
   const submission = parseWithZod(await request.formData(), { schema });
