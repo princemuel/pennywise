@@ -1,4 +1,5 @@
 import adapter from '@sveltejs/adapter-node';
+import { execSync } from 'node:child_process';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -8,8 +9,8 @@ const config = {
 	},
 	kit: {
 		adapter: adapter(),
-		alias: { '@/*': ['./src/*'] },
-
+		version: { name: execSync('git rev-parse --short HEAD').toString('utf8').trim() },
+		alias: { '@/*': './src/*' },
 		typescript: {
 			config: (config) => ({
 				...config,
