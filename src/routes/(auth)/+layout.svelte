@@ -33,5 +33,7 @@
 		</div>
 	</section>
 
-	<section class="self-center px-[6cqw] lg:col-span-7">{@render children()}</section>
+	<section class="mx-auto w-full self-center px-[6cqw] lg:col-span-7">
+		{@render children()}
+	</section>
 </main>

@@ -43,7 +43,7 @@
 							bind:value={$formData.name}
 							aria-autocomplete="list"
 							class="rounded-lg border border-beige-500 bg-transparent px-5 py-4 text-grey-900 outline-none autofill:bg-transparent autofill:focus:bg-transparent"
-							autoComplete="name"
+							autocomplete="name"
 						/>
 					{/snippet}
 				</Control>
@@ -62,7 +62,7 @@
 							bind:value={$formData.email}
 							aria-autocomplete="list"
 							class="rounded-lg border border-beige-500 bg-transparent px-5 py-4 text-grey-900 outline-none autofill:bg-transparent autofill:focus:bg-transparent"
-							autoComplete="email"
+							autocomplete="email"
 						/>
 					{/snippet}
 				</Control>
@@ -82,10 +82,10 @@
 								bind:value={$formData.password}
 								aria-autocomplete="list"
 								class="flex-1 bg-transparent py-4 text-grey-900 outline-none autofill:bg-transparent focus:outline-0"
-								autoComplete="current-password"
+								autocomplete="new-password"
 							/>
 
-							<button type="button" class="text-grey-900" onclick={() => handlePassword()}>
+							<button type="button" class="text-grey-900" onclick={handlePassword}>
 								{#if type === 'password'}
 									<IconEye />
 								{:else}

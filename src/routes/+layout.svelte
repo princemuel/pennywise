@@ -1,5 +1,6 @@
 <script lang="ts">
-	import 'temporal-polyfill/global';
+	import '@/polyfills/map';
+	import '@/polyfills/temporal';
 	import './global.css';
 
 	let { children } = $props();

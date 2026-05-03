@@ -7,9 +7,7 @@
 
 	let { data, children } = $props();
 
-	// svelte-ignore state_referenced_locally
-	let state = $state(data.sidebarState);
-	let uiState = $derived(`sidebar ${state}`);
+	let state = $derived(data.sidebarState);
 
 	async function toggleSidebar() {
 		state = state === 'compact' ? 'default' : 'compact';
@@ -20,7 +18,8 @@
 <section class="grid h-svh grid-rows-[1fr_auto] lg:grid-cols-[auto_1fr] lg:grid-rows-1">
 	<aside
 		id="sidebar"
-		data-ui={uiState}
+		data-size={state}
+		aria-label="Sidebar"
 		class={[
 			'order-2 rounded-t-2xl bg-grey-900 px-4 pt-2 sm:px-10 lg:order-1',
 			'lg:order-1 lg:rounded-r-2xl lg:p-0 lg:py-12',
@@ -71,7 +70,7 @@
 					aria-controls="sidebar"
 					aria-expanded={state !== 'compact'}
 					onclick={toggleSidebar}
-					data-ui={uiState}
+					data-size={state}
 					class={[
 						'flex w-full items-center justify-center p-2 text-xs font-bold capitalize lg:text-base',
 						'lg:gap-6 lg:p-4 lg:not-in-mini:px-8',

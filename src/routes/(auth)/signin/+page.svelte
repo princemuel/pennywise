@@ -26,7 +26,7 @@
 	class="mx-auto flex w-full max-w-2xl flex-col gap-8 rounded-xl bg-white px-8 py-12 shadow-md"
 	use:enhance
 >
-	<h1 id="a11ty-headline" class="text-4xl font-bold text-grey-900">Login</h1>
+	<h1 id="a11ty-headline" class="text-4xl font-bold text-grey-900">Sign In</h1>
 
 	<section class="grid grid-cols-6 gap-5">
 		<Pot />
@@ -42,7 +42,7 @@
 							bind:value={$formData.email}
 							aria-autocomplete="list"
 							class="rounded-lg border border-beige-500 bg-transparent px-5 py-4 text-grey-900 outline-none autofill:bg-transparent autofill:focus:bg-transparent"
-							autoComplete="email"
+							autocomplete="email"
 						/>
 					{/snippet}
 				</Control>
@@ -62,10 +62,10 @@
 								bind:value={$formData.password}
 								aria-autocomplete="list"
 								class="flex-1 bg-transparent py-4 text-grey-900 outline-none autofill:bg-transparent focus:outline-0"
-								autoComplete="current-password"
+								autocomplete="current-password"
 							/>
 
-							<button type="button" class="text-grey-900" onclick={() => handlePassword()}>
+							<button type="button" class="text-grey-900" onclick={handlePassword}>
 								{#if type === 'password'}
 									<IconEye />
 								{:else}
@@ -84,6 +84,6 @@
 
 	<footer class="flex items-center justify-center gap-4">
 		<p class="text-sm text-grey-500">Need to create an account?</p>
-		<a href="signup" class="font-bold text-grey-900 underline">Sign up</a>
+		<a href="/signup" class="font-bold text-grey-900 underline">Sign up</a>
 	</footer>
 </form>
