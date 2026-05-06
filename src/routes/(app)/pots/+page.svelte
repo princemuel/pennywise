@@ -2,6 +2,9 @@
 	import { IconEllipsis } from '@/assets/media/icons';
 
 	let { data } = $props();
+
+	const isEditing = $derived(data.modal === 'edit' && !!data.selected);
+	const isDeleting = $derived(data.modal === 'delete' && !!data.selected);
 </script>
 
 <header>
@@ -10,13 +13,14 @@
 
 <section class="grid gap-8 @md:grid-cols-[repeat(auto-fit,minmax(24rem,1fr))]">
 	{#each data.pots as pot (pot.id)}
+		{@const percent = Math.min(100, Number(pot.percent.toFixed(2)))}
 		<article
 			class="flex flex-col gap-8 rounded-xl bg-white p-6"
 			style="--theme: {pot.theme}; anchor-scope: --anchor-pot;"
 		>
 			<header class="flex items-center gap-4">
 				<span class="rounded-full bg-(--theme) p-2"></span>
-				<h4 class="text-xl font-semibold text-grey-900">{pot.name}</h4>
+				<h4 id="pot-label-{pot.id}" class="text-xl font-semibold text-grey-900">{pot.name}</h4>
 				<div class="relative ml-auto">
 					<button
 						type="button"
@@ -31,6 +35,7 @@
 						<span class="sr-only">Open pot actions menu</span>
 						<IconEllipsis class="text-xl" />
 					</button>
+
 					<!-- NOTE: replace auto with hint when Safari finally supports it -->
 					<div
 						id="pot-actions-{pot.id}"
@@ -41,7 +46,7 @@
 						<menu class="flex flex-col divide-y divide-grey-100 px-6">
 							<li class="py-2">
 								<a
-									href="/pots/{pot.id}/edit"
+									href="?modal=edit&id={pot.id}"
 									aria-haspopup="dialog"
 									aria-controls="edit-{pot.id}"
 									class="text-sm text-grey-900 focus-visible:outline-2"
@@ -52,7 +57,7 @@
 
 							<li class="py-2">
 								<a
-									href="/pots/{pot.id}/destroy"
+									href="?modal=delete&id={pot.id}"
 									aria-haspopup="dialog"
 									aria-controls="delete-{pot.id}"
 									class="text-sm text-brand-200 focus-visible:outline-2"
@@ -73,14 +78,16 @@
 
 				<div
 					role="progressbar"
-					aria-valuenow={Math.min(100, Number(pot.percent.toFixed(2)))}
+					aria-label="{pot.name} pots' progress"
+					aria-valuenow={percent}
 					aria-valuemin={0}
 					aria-valuemax={100}
+					aria-valuetext="{percent}% saved"
 					class="h-2 overflow-hidden rounded-full bg-beige-100"
 				>
 					<div
 						class="h-full w-(--width) rounded-full bg-(--theme)"
-						style="--width: {Math.min(100, Number(pot.percent.toFixed(2)))}%"
+						style="--width: {percent}%"
 					></div>
 				</div>
 
@@ -108,3 +115,57 @@
 		</article>
 	{/each}
 </section>
+
+{#if isEditing}
+	<div class="backdrop">
+		<dialog open>
+			<header>
+				<h2>Edit Pot #{data.selected?.id}</h2>
+				<a href="/pots">✕</a>
+			</header>
+
+			<form method="POST" action="?/edit&id={data.selected?.id}">
+				<label>
+					Title
+					<input name="title" value={data.selected?.name} />
+				</label>
+				<button type="submit">Save</button>
+			</form>
+		</dialog>
+	</div>
+{/if}
+
+<!-- delete dialog -->
+{#if isDeleting}
+	<div class="backdrop">
+		<dialog open>
+			<header>
+				<h2>Delete pot {data.selected?.id}?</h2>
+				<a href="/pots">✕</a>
+			</header>
+
+			<p>Are you sure you want to delete "{data.selected?.name}"?</p>
+
+			<form method="POST" action="?/delete&id={data.selected?.id}">
+				<a href="/pots">Cancel</a>
+				<button type="submit">Delete</button>
+			</form>
+		</dialog>
+	</div>
+{/if}
+
+<style>
+	.backdrop {
+		position: fixed;
+		inset: 0;
+		background: hsl(0 0% 0% / 0.5);
+		display: grid;
+		place-items: center;
+	}
+
+	dialog {
+		width: min(90vw, 400px);
+		border-radius: 8px;
+		padding: 1.5rem;
+	}
+</style>
