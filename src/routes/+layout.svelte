@@ -1,6 +1,4 @@
 <script lang="ts">
-	import '@/polyfills/map';
-	import '@/polyfills/temporal';
 	import './global.css';
 
 	let { children } = $props();
@@ -34,5 +32,4 @@
 	/>
 	<meta name="twitter:image" content="https://pennywise.fly.dev/og.png" />
 </svelte:head>
-
 {@render children()}

@@ -15,20 +15,19 @@
 		class?: ClassValue | undefined | null;
 	}
 
-	let { href, children, exact = false, class: className = '', ...attrs }: Props = $props();
+	let { href: url, children, exact = false, class: className = '', ...attrs }: Props = $props();
 
 	let isActive = $derived(
 		exact
-			? page.url.pathname === href
-			: href === '/'
+			? page.url.pathname === url
+			: url === '/'
 				? page.url.pathname === '/'
-				: page.url.pathname.startsWith(href)
+				: page.url.pathname.startsWith(url)
 	);
 </script>
 
 <a
-	// eslint-disable-next-line svelte/no-navigation-without-resolve
-	{href}
+	href={url}
 	class={className}
 	data-active={isActive || undefined}
 	aria-current={isActive ? 'page' : undefined}

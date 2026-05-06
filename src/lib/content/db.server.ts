@@ -1,20 +1,15 @@
-import { v7 as uuidv7 } from "uuid";
+import db from './db.json' with { type: 'json' };
+import { avatar } from './images';
 
-import data from "@/lib/content/db.json";
-
-import { avatar } from "./images";
-
-const db = {
-  ...data,
-  transactions: data.transactions.map((txn) => {
-    return { ...txn, id: uuidv7(), avatar: avatar(txn.avatar) };
-  }),
-  budgets: data.budgets.map((budget) => {
-    return { ...budget, id: uuidv7() };
-  }),
-  pots: data.pots.map((pot) => {
-    return { ...pot, id: uuidv7(), percent: (pot.total / pot.target) * 100 };
-  }),
+export default {
+	...db,
+	transactions: db.transactions.map((txn) => {
+		return { ...txn, avatar: avatar(txn.avatar) };
+	}),
+	budgets: db.budgets.map((budget) => {
+		return { ...budget };
+	}),
+	pots: db.pots.map((pot) => {
+		return { ...pot, percent: (pot.total / pot.target) * 100 };
+	})
 };
-
-export default db;

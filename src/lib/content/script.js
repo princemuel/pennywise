@@ -1,16 +1,16 @@
-import db from "./db.json" with { type: "json" };
+import db from './db.json' with { type: 'json' };
 
-if (!db.transactions?.length) throw new Error("No transactions found");
+if (!db.transactions?.length) throw new Error('No transactions found');
 
-let oldest = Infinity;
-let latest = -Infinity;
+let dates = db.transactions.map((tx) => Temporal.Instant.from(tx.date));
 
-for (const tx of db.transactions) {
-  const t = Date.parse(tx.date);
+let oldest = dates[0];
+let latest = dates[0];
 
-  if (t < oldest) oldest = t;
-  if (t > latest) latest = t;
+for (const date of dates) {
+	if (Temporal.Instant.compare(date, oldest) < 0) oldest = date;
+	if (Temporal.Instant.compare(date, latest) > 0) latest = date;
 }
 
-console.log(new Date(oldest));
-console.log(new Date(latest));
+console.log(oldest.toString());
+console.log(latest.toString());

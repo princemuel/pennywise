@@ -43,5 +43,8 @@
 		"*.css": "tailwindcss"
 	},
 	"tailwindCSS.rootFontSize": 16,
-	"svg.preview.background": "editor"
+	"svg.preview.background": "editor",
+	"[sql]": {
+		"editor.defaultFormatter": "bradymholt.pgformatter"
+	}
 }

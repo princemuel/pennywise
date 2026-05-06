@@ -59,7 +59,6 @@
 	},
 	"dependencies": {
 		"formsnap": "^2.0.1",
-		"temporal-polyfill": "^0.3.2",
 		"uuid": "^14.0.0",
 		"zod": "^4.4.2"
 	}
