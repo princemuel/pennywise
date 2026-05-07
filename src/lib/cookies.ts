@@ -6,15 +6,15 @@ export const SIDEBAR_MAX_AGE = secs({ days: 7 });
 
 const isProduction = import.meta.env.PROD;
 
-export const parseSidebarCookie = (value: unknown): SidebarState =>
-	value === 'compact' ? 'compact' : 'default';
+export const parseSidebarCookie = (value: unknown): string =>
+	value === 'compact' ? 'compact' : 'full';
 
-export const setSidebarCookieHeader = (value: SidebarState): string => {
+export const setSidebarCookieHeader = (value: string) => {
 	const secure = isProduction ? '; secure' : '';
 	return `${SIDEBAR_COOKIE}=${value}; max-age=${SIDEBAR_MAX_AGE}; path=/; samesite=lax${secure}`;
 };
 
-export const setSidebarCookieClient = async (value: SidebarState) => {
+export const setSidebarCookie = async (value: string) => {
 	if (!isBrowser) return;
 	if ('cookieStore' in window) {
 		const expires = Temporal.Now.instant().epochMilliseconds + SIDEBAR_MAX_AGE * 1000;
@@ -25,8 +25,8 @@ export const setSidebarCookieClient = async (value: SidebarState) => {
 };
 
 // Client-side async cookie getter (optional, for cross-tab sync)
-export const getSidebarCookieClient = async (): Promise<SidebarState> => {
-	if (!isBrowser) return 'default';
+export const getSidebarCookie = async () => {
+	if (!isBrowser) return 'full';
 	if ('cookieStore' in window) {
 		const cookie = await cookieStore.get(SIDEBAR_COOKIE);
 		return parseSidebarCookie(cookie?.value);

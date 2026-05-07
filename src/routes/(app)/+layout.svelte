@@ -3,26 +3,26 @@
 	import Navlink from '@/components/navlink.svelte';
 
 	import routes from '@/lib/content/routes';
-	import { setSidebarCookieClient } from '@/lib/cookies';
+	import { setSidebarCookie } from '@/lib/cookies';
 
 	let { data, children } = $props();
 
-	let state = $derived(data.sidebarState);
+	let state = $derived(data.state.sidebar);
 
 	async function toggleSidebar() {
-		state = state === 'compact' ? 'default' : 'compact';
-		await setSidebarCookieClient(state);
+		state = state === 'compact' ? 'full' : 'compact';
+		await setSidebarCookie(state);
 	}
 </script>
 
-<section class="grid h-svh grid-rows-[1fr_auto] lg:grid-cols-[auto_1fr] lg:grid-rows-1">
+<div class="grid h-svh grid-rows-[1fr_auto] lg:grid-cols-[auto_1fr] lg:grid-rows-1">
 	<aside
 		id="sidebar"
 		data-size={state}
 		aria-label="Sidebar"
 		class={[
 			'order-2 rounded-t-2xl bg-grey-900 px-4 pt-2 sm:px-10 lg:order-1',
-			'lg:order-1 lg:rounded-r-2xl lg:p-0 lg:py-12',
+			'lg:order-1 lg:rounded-tl-none lg:rounded-br-2xl lg:p-0 lg:py-12',
 			state !== 'compact'
 				? 'lg:w-75 lg:grid-cols-[auto_1fr] lg:pr-6'
 				: 'lg:w-22 lg:grid-cols-[auto] lg:pr-2'
@@ -44,7 +44,7 @@
 			<nav
 				aria-label="Main"
 				class="flex items-center justify-between capitalize lg:flex-col lg:items-stretch lg:gap-1"
-				data-sveltekit-preload-data="tap"
+				data-sveltekit-preload-data="hover"
 			>
 				{#each routes as route (route.text)}
 					<Navlink
@@ -86,8 +86,8 @@
 
 	<main
 		aria-labelledby="a11ty-headline"
-		class="@container/main relative order-1 flex flex-col gap-10 overflow-y-auto px-6 py-8 lg:order-2"
+		class="@container/main relative order-1 mx-auto flex w-full max-w-(--breakpoint-2xl) flex-col gap-8 overflow-y-auto px-6 py-8 lg:order-2 lg:px-8"
 	>
 		{@render children()}
 	</main>
-</section>
+</div>
