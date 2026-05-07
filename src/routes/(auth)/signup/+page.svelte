@@ -15,7 +15,7 @@
 
 	let type = $state<'password' | 'text'>('password');
 
-	function handlePassword() {
+	function password() {
 		type = type === 'password' ? 'text' : 'password';
 	}
 
@@ -85,7 +85,7 @@
 								autocomplete="new-password"
 							/>
 
-							<button type="button" class="text-grey-900" onclick={handlePassword}>
+							<button type="button" class="text-grey-900" onclick={password}>
 								{#if type === 'password'}
 									<IconEye />
 								{:else}

@@ -1,10 +1,8 @@
 <script lang="ts">
-	import { IconEllipsis } from '@/assets/media/icons';
+	import { IconCircleX, IconEllipsis } from '@/assets/media/icons';
+	import Dialog from '@/components/dialog.svelte';
 
 	let { data } = $props();
-
-	const isEditing = $derived(data.modal === 'edit' && !!data.selected);
-	const isDeleting = $derived(data.modal === 'delete' && !!data.selected);
 </script>
 
 <header>
@@ -15,38 +13,36 @@
 	{#each data.pots as pot (pot.id)}
 		{@const percent = Math.min(100, Number(pot.percent.toFixed(2)))}
 		<article
-			class="flex flex-col gap-8 rounded-xl bg-white p-6"
+			class="isolate flex flex-col gap-8 rounded-xl bg-white p-6"
 			style="--theme: {pot.theme}; anchor-scope: --anchor-pot;"
 		>
 			<header class="flex items-center gap-4">
 				<span class="rounded-full bg-(--theme) p-2"></span>
 				<h4 id="pot-label-{pot.id}" class="text-xl font-semibold text-grey-900">{pot.name}</h4>
-				<div class="relative ml-auto">
-					<button
-						type="button"
-						popovertarget="pot-actions-{pot.id}"
-						popovertargetaction="toggle"
-						aria-haspopup="menu"
-						aria-label="Open pot actions"
-						aria-controls={pot.id}
-						class="rounded p-2 text-grey-300 hover:text-grey-500 focus-visible:outline-2"
+
+				<details name="pots-menu" class="relative ml-auto">
+					<summary
+						class="list-none rounded p-2 text-grey-300 hover:bg-grey-100 hover:text-grey-500 focus-visible:outline-2"
 						style="anchor-name: --anchor-pot;"
 					>
 						<span class="sr-only">Open pot actions menu</span>
 						<IconEllipsis class="text-xl" />
-					</button>
+					</summary>
 
-					<!-- NOTE: replace auto with hint when Safari finally supports it -->
 					<div
-						id="pot-actions-{pot.id}"
-						popover="hint"
-						class="absolute inset-auto top-[anchor(top)] right-[anchor(right)] m-0 mt-6 rounded-lg bg-white opacity-0 shadow-sm transition transition-discrete duration-1000 ease-in open:grid open:opacity-100 starting:open:grid starting:open:opacity-0"
+						class={[
+							'absolute top-[anchor(top)] right-[anchor(right)] z-1 mt-8  w-max rounded-lg',
+							'-translate-y-1 scale-95 bg-white opacity-0 shadow-md',
+							'hidden transition transition-discrete duration-1000 ease-in in-open:block',
+							'in-open:translate-y-0 in-open:scale-100 in-open:opacity-100',
+							'starting:in-open:-translate-y-1 starting:in-open:scale-95 starting:in-open:opacity-0'
+						]}
 						style="position-anchor: --anchor-pot;"
 					>
 						<menu class="flex flex-col divide-y divide-grey-100 px-6">
 							<li class="py-2">
 								<a
-									href="?modal=edit&id={pot.id}"
+									href="?id={pot.id}&intent=edit"
 									aria-haspopup="dialog"
 									aria-controls="edit-{pot.id}"
 									class="text-sm text-grey-900 focus-visible:outline-2"
@@ -57,7 +53,7 @@
 
 							<li class="py-2">
 								<a
-									href="?modal=delete&id={pot.id}"
+									href="?id={pot.id}&intent=delete"
 									aria-haspopup="dialog"
 									aria-controls="delete-{pot.id}"
 									class="text-sm text-brand-200 focus-visible:outline-2"
@@ -67,7 +63,7 @@
 							</li>
 						</menu>
 					</div>
-				</div>
+				</details>
 			</header>
 
 			<div class="flex flex-col gap-4">
@@ -116,56 +112,47 @@
 	{/each}
 </section>
 
-{#if isEditing}
-	<div class="backdrop">
-		<dialog open>
-			<header>
-				<h2>Edit Pot #{data.selected?.id}</h2>
-				<a href="/pots">✕</a>
-			</header>
+{#if data.selected && data.intent === 'edit'}
+	<Dialog open id="edit-{data.selected.id}" aria-labelledby="edit-pot">
+		<header>
+			<h2 id="edit-pot">Edit Pot #{data.selected.id}</h2>
+			<a href="/pots">✕</a>
+		</header>
 
-			<form method="POST" action="?/edit&id={data.selected?.id}">
-				<label>
-					Title
-					<input name="title" value={data.selected?.name} />
-				</label>
-				<button type="submit">Save</button>
-			</form>
-		</dialog>
-	</div>
+		<form method="POST" action="?/edit&id={data.selected.id}">
+			<label>
+				Title
+				<input name="title" value={data.selected.name} />
+			</label>
+			<button type="submit">Save</button>
+		</form>
+	</Dialog>
 {/if}
 
-<!-- delete dialog -->
-{#if isDeleting}
-	<div class="backdrop">
-		<dialog open>
-			<header>
-				<h2>Delete pot {data.selected?.id}?</h2>
-				<a href="/pots">✕</a>
-			</header>
+{#if data.selected && data.intent === 'delete'}
+	<Dialog open id="delete-{data.selected.id}" aria-labelledby="delete-pot">
+		<header class="flex items-center justify-between">
+			<h2 id="delete-pot" class="text-2xl font-bold text-grey-900">
+				Delete ‘{data.selected.name}’ ?
+			</h2>
+			<a href="/pots" aria-label="Close modal">
+				<IconCircleX class="text-2xl" />
+			</a>
+		</header>
 
-			<p>Are you sure you want to delete "{data.selected?.name}"?</p>
+		<p class="text-sm text-grey-500">
+			Are you sure you want to delete this pot? This action cannot be reversed, and all the data
+			inside it will be removed forever.
+		</p>
 
-			<form method="POST" action="?/delete&id={data.selected?.id}">
-				<a href="/pots">Cancel</a>
-				<button type="submit">Delete</button>
+		<section class="flex flex-col gap-4 text-center">
+			<form method="POST" action="?/delete&id={data.selected.id}" class="flex-1">
+				<button type="submit" class="w-full rounded-lg bg-brand-200 px-5 py-4 text-white">
+					Yes, Confirm Deletion
+				</button>
 			</form>
-		</dialog>
-	</div>
+
+			<a href="/pots" class="flex-1 text-center text-sm text-grey-500">No, Go Back</a>
+		</section>
+	</Dialog>
 {/if}
-
-<style>
-	.backdrop {
-		position: fixed;
-		inset: 0;
-		background: hsl(0 0% 0% / 0.5);
-		display: grid;
-		place-items: center;
-	}
-
-	dialog {
-		width: min(90vw, 400px);
-		border-radius: 8px;
-		padding: 1.5rem;
-	}
-</style>

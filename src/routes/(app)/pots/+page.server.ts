@@ -6,11 +6,11 @@ export const load: PageServerLoad = async ({ url }) => {
 	const pots = db.pots;
 
 	const id = url.searchParams.get('id');
-	const modal = url.searchParams.get('modal') as 'edit' | 'delete' | null;
+	const intent = url.searchParams.get('intent') as 'edit' | 'delete' | null;
 
-	const selected = id && modal ? pots.find((pot) => pot.id === id) : null;
+	const selected = id && intent ? pots.find((pot) => pot.id === id) : null;
 
-	return { pots, selected, modal };
+	return { pots, selected, intent };
 };
 
 export const actions = {
@@ -34,8 +34,10 @@ export const actions = {
 		const id = url.searchParams.get('id');
 		if (!id) return fail(400, { message: 'Missing id' });
 
-		// await db.todo.delete({ where: { id } });
+		const idx = db.pots.findIndex((pot) => pot.id === id);
+		if (!idx) return fail(404, { message: 'Pot not found' });
 
+		db.pots.splice(idx, 1);
 		redirect(303, '/pots');
 	}
 } satisfies Actions;
