@@ -7,7 +7,7 @@
 
 	let { data, children } = $props();
 
-	let state = $derived(data.state.sidebar);
+	let state = $derived(data.sidebar);
 
 	async function toggleSidebar() {
 		state = state === 'compact' ? 'full' : 'compact';
