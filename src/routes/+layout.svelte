@@ -1,7 +1,15 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import './global.css';
 
 	let { children } = $props();
+
+	onMount(() => {
+		const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+		const locale = navigator.language;
+		document.cookie = `timezone=${tz}; path=/; SameSite=Lax`;
+		document.cookie = `locale=${locale}; path=/; SameSite=Lax`;
+	});
 </script>
 
 <svelte:head>
