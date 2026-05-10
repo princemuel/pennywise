@@ -9,9 +9,9 @@ type Order = (typeof ORDERS)[number];
 
 const PAGE_SIZE = 10;
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ url, locals }) => {
 	const rawSort = url.searchParams.get('sortBy') ?? 'date';
-	const rawOrder = url.searchParams.get('order') ?? 'desc';
+	const rawOrder = url.searchParams.get('orderBy') ?? 'desc';
 	const search = url.searchParams.get('search') ?? '';
 	const category = url.searchParams.get('category') ?? '';
 	const rawPage = Number(url.searchParams.get('page') ?? '1');
@@ -19,24 +19,26 @@ export const load: PageServerLoad = async ({ url }) => {
 	const sortBy: SortField = SORT_FIELDS.includes(rawSort as SortField)
 		? (rawSort as SortField)
 		: 'date';
-	const order: Order = ORDERS.includes(rawOrder as Order) ? (rawOrder as Order) : 'desc';
+	const orderBy: Order = ORDERS.includes(rawOrder as Order) ? (rawOrder as Order) : 'desc';
 	const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
 
 	const categories = [...new Set(db.transactions.map((t) => t.category))].toSorted();
 
 	const filtered = db.transactions
 		.filter((txn) => {
-			const matchesSearch = txn.name.toLowerCase().includes(search.toLowerCase());
+			const matchesSearch = txn.name
+				.toLocaleLowerCase(locals.locale)
+				.includes(search.toLocaleLowerCase(locals.locale));
 			const matchesCategory = category ? txn.category === category : true;
 			return matchesSearch && matchesCategory;
 		})
 		.toSorted((a, b) => {
 			let cmp = 0;
-			if (sortBy === 'name') cmp = a.name.localeCompare(b.name);
-			if (sortBy === 'category') cmp = a.category.localeCompare(b.category);
-			if (sortBy === 'date') cmp = a.date.localeCompare(b.date);
+			if (sortBy === 'name') cmp = a.name.localeCompare(b.name, locals.locale);
+			if (sortBy === 'category') cmp = a.category.localeCompare(b.category, locals.locale);
+			if (sortBy === 'date') cmp = a.date.localeCompare(b.date, locals.locale);
 			if (sortBy === 'amount') cmp = a.amount - b.amount;
-			return order === 'asc' ? cmp : -cmp;
+			return orderBy === 'asc' ? cmp : -cmp;
 		});
 
 	const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
@@ -47,7 +49,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		transactions,
 		categories,
 		sortBy,
-		order,
+		orderBy,
 		search,
 		category,
 		currentPage,

@@ -73,7 +73,7 @@ export function* range(
 	let step = 1;
 	let inclusive = false;
 
-	// Argument normalization
+	// Arguments normalization
 	if (args.length === 1) {
 		[stop] = args;
 		start = 0;
@@ -87,7 +87,7 @@ export function* range(
 
 	const forward = step > 0;
 
-	// Prevent infinite loops by skip ping iteration setup if range is impossible
+	// Prevent infinite loops by skipping iteration if range is impossible
 	if ((forward && start > stop) || (!forward && start < stop)) return;
 
 	if (forward) {

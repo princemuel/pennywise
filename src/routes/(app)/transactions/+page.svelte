@@ -7,16 +7,16 @@
 	let { data } = $props();
 
 	const SORT_OPTIONS = [
-		{ label: 'Latest', sortBy: 'date', order: 'desc' },
-		{ label: 'Oldest', sortBy: 'date', order: 'asc' },
-		{ label: 'A to Z', sortBy: 'name', order: 'asc' },
-		{ label: 'Z to A', sortBy: 'name', order: 'desc' },
-		{ label: 'Highest to Lowest', sortBy: 'amount', order: 'desc' },
-		{ label: 'Lowest to Highest', sortBy: 'amount', order: 'asc' }
+		{ label: 'Latest', sortBy: 'date', orderBy: 'desc' },
+		{ label: 'Oldest', sortBy: 'date', orderBy: 'asc' },
+		{ label: 'A to Z', sortBy: 'name', orderBy: 'asc' },
+		{ label: 'Z to A', sortBy: 'name', orderBy: 'desc' },
+		{ label: 'Highest to Lowest', sortBy: 'amount', orderBy: 'desc' },
+		{ label: 'Lowest to Highest', sortBy: 'amount', orderBy: 'asc' }
 	];
 
 	let currentSort = $derived(
-		SORT_OPTIONS.find((opt) => opt.sortBy === data.sortBy && opt.order === data.order)
+		SORT_OPTIONS.find((opt) => opt.sortBy === data.sortBy && opt.orderBy === data.orderBy)
 	);
 
 	function setParam(key: string, value: string) {
@@ -31,10 +31,10 @@
 		goto(url.toString(), { replaceState: true, keepFocus: true });
 	}
 
-	function setSort(sortBy: string, order: string) {
+	function setSort(sortBy: string, orderBy: string) {
 		const url = new URL(page.url);
 		url.searchParams.set('sortBy', sortBy);
-		url.searchParams.set('order', order);
+		url.searchParams.set('orderBy', orderBy);
 		url.searchParams.delete('page');
 
 		goto(url.toString(), { replaceState: true });
@@ -65,6 +65,8 @@
 			.toZonedDateTimeISO(timeZone)
 			.toLocaleString(locale, { dateStyle: 'medium' });
 </script>
+
+{data.transactions.length}
 
 <section class="flex items-center">
 	<label>
@@ -102,7 +104,7 @@
 						type="button"
 						role="menuitem"
 						aria-current={option === currentSort}
-						onclick={() => setSort(option.sortBy, option.order)}
+						onclick={() => setSort(option.sortBy, option.orderBy)}
 					>
 						{option.label}
 					</button>
