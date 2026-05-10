@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { secs } from '@/helpers/time';
 	import { onMount } from 'svelte';
 	import './global.css';
 
@@ -7,8 +8,13 @@
 	onMount(() => {
 		const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 		const locale = navigator.language;
-		document.cookie = `timezone=${tz}; path=/; SameSite=Lax`;
-		document.cookie = `locale=${locale}; path=/; SameSite=Lax`;
+		const currency = 'USD';
+		const secure = import.meta.env.PROD ? '; Secure' : '';
+		const maxAge = `; Max-Age=${secs({ days: 28 })}`;
+
+		document.cookie = `timezone=${tz}; path=/; SameSite=Lax${secure}${maxAge}`;
+		document.cookie = `locale=${locale}; path=/; SameSite=Lax${secure}${maxAge}`;
+		document.cookie = `currency=${currency}; path=/; SameSite=Lax${secure}${maxAge}`;
 	});
 </script>
 

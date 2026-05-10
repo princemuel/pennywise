@@ -7,6 +7,7 @@ declare global {
 		interface Locals {
 			timeZone: string;
 			locale: Intl.LocalesArgument;
+			currency: string;
 			user?: User;
 			session?: Session;
 		}
