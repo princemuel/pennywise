@@ -14,32 +14,34 @@
 		{@const percent = Math.min(100, Number(pot.percent.toFixed(2)))}
 		<article
 			class="isolate flex flex-col gap-8 rounded-xl bg-white p-6"
-			style="--theme: {pot.theme}; anchor-scope: --anchor-pot;"
+			style="--theme: {pot.theme}; anchor-scope: --css-pot-menu;"
 		>
 			<header class="flex items-center gap-4">
 				<span class="rounded-full bg-(--theme) p-2"></span>
 				<h4 id="pot-label-{pot.id}" class="text-xl font-semibold text-grey-900">{pot.name}</h4>
 
-				<details name="pots-menu" class="relative ml-auto">
-					<summary
-						class="list-none rounded p-2 text-grey-300 hover:bg-grey-100 hover:text-grey-500 focus-visible:outline-2"
-						style="anchor-name: --anchor-pot;"
+				<div class="relative ml-auto">
+					<button
+						type="button"
+						popovertarget={pot.id}
+						popovertargetaction="toggle"
+						aria-haspopup="menu"
+						aria-label="Open pot actions menu"
+						aria-controls={pot.id}
+						class="rounded p-2 text-grey-300 hover:bg-grey-100 hover:text-grey-500 focus-visible:outline-2"
+						style="anchor-name: --css-pot-menu;"
 					>
 						<span class="sr-only">Open pot actions menu</span>
 						<IconEllipsis class="text-xl" />
-					</summary>
+					</button>
 
-					<div
-						class={[
-							'absolute top-[anchor(top)] right-[anchor(right)] z-1 mt-8  w-max rounded-lg',
-							'-translate-y-1 scale-95 bg-white opacity-0 shadow-md',
-							'hidden transition transition-discrete duration-1000 ease-in in-open:block',
-							'in-open:translate-y-0 in-open:scale-100 in-open:opacity-100',
-							'starting:in-open:-translate-y-1 starting:in-open:scale-95 starting:in-open:opacity-0'
-						]}
-						style="position-anchor: --anchor-pot;"
+					<dialog
+						id={pot.id}
+						popover="auto"
+						class="absolute inset-auto top-[anchor(top)] right-[anchor(right)] mt-6 rounded-lg bg-white opacity-0 shadow-sm transition transition-discrete duration-1000 ease-in open:grid open:opacity-100 open:starting:opacity-0"
+						style="position-anchor: --css-pot-menu;"
 					>
-						<menu class="flex flex-col divide-y divide-grey-100 px-6">
+						<menu role="menu" class="flex flex-col divide-y divide-grey-100 px-6">
 							<li class="py-2">
 								<a
 									href="?id={pot.id}&intent=edit"
@@ -62,8 +64,8 @@
 								</a>
 							</li>
 						</menu>
-					</div>
-				</details>
+					</dialog>
+				</div>
 			</header>
 
 			<div class="flex flex-col gap-4">

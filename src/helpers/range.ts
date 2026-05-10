@@ -61,40 +61,40 @@
 export function range(stop: number): Generator<number>;
 export function range(start: number, stop: number): Generator<number>;
 export function range(
-  start: number,
-  stop: number,
-  options: { step?: number; inclusive?: boolean }
+	start: number,
+	stop: number,
+	options: { step?: number; inclusive?: boolean }
 ): Generator<number>;
 export function* range(
-  ...args: [number] | [number, number] | [number, number, { step?: number; inclusive?: boolean }]
+	...args: [number] | [number, number] | [number, number, { step?: number; inclusive?: boolean }]
 ): Generator<number> {
-  let start: number;
-  let stop: number;
-  let step = 1;
-  let inclusive = false;
+	let start: number;
+	let stop: number;
+	let step = 1;
+	let inclusive = false;
 
-  // Argument normalization
-  if (args.length === 1) {
-    [stop] = args;
-    start = 0;
-  } else if (args.length === 2) {
-    [start, stop] = args;
-  } else {
-    [start, stop, { step = 1, inclusive = false }] = args;
-  }
+	// Argument normalization
+	if (args.length === 1) {
+		[stop] = args;
+		start = 0;
+	} else if (args.length === 2) {
+		[start, stop] = args;
+	} else {
+		[start, stop, { step = 1, inclusive = false }] = args;
+	}
 
-  if (step === 0) throw new Error("Step cannot be zero");
+	if (step === 0) throw new Error('Step cannot be zero');
 
-  const forward = step > 0;
+	const forward = step > 0;
 
-  // Prevent infinite loops by skip ping iteration setup if range is impossible
-  if ((forward && start > stop) || (!forward && start < stop)) return;
+	// Prevent infinite loops by skip ping iteration setup if range is impossible
+	if ((forward && start > stop) || (!forward && start < stop)) return;
 
-  if (forward) {
-    const end = inclusive ? stop + 1 : stop;
-    for (let i = start; i < end; i += step) yield i;
-  } else {
-    const end = inclusive ? stop - 1 : stop;
-    for (let i = start; i > end; i += step) yield i;
-  }
+	if (forward) {
+		const end = inclusive ? stop + 1 : stop;
+		for (let i = start; i < end; i += step) yield i;
+	} else {
+		const end = inclusive ? stop - 1 : stop;
+		for (let i = start; i > end; i += step) yield i;
+	}
 }
