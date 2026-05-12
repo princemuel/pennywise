@@ -3,17 +3,30 @@
 
 	type Props = HTMLDialogAttributes;
 
-	let { children, ...attrs }: Props = $props();
+	let { open = $bindable(false), children, ...attrs }: Props = $props();
+
+	let dialog: HTMLDialogElement | null = $state(null);
+
+	$effect(() => {
+		if (!dialog) return;
+		if (open && !dialog.open) dialog.showModal();
+		if (!open && dialog.open) dialog.close();
+	});
 </script>
 
-<dialog {...attrs} class={['fixed inset-0 h-dvh w-full bg-transparent', attrs.class]}>
-	<!-- z-index only needs to beat siblings; since dialog is outside `isolate` div, any value works -->
-	<div class="fixed inset-0 z-10 bg-black/50"></div>
-	<div class="fixed inset-0 z-20 flex items-center justify-center px-4">
-		<div class="w-full max-w-xl rounded-xl bg-white p-8 shadow-xl">
-			<section class="flex flex-col gap-6">
-				{@render children?.()}
-			</section>
-		</div>
-	</div>
+<dialog
+	bind:this={dialog}
+	aria-modal="true"
+	closedby="any"
+	{...attrs}
+	class={[
+		'm-auto w-full max-w-xl rounded-xl bg-white p-8 shadow-xl',
+		'scale-95 opacity-0 backdrop:bg-grey-900/50',
+		'transition transition-discrete duration-200 ease-in',
+		'open:scale-100 open:opacity-100 starting:open:scale-95 starting:open:opacity-0'
+	]}
+>
+	<section class="flex flex-col gap-6">
+		{@render children?.()}
+	</section>
 </dialog>
