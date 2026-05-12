@@ -44,12 +44,12 @@
 		setParam('category', category);
 	}
 
-	function goToPage(p: number) {
-		const url = new URL(page.url);
-		url.searchParams.set('page', p.toString());
+	// function goToPage(p: number) {
+	// 	const url = new URL(page.url);
+	// 	url.searchParams.set('page', p.toString());
 
-		goto(url.toString(), { replaceState: true });
-	}
+	// 	goto(url.toString(), { replaceState: true });
+	// }
 
 	const { timeZone, locale } = page.data;
 
@@ -65,8 +65,6 @@
 			.toZonedDateTimeISO(timeZone)
 			.toLocaleString(locale, { dateStyle: 'medium' });
 </script>
-
-{data.transactions.length}
 
 <section class="flex items-center">
 	<label>
@@ -130,7 +128,7 @@
 		<dialog
 			id="category-menu"
 			popover="auto"
-			class="absolute inset-auto top-[anchor(top)] right-[anchor(right)] mt-6 rounded-lg bg-white opacity-0 shadow-sm transition transition-discrete duration-1000 ease-in open:grid open:opacity-100 open:starting:opacity-0"
+			class="absolute inset-auto top-[anchor(top)] right-[anchor(right)] mt-6 rounded-lg bg-white opacity-0 shadow-sm transition transition-discrete duration-1000 ease-in open:grid open:opacity-100 starting:open:opacity-0"
 			style="position-anchor: --css-cat-menu;"
 		>
 			<menu role="menu" aria-label="Filter Transactions by Category" class=" flex flex-col gap-1">
@@ -157,61 +155,62 @@
 		</dialog>
 	</div>
 </section>
+
 <!-- Transactions -->
 <search>
 	{#if data.transactions.length === 0}
-		<p>No transactions found.</p>
+		<p>No transactions yet. Click ... to add a new transaction</p>
 	{:else}
-		<section>
-			<header class="grid grid-cols-4 items-center gap-4">
-				<p>Name</p>
+		<section class="flex flex-col gap-2">
+			<header
+				class="grid auto-cols-fr grid-cols-5 items-center gap-4 rounded-lg bg-white px-3 py-4"
+			>
+				<p class="col-span-2">Name</p>
 				<p>Category</p>
 				<p>Amount</p>
 				<p>Date</p>
 			</header>
 
-			<div>
-				{#each data.transactions as txn (txn.id)}
-					<div class="grid grid-cols-4 items-center gap-4">
-						<p>{txn.name}</p>
-						<p>{txn.category}</p>
-						<p>{IntlNumFmt.format(txn.amount)}</p>
-						<p>{toLocalString(txn.date)}</p>
-					</div>
-				{/each}
-			</div>
+			{#each data.transactions as txn (txn.id)}
+				<div class="grid auto-cols-fr grid-cols-5 items-center gap-4 rounded-lg bg-white px-3 py-2">
+					<figure class="col-span-2 flex items-center gap-4">
+						<img src={txn.avatar} alt={txn.name} class="size-10 rounded-full" />
+						<figcaption>{txn.name}</figcaption>
+					</figure>
+					<p>{txn.category}</p>
+					<p>{IntlNumFmt.format(txn.amount)}</p>
+					<p>{toLocalString(txn.date)}</p>
+				</div>
+			{/each}
 		</section>
 
 		<!-- Pagination -->
 		<nav aria-label="Pagination">
-			<button
-				type="button"
+			<a
+				href="?page={Math.max(data.currentPage - 1, 1)}"
 				aria-label="Go to the previous page"
-				disabled={data.currentPage <= 1}
-				onclick={() => goToPage(data.currentPage - 1)}
+				aria-disabled={data.currentPage <= 1}
 			>
 				Prev
-			</button>
+			</a>
 
 			{#each range(1, data.totalPages + 1) as page (page)}
-				<button
-					type="button"
+				<a
+					href="?page={page}"
 					aria-label="Go to page {page}"
 					aria-current={page === data.currentPage ? 'page' : 'false'}
-					onclick={() => goToPage(page)}
 				>
 					{page}
-				</button>
+				</a>
 			{/each}
 
-			<button
-				type="button"
+			<a
+				href="?page={data.currentPage + 1}"
 				aria-label="Go to the next page"
-				disabled={data.currentPage >= data.totalPages}
-				onclick={() => goToPage(data.currentPage + 1)}
+				aria-disabled={data.currentPage >= data.totalPages}
 			>
 				Next
-			</button>
+			</a>
 		</nav>
 	{/if}
 </search>

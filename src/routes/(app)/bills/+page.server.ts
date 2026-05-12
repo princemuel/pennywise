@@ -1,4 +1,4 @@
-import db from '@/lib/content/db.server';
+import db from '@/lib/content/db';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {

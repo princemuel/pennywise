@@ -1,12 +1,47 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { IconCircleX, IconEllipsis } from '@/assets/media/icons';
 	import Dialog from '@/components/dialog.svelte';
+	import Pot from '@/components/pot.svelte';
+	import { Control, Field, FieldErrors, Label } from 'formsnap';
+	import { superForm } from 'sveltekit-superforms';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
+	import { PotChangeset } from './schema.js';
 
 	let { data } = $props();
+
+	const createPotForm = (() => {
+		const formVal = (() => data.createPotForm)();
+		return superForm(formVal, {
+			id: 'create-pot',
+			resetForm: true,
+			validators: zod4Client(PotChangeset)
+		});
+	})();
+	const editPotForm = (() => {
+		const formVal = (() => data.editPotForm)();
+		return superForm(formVal, {
+			id: 'edit-pot',
+			resetForm: true,
+			validators: zod4Client(PotChangeset)
+		});
+	})();
+
+	const { form: createPotFormData } = createPotForm;
+	const { form: editPotFormData } = editPotForm;
 </script>
 
-<header>
+<header class="flex items-center justify-between">
 	<h1 id="a11ty-headline" class="text-4xl font-bold text-grey-900">Pots</h1>
+	<button
+		type="button"
+		command="show-modal"
+		commandfor="create-pot-modal"
+		class="rounded-lg bg-grey-900 p-4 text-sm font-bold text-white"
+	>
+		+ Add New Pot
+	</button>
 </header>
 
 <section class="grid gap-8 @md:grid-cols-[repeat(auto-fit,minmax(24rem,1fr))]">
@@ -14,7 +49,7 @@
 		{@const percent = Math.min(100, Number(pot.percent.toFixed(2)))}
 		<article
 			class="isolate flex flex-col gap-8 rounded-xl bg-white p-6"
-			style="--theme: {pot.theme}; anchor-scope: --css-pot-menu;"
+			style="--theme: #{pot.theme}; anchor-scope: --css-pot-menu;"
 		>
 			<header class="flex items-center gap-4">
 				<span class="rounded-full bg-(--theme) p-2"></span>
@@ -38,7 +73,12 @@
 					<dialog
 						id={pot.id}
 						popover="auto"
-						class="absolute inset-auto top-[anchor(top)] right-[anchor(right)] mt-6 rounded-lg bg-white opacity-0 shadow-sm transition transition-discrete duration-1000 ease-in open:grid open:opacity-100 open:starting:opacity-0"
+						class={[
+							'absolute inset-auto top-[anchor(top)] right-[anchor(right)]',
+							'mt-6 rounded-lg bg-white opacity-0 shadow-sm',
+							'transition transition-discrete duration-1000 ease-in',
+							'open:grid open:opacity-100 starting:open:opacity-0'
+						]}
 						style="position-anchor: --css-pot-menu;"
 					>
 						<menu role="menu" class="flex flex-col divide-y divide-grey-100 px-6">
@@ -114,29 +154,191 @@
 	{/each}
 </section>
 
+<Dialog id="create-pot-modal" onclose={() => goto(resolve('/pots'), { replaceState: true })}>
+	<header class="flex items-center justify-between">
+		<h2 id="create-pot-headline" class="text-2xl font-bold text-grey-900">Add New Pot</h2>
+
+		<button type="button" commandfor="create-pot-modal" command="close">
+			<span class="sr-only">Close modal</span>
+			<IconCircleX role="img" class="text-2xl" />
+		</button>
+	</header>
+
+	<p class="text-sm text-grey-500">
+		Create a pot to set savings targets. These can help keep you on track as you save for special
+		purchases.
+	</p>
+
+	{@const { enhance } = createPotForm}
+	<form method="POST" action="?/create" class="grid grid-cols-6 gap-5" use:enhance>
+		<Pot />
+
+		<div class="group col-span-full flex flex-col gap-2">
+			<Field form={createPotForm} name="name">
+				<Control>
+					{#snippet children({ props })}
+						<Label class="text-xs font-bold text-grey-500">Name</Label>
+						<input
+							{...props}
+							type="text"
+							bind:value={$createPotFormData.name}
+							class="rounded-lg border border-beige-500 bg-transparent px-5 py-4 text-grey-900 outline-none autofill:bg-transparent autofill:focus:bg-transparent"
+						/>
+					{/snippet}
+				</Control>
+				<FieldErrors class="self-end text-xs text-red-400" />
+			</Field>
+		</div>
+
+		<div class="group col-span-full flex flex-col gap-2">
+			<Field form={createPotForm} name="target">
+				<Control>
+					{#snippet children({ props })}
+						<Label class="text-xs font-bold text-grey-500">Target</Label>
+						<input
+							{...props}
+							type="number"
+							min={0}
+							step={0.01}
+							bind:value={$createPotFormData.target}
+							class="rounded-lg border border-beige-500 bg-transparent px-5 py-4 text-grey-900 outline-none autofill:bg-transparent autofill:focus:bg-transparent"
+						/>
+					{/snippet}
+				</Control>
+				<FieldErrors class="self-end text-xs text-red-400" />
+			</Field>
+		</div>
+
+		<div class="group col-span-full flex flex-col gap-2">
+			<Field form={createPotForm} name="theme">
+				<Control>
+					{#snippet children({ props })}
+						<Label class="text-xs font-bold text-grey-500">Theme</Label>
+						<input
+							{...props}
+							type="text"
+							bind:value={$createPotFormData.theme}
+							class="rounded-lg border border-beige-500 bg-transparent px-5 py-4 text-grey-900 outline-none autofill:bg-transparent autofill:focus:bg-transparent"
+						/>
+					{/snippet}
+				</Control>
+				<FieldErrors class="self-end text-xs text-red-400" />
+			</Field>
+		</div>
+
+		<button type="submit" class="col-span-full rounded-lg bg-grey-900 py-4 text-center text-white">
+			Add Pot
+		</button>
+	</form>
+</Dialog>
+
 {#if data.selected && data.intent === 'edit'}
-	<Dialog open id="edit-{data.selected.id}" aria-labelledby="edit-pot">
-		<header>
-			<h2 id="edit-pot">Edit Pot #{data.selected.id}</h2>
-			<a href="/pots">✕</a>
+	{@const open = data.selected && data.intent === 'edit'}
+
+	<Dialog
+		{open}
+		id="edit-{data.selected.id}"
+		aria-labelledby="edit-pot-{data.selected.id}"
+		onclose={() => goto(resolve('/pots'), { replaceState: true })}
+	>
+		<header class="flex items-center justify-between">
+			<h2 id="edit-pot-{data.selected.id}" class="text-2xl font-bold text-grey-900">Edit Pot</h2>
+
+			<a href="/pots">
+				<span class="sr-only">Close modal</span>
+				<IconCircleX role="img" class="text-2xl" />
+			</a>
 		</header>
 
-		<form method="POST" action="?/edit&id={data.selected.id}">
-			<label>
-				Title
-				<input name="title" value={data.selected.name} />
-			</label>
-			<button type="submit">Save</button>
+		<p class="text-sm text-grey-500">
+			If your saving targets change, feel free to update your pots.
+		</p>
+
+		{@const { enhance } = editPotForm}
+		<form
+			method="POST"
+			action="?/edit&id={data.selected.id}"
+			class="grid grid-cols-6 gap-5"
+			use:enhance
+		>
+			<Pot />
+
+			<div class="group col-span-full flex flex-col gap-2">
+				<Field form={editPotForm} name="name">
+					<Control>
+						{#snippet children({ props })}
+							<Label class="text-xs font-bold text-grey-500">Name</Label>
+							<input
+								{...props}
+								type="text"
+								bind:value={$editPotFormData.name}
+								class="rounded-lg border border-beige-500 bg-transparent px-5 py-4 text-grey-900 outline-none autofill:bg-transparent autofill:focus:bg-transparent"
+							/>
+						{/snippet}
+					</Control>
+					<FieldErrors class="self-end text-xs text-red-400" />
+				</Field>
+			</div>
+
+			<div class="group col-span-full flex flex-col gap-2">
+				<Field form={editPotForm} name="target">
+					<Control>
+						{#snippet children({ props })}
+							<Label class="text-xs font-bold text-grey-500">Target</Label>
+							<input
+								{...props}
+								type="number"
+								min={0}
+								step={0.01}
+								bind:value={$editPotFormData.target}
+								class="rounded-lg border border-beige-500 bg-transparent px-5 py-4 text-grey-900 outline-none autofill:bg-transparent autofill:focus:bg-transparent"
+							/>
+						{/snippet}
+					</Control>
+					<FieldErrors class="self-end text-xs text-red-400" />
+				</Field>
+			</div>
+
+			<div class="group col-span-full flex flex-col gap-2">
+				<Field form={editPotForm} name="theme">
+					<Control>
+						{#snippet children({ props })}
+							<Label class="text-xs font-bold text-grey-500">Theme</Label>
+							<input
+								{...props}
+								type="text"
+								bind:value={$editPotFormData.theme}
+								class="rounded-lg border border-beige-500 bg-transparent px-5 py-4 text-grey-900 outline-none autofill:bg-transparent autofill:focus:bg-transparent"
+							/>
+						{/snippet}
+					</Control>
+					<FieldErrors class="self-end text-xs text-red-400" />
+				</Field>
+			</div>
+
+			<button
+				type="submit"
+				class="col-span-full rounded-lg bg-grey-900 py-4 text-center text-white"
+			>
+				Save Changes
+			</button>
 		</form>
 	</Dialog>
 {/if}
 
 {#if data.selected && data.intent === 'delete'}
-	<Dialog open id="delete-{data.selected.id}" aria-labelledby="delete-pot">
+	{@const open = data.selected && data.intent === 'delete'}
+	<Dialog
+		{open}
+		id="delete-{data.selected.id}"
+		aria-labelledby="delete-pot"
+		onclose={() => goto(resolve('/pots'), { replaceState: true })}
+	>
 		<header class="flex items-center justify-between">
 			<h2 id="delete-pot" class="text-2xl font-bold text-grey-900">
-				Delete ‘{data.selected.name}’ ?
+				Delete ߵ{data.selected.name}ߴ?
 			</h2>
+
 			<a href="/pots" aria-label="Close modal">
 				<IconCircleX class="text-2xl" />
 			</a>

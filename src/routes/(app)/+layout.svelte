@@ -3,7 +3,7 @@
 	import Navlink from '@/components/navlink.svelte';
 
 	import routes from '@/lib/content/routes';
-	import { setSidebarCookie } from '@/lib/cookies';
+	import { setSidebarCookie } from '@/lib/sidebar.js';
 
 	let { data, children } = $props();
 
