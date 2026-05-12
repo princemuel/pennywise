@@ -1,5 +1,11 @@
-export const parseError = (error: unknown): string => {
-  if (error instanceof Error) return error.message;
-  if (typeof error === "string") return error;
-  return "An unknown error occurred";
+import { isString } from './guards';
+
+export const throwAsError = (exception: unknown) => {
+	throw isString(exception) ? new Error(exception) : exception;
+};
+
+export const parseError = (exception: unknown): string => {
+	if (exception instanceof Error) return exception.message;
+	if (isString(exception)) return exception;
+	return 'An unknown error occurred';
 };

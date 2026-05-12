@@ -1,4 +1,5 @@
-import { HttpError } from "./api.server";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { HttpError } from './api.server';
 
 /**
  * A type representing a fetcher function that can be
@@ -10,7 +11,7 @@ export type AnyFetcher = (...args: any[]) => any;
  * @internal
  */
 export type Schema<TData> = {
-  parse: (data: unknown) => TData;
+	parse: (data: unknown) => TData;
 };
 
 /**
@@ -18,8 +19,8 @@ export type Schema<TData> = {
  * from createZodFetcher
  */
 export type ZodFetcher<TFetcher extends AnyFetcher> = <TData>(
-  schema: Schema<TData>,
-  ...args: Parameters<TFetcher>
+	schema: Schema<TData>,
+	...args: Parameters<TFetcher>
 ) => Promise<TData>;
 
 /**
@@ -27,10 +28,10 @@ export type ZodFetcher<TFetcher extends AnyFetcher> = <TData>(
  * fetcher is provided.
  */
 export const defaultFetcher = async (...args: Parameters<typeof fetch>) => {
-  const response = await fetch(...args);
-  if (!response.ok)
-    throw new HttpError(response.status, `Request failed with status ${response.status}`);
-  return response.json();
+	const response = await fetch(...args);
+	if (!response.ok)
+		throw new HttpError(response.status, `Request failed with status ${response.status}`);
+	return response.json();
 };
 
 /**
@@ -72,15 +73,15 @@ export function createZodFetcher(): ZodFetcher<typeof fetch>;
  * );
  */
 export function createZodFetcher<TFetcher extends AnyFetcher>(
-  /**
-   * A fetcher function that returns the data you'd like to parse
-   * with the schema.
-   */
-  fetcher: TFetcher
+	/**
+	 * A fetcher function that returns the data you'd like to parse
+	 * with the schema.
+	 */
+	fetcher: TFetcher
 ): ZodFetcher<TFetcher>;
 export function createZodFetcher(fetcher: AnyFetcher = defaultFetcher): ZodFetcher<any> {
-  return async (schema, ...args) => {
-    const response = await fetcher(...args);
-    return schema.parse(response);
-  };
+	return async (schema, ...args) => {
+		const response = await fetcher(...args);
+		return schema.parse(response);
+	};
 }

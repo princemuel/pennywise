@@ -1,15 +1,15 @@
-import db from './db.json' with { type: 'json' };
+import raw from './db.json' with { type: 'json' };
 import { avatar } from './images';
 
 export default {
-	...db,
-	transactions: db.transactions.map((txn) => {
+	...raw,
+	transactions: raw.transactions.map((txn) => {
 		return { ...txn, avatar: avatar(txn.avatar) };
 	}),
-	budgets: db.budgets.map((budget) => {
+	budgets: raw.budgets.map((budget) => {
 		return { ...budget };
 	}),
-	pots: db.pots.map((pot) => {
+	pots: raw.pots.map((pot) => {
 		return { ...pot, percent: (pot.total / pot.target) * 100 };
 	})
 };
