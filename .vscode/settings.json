@@ -1,7 +1,42 @@
 {
+  "js/ts.experimental.useTsgo": false,
+  "js/ts.updateImportsOnFileMove.enabled": "always",
+  "js/ts.implicitProjectConfig.target": "ESNext",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.preferences.preferTypeOnlyAutoImports": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.tabSize": 2,
+  "editor.wordWrap": "bounded",
+  "editor.wordWrapColumn": 120,
+  "editor.inlineSuggest.enabled": true,
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
   "editor.codeActionsOnSave": {
+    "source.addMissingImports": "explicit",
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
-    "source.sortMembers": "explicit"
+    "source.sortImports": "explicit",
+    "source.sortMembers": "explicit",
+    "source.removeUnusedImports": "explicit",
+    "source.format.oxc": "always"
+  },
+  "json.validate.enable": true,
+  "dotenv.enableAutocloaking": false,
+  "emmet.includeLanguages": { "typescriptreact": "html" },
+  "emmet.preferences": { "output.selfClosingStyle": "xhtml" },
+  "template-string-converter.enabled": true,
+  "template-string-converter.convertWithinTemplateString": true,
+  "template-string-converter.convertOutermostQuotes": true,
+  "template-string-converter.autoRemoveTemplateString": true,
+  "template-string-converter.addBracketsToProps": true,
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.experimental.classRegex": [["([\"'`][^\"'`]*.*?[\"'`])", "[\"'`]([^\"'`]*).*?[\"'`]"]],
+  "tailwindCSS.includeLanguages": { "xslt": "html" },
+  "files.associations": { "*.css": "tailwindcss" },
+  "tailwindCSS.rootFontSize": 16,
+  "window.autoDetectColorScheme": true,
+  "workbench.tree.indent": 8,
+  "[sql]": {
+    "editor.defaultFormatter": "bradymholt.pgformatter"
   }
 }
