@@ -1,3 +1,0 @@
-@import "@repo/tailwind-config";
-@import "@fontsource-variable/public-sans";
-@custom-variant mini (&:where([data-ui~=compact], [data-ui~=compact] *));
